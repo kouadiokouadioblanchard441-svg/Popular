@@ -262,21 +262,21 @@ export default function DepositPage() {
           <h1 className="flex-1 text-center text-[20px] font-medium pr-9">Paiement crypto</h1>
         </header>
 
-        <section className="mx-5 mt-6 rounded-[18px] bg-white px-5 py-6 shadow-[0_8px_22px_rgba(0,70,30,.08)]">
+        <section className="mx-4 mt-3 rounded-[16px] bg-white px-4 py-4 shadow-[0_6px_16px_rgba(0,70,30,.08)]">
           <p className="text-center text-[14px] text-[#66746b]">Envoyez exactement</p>
-          <p className="mt-1 text-center text-[28px] font-bold text-[#087a38]">
+          <p className="mt-0.5 text-center text-[27px] font-bold text-[#087a38]">
             {Number(cryptoPayment.payAmount).toLocaleString(undefined, { maximumFractionDigits: 8 })} {cryptoPayment.payCurrency.toUpperCase()}
           </p>
-          <p className="mt-1 text-center text-[13px] text-[#66746b]">sur le réseau {selectedCurrencyLabel}</p>
+          <p className="mt-0.5 text-center text-[13px] text-[#66746b]">sur le réseau {selectedCurrencyLabel}</p>
 
-          <img src={cryptoPayment.qrCode} alt="QR code de paiement" className="mx-auto mt-5 h-[190px] w-[190px] rounded-[10px]" />
+          <img src={cryptoPayment.qrCode} alt="QR code de paiement" className="mx-auto mt-3 h-[160px] w-[160px] rounded-[8px]" />
 
-          <div className="mt-5 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-3">
-            <p className="mb-1 text-[12px] font-medium text-[#53705d]">Adresse de paiement {selectedCurrencyLabel}</p>
-            <p className="break-all font-mono text-[13px] leading-5 text-[#173f26]">{cryptoPayment.payAddress}</p>
+          <div className="mt-3 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-2.5">
+            <p className="mb-0.5 text-[12px] font-medium text-[#53705d]">Adresse de paiement {selectedCurrencyLabel}</p>
+            <p className="break-all font-mono text-[13px] leading-4 text-[#173f26]">{cryptoPayment.payAddress}</p>
           </div>
           {(cryptoPayment.payinExtraId || cryptoPayment.network) && (
-            <div className="mt-3 grid gap-2 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-3 text-[13px]">
+            <div className="mt-2 grid gap-1 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-2.5 text-[13px]">
               {cryptoPayment.network && (
                 <p className="text-[#53705d]">
                   Réseau : <span className="font-semibold uppercase text-[#173f26]">{cryptoPayment.network}</span>
@@ -292,22 +292,22 @@ export default function DepositPage() {
           <button
             type="button"
             onClick={copyPaymentAddress}
-            className="mx-auto mt-4 flex h-[42px] items-center justify-center gap-2 rounded-full px-7 text-[15px] font-semibold text-white active:scale-[.98]"
-            style={{ background: TGOOD_GREEN }}
+            className="mx-auto mt-3 flex h-[40px] items-center justify-center gap-2 rounded-full px-7 text-[15px] font-semibold text-white active:scale-[.98]"
+            style={{ background: "#FF0000" }}
             data-testid="button-copy-crypto-address"
           >
             <Copy size={17} /> Copier l&apos;adresse
           </button>
         </section>
 
-        <div className="mx-5 mt-4 flex gap-3 rounded-[12px] border border-[#f3ce77] bg-[#fff8e5] px-4 py-3 text-[#73510b]">
-          <AlertTriangle size={21} className="mt-0.5 shrink-0" />
-          <p className="text-[13px] leading-5">
+        <div className="mx-4 mt-3 flex gap-2.5 rounded-[11px] border border-[#ef9a9a] bg-[#fff1f1] px-3 py-2.5 text-[#b4232f]">
+          <AlertTriangle size={20} className="mt-0.5 shrink-0 text-[#c52233]" />
+          <p className="text-[13px] leading-[1.125rem]">
             Envoyez uniquement <strong>{selectedCurrencyLabel}</strong> sur le réseau correspondant. Un envoi depuis un autre réseau peut être perdu.
           </p>
         </div>
 
-        <p className="mx-6 mt-5 text-center text-[13px] leading-5 text-[#66746b]">
+        <p className="mx-5 mt-3 text-center text-[13px] leading-[1.125rem] text-[#66746b]">
           Le dépôt sera crédité automatiquement après la confirmation du réseau.
         </p>
       </main>
