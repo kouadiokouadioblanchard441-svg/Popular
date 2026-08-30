@@ -1,5 +1,5 @@
 import { useLocation } from "wouter";
-import { House, Bike, Hash, UserRound, type LucideIcon } from "lucide-react";
+import { House, Bike, Hash, ClipboardList, UserRound, type LucideIcon } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 const TGOOD_GREEN = "#08b83a";
@@ -7,13 +7,14 @@ const INACTIVE = "#bdbdbd";
 
 const NAV_ITEMS: {
   path: string;
-  labelKey: "home" | "products" | "team" | "me";
+  labelKey: "home" | "products" | "team" | "taskPageTitle" | "me";
   testId: string;
   Icon: LucideIcon;
 }[] = [
   { path: "/", labelKey: "home", testId: "home", Icon: House },
   { path: "/invest", labelKey: "products", testId: "products", Icon: Bike },
   { path: "/team", labelKey: "team", testId: "team", Icon: Hash },
+  { path: "/tasks", labelKey: "taskPageTitle", testId: "tasks", Icon: ClipboardList },
   { path: "/account", labelKey: "me", testId: "me", Icon: UserRound },
 ];
 
