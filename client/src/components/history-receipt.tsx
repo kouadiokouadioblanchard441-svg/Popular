@@ -2,9 +2,6 @@ import type { ReactNode } from "react";
 import { useLocation } from "wouter";
 import { ChevronLeft } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import depositIcon from "@/assets/3d-deposit.png";
-import withdrawalIcon from "@/assets/3d-withdrawal.png";
-import withdrawalHero from "@/assets/images/withdrawal-hero-reference.png";
 
 export type ReceiptKind = "deposit" | "withdrawal";
 export type HistoryTab = ReceiptKind | "activity";
@@ -17,6 +14,7 @@ export interface ReceiptTransaction {
   createdAt: string | Date;
   paymentMethod?: string | null;
   accountNumber?: string | null;
+  reference?: string | null;
   description?: string | null;
   fees?: string | number | null;
   netAmount?: string | number | null;
@@ -58,20 +56,19 @@ export function HistoryPageHeader({
   const [, navigate] = useLocation();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[#dcece2] bg-white/95 backdrop-blur">
-      <div className="relative flex h-14 items-center px-4">
+    <header className="sticky top-0 z-30 border-b border-[#e4e4e4] bg-white">
+      <div className="relative flex h-[58px] items-center px-4">
         <button
           type="button"
           onClick={() => navigate(backHref)}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-[#164a33] transition active:scale-95 active:bg-[#eaf7ee]"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-[#202020] transition active:scale-95 active:bg-[#f1f1f1]"
           aria-label="Retour"
           data-testid="button-back"
         >
           <ChevronLeft className="h-6 w-6" strokeWidth={2.4} aria-hidden="true" />
         </button>
         <div className="pointer-events-none absolute inset-x-14 text-center">
-          <p className="text-[9px] font-bold tracking-[0.22em] text-[#00a651]">TGOOD</p>
-          <h1 className="mt-0.5 text-[15px] font-bold text-[#173d2e]">{title}</h1>
+          <h1 className="text-[16px] font-semibold text-[#171717]">{title}</h1>
         </div>
       </div>
       {tabs}
@@ -140,46 +137,28 @@ export function ReceiptCard({ transaction }: { transaction: ReceiptTransaction }
         : { approved: "Validé", completed: "Validé", pending: "En attente", pending_2fa: "Vérification requise", processing: "En cours", rejected: "Refusé", failed: "Échoué" };
   const statusLabel = statusLabels[transaction.status] || transaction.status || statusLabels.pending;
   const statusClass = {
-    success: "border-[#b9e8cb] bg-[#eaf8ef] text-[#087a38]",
-    pending: "border-[#f4d9a0] bg-[#fff8e8] text-[#a76409]",
-    danger: "border-[#f5c5c5] bg-[#fff1f1] text-[#d13e3e]",
+    success: "text-[#16803b]",
+    pending: "text-[#e4a11b]",
+    danger: "text-[#d13e3e]",
   }[status.tone];
+  const fallbackReference = `${isDeposit ? "A" : "R"}${String(transaction.id).replace(/^(dep|wd)-/, "")}`;
+  const reference = transaction.reference?.trim() || fallbackReference;
+  const method = transaction.paymentMethod?.trim()
+    || (isDeposit ? "Canaux de recharge" : "USDT BEP20");
   return (
     <article
-      className="relative overflow-hidden rounded-[20px] border border-white/80 bg-white px-4 py-4 shadow-[0_10px_26px_rgba(6,83,49,.11)]"
+      className="min-h-[106px] border-b border-white bg-[#f3f3f3] px-4 py-4"
       data-testid={`receipt-${transaction.kind}-${transaction.id}`}
     >
-      <div
-        className={`absolute -right-12 -top-16 h-32 w-32 rounded-full opacity-80 ${
-          isDeposit ? "bg-[#d9f4e4]" : "bg-[#ffe6e6]"
-        }`}
-        aria-hidden="true"
-      />
-      <div className="relative flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white">
-            <img
-              src={isDeposit ? depositIcon : withdrawalIcon}
-              alt={isDeposit ? "Deposit icon" : "Withdrawal icon"}
-              className="h-full w-full object-cover"
-            />
-          </span>
-          <div className="min-w-0">
-            <p className="text-[15px] font-bold text-[#173d2e]">
-              {isDeposit
-                ? (lang === "en" ? "USDT deposit" : lang === "ar" ? "إيداع USDT" : lang === "zh" ? "USDT 充值" : "Dépôt USDT")
-                : (lang === "en" ? "USDT withdrawal" : lang === "ar" ? "سحب USDT" : lang === "zh" ? "USDT 提现" : "Retrait USDT")}
-            </p>
-            <p className="mt-0.5 truncate text-[11px] text-[#71877b]">{formatDate(transaction.createdAt, lang)}</p>
-          </div>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[14px] font-medium text-[#202020]">{reference}</p>
+          <p className="mt-2 truncate text-[12px] text-[#8a8a8a]">{method}</p>
+          <p className="mt-2 text-[12px] text-[#8a8a8a]">{formatDate(transaction.createdAt, lang)}</p>
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-1">
-          <p className={`text-sm font-bold ${isDeposit ? "text-[#087a38]" : "text-[#d13e3e]"}`}>
-            {isDeposit ? "+" : "−"}{amount} USDT
-          </p>
-          <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold ${statusClass}`}>
-            {statusLabel}
-          </span>
+        <div className="flex shrink-0 flex-col items-end gap-7 text-right">
+          <p className="text-[13px] text-[#858585]">{amount} USDT</p>
+          <span className={`text-[12px] font-semibold ${statusClass}`}>{statusLabel}</span>
         </div>
       </div>
     </article>
@@ -188,50 +167,26 @@ export function ReceiptCard({ transaction }: { transaction: ReceiptTransaction }
 
 export function ReceiptLoadingState() {
   return (
-    <div className="space-y-3">
+    <div>
       {[0, 1, 2].map((index) => (
-        <div key={index} className="h-[172px] animate-pulse rounded-[20px] bg-white/80 shadow-[0_6px_18px_rgba(6,83,49,.06)]" />
+        <div key={index} className="h-[106px] animate-pulse border-b border-white bg-[#f3f3f3]" />
       ))}
     </div>
   );
 }
 
 export function ReceiptEmptyState({ kind }: { kind: ReceiptKind }) {
-  const { lang } = useI18n();
   return (
-    <div className="flex min-h-[310px] flex-col items-center justify-center px-8 text-center">
-      <span className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[22px] bg-white/80 shadow-sm">
-        <img
-          src={kind === "deposit" ? depositIcon : withdrawalIcon}
-          alt={kind === "deposit" ? "Deposit icon" : "Withdrawal icon"}
-          className="h-full w-full object-cover"
-        />
-      </span>
-      <p className="mt-4 text-sm font-semibold text-[#315443]">
-        {lang === "en" ? "No transactions yet" : lang === "ar" ? "لا توجد معاملات بعد" : lang === "zh" ? "暂无交易" : "Aucune opération pour le moment"}
-      </p>
-      <p className="mt-1 text-xs leading-5 text-[#799084]">
-        {kind === "deposit"
-          ? (lang === "en" ? "Your USDT deposits will appear here." : lang === "ar" ? "ستظهر إيداعات USDT هنا." : lang === "zh" ? "您的 USDT 充值将显示在这里。" : "Vos dépôts USDT apparaîtront ici.")
-          : (lang === "en" ? "Your USDT BEP20 withdrawals will appear here." : lang === "ar" ? "ستظهر عمليات سحب USDT BEP20 هنا." : lang === "zh" ? "您的 USDT BEP20 提现将显示在这里。" : "Vos retraits USDT BEP20 apparaîtront ici.")}
-      </p>
+    <div className="min-h-[92px] border-b border-white bg-white px-4 pt-3 text-center text-[14px] text-[#9a9a9a]" data-kind={kind}>
+      Plus de données
     </div>
   );
 }
 
 export function HistoryDecor({ children }: { children: ReactNode }) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f2f8f4] pb-8">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[250px] overflow-hidden">
-        <img
-          src={withdrawalHero}
-          alt=""
-          className="h-full w-full object-cover"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-[#063d2b]/35" />
-      </div>
-      <div className="relative mx-auto w-full max-w-[480px] px-4 pt-5">{children}</div>
+    <main className="min-h-screen bg-white pb-8">
+      <div className="mx-auto w-full max-w-[480px]">{children}</div>
     </main>
   );
 }

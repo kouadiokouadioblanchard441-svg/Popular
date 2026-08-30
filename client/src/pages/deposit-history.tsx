@@ -15,6 +15,7 @@ interface Deposit {
   status: string;
   paymentMethod?: string | null;
   accountNumber?: string | null;
+  reference?: string | null;
   createdAt: string;
 }
 
@@ -32,17 +33,14 @@ export default function DepositHistoryPage() {
     createdAt: deposit.createdAt,
     paymentMethod: deposit.paymentMethod,
     accountNumber: deposit.accountNumber,
+    reference: deposit.reference,
   }));
 
   return (
-    <div className="min-h-screen bg-[#f2f8f4]">
+    <div className="min-h-screen bg-white">
       <HistoryPageHeader title={t.depositHistory || "Historique des dépôts"} backHref="/deposit" />
       <HistoryDecor>
-        <div className="mb-4 pt-1 text-white">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#b9f2cf]">Portefeuille TGOOD</p>
-          <p className="mt-1 text-lg font-bold">Dépôts USDT</p>
-        </div>
-        <section className="space-y-3" aria-live="polite">
+        <section aria-live="polite">
           {isLoading ? (
             <ReceiptLoadingState />
           ) : receipts.length > 0 ? (

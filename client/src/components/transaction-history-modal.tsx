@@ -3,11 +3,9 @@ import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
-import { TrendingUp } from "lucide-react";
 import type { Deposit, Withdrawal, Transaction } from "@shared/schema";
 import { ReceiptCard, ReceiptEmptyState, ReceiptLoadingState } from "@/components/history-receipt";
 
@@ -77,6 +75,7 @@ export default function TransactionHistoryModal({ open, onClose }: TransactionHi
                       status: deposit.status,
                       createdAt: deposit.createdAt,
                       paymentMethod: deposit.paymentMethod,
+                       reference: deposit.reference,
                     }}
                   />
                 ))
@@ -115,29 +114,22 @@ export default function TransactionHistoryModal({ open, onClose }: TransactionHi
                 Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-20 w-full" />)
               ) : transactions && transactions.length > 0 ? (
                 transactions.map((transaction) => (
-                  <Card key={transaction.id}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                            <TrendingUp className="w-5 h-5 text-primary" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-foreground">
-                              +{formatCurrency(parseFloat(transaction.amount), user.country)}
-                            </p>
-                            <p className="text-xs text-muted-foreground">{transaction.description}</p>
-                            <p className="text-xs text-muted-foreground">{formatDate(transaction.createdAt as unknown as string)}</p>
-                          </div>
-                        </div>
+                  <article key={transaction.id} className="min-h-[92px] border-b border-white bg-[#f3f3f3] px-4 py-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[14px] font-medium text-[#202020]">T{transaction.id}</p>
+                        <p className="mt-2 truncate text-[12px] text-[#8a8a8a]">{transaction.description || "Gain TGOOD"}</p>
+                        <p className="mt-2 text-[12px] text-[#8a8a8a]">{formatDate(transaction.createdAt as unknown as string)}</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <p className="shrink-0 text-[13px] text-[#16803b]">
+                        +{formatCurrency(parseFloat(transaction.amount), user.country)}
+                      </p>
+                    </div>
+                  </article>
                 ))
               ) : (
-                <div className="text-center py-8">
-                  <TrendingUp className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">{t.noTransactions}</p>
+                <div className="min-h-[92px] bg-white px-4 pt-3 text-center text-[14px] text-[#9a9a9a]">
+                  Plus de données
                 </div>
               )}
             </TabsContent>

@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useI18n } from "@/lib/i18n";
-import { TrendingUp } from "lucide-react";
-import earningIcon from "@/assets/3d-earning.png";
 import {
   HistoryDecor,
   HistoryPageHeader,
@@ -25,6 +23,7 @@ interface HistoryItem {
     fees?: string | null;
     netAmount?: string | null;
     paymentMethod?: string | null;
+    reference?: string | null;
   };
 }
 
@@ -39,6 +38,7 @@ function toReceipt(item: HistoryItem): ReceiptTransaction {
     description: item.description,
     fees: item.extra?.fees,
     netAmount: item.extra?.netAmount,
+    reference: item.extra?.reference,
   };
 }
 
@@ -62,7 +62,7 @@ export default function HistoryPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f2f8f4]">
+    <div className="min-h-screen bg-white">
       <HistoryPageHeader
         title={t.transactionHistoryTitle || "Historique"}
         backHref="/account"
@@ -77,17 +77,7 @@ export default function HistoryPage() {
         )}
       />
       <HistoryDecor>
-        <div className="mb-4 pt-1 text-white">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#b9f2cf]">Portefeuille TGOOD</p>
-          <p className="mt-1 text-lg font-bold">
-            {activeTab === "deposit"
-              ? (t.deposit === "Deposit" ? "Your USDT deposits" : "Vos dépôts USDT")
-              : activeTab === "withdrawal"
-                ? (t.withdraw === "Withdraw" ? "Your USDT BEP20 withdrawals" : "Vos retraits USDT BEP20")
-                : (t.earnings === "Earnings" ? "Your earnings and bonuses" : "Vos gains et bonus")}
-          </p>
-        </div>
-        <section className="space-y-3" aria-live="polite">
+        <section aria-live="polite">
           {isLoading ? (
             <ReceiptLoadingState />
           ) : activeTab !== "activity" && visibleItems.length > 0 ? (
@@ -121,16 +111,17 @@ function ActivityCard({ item }: { item: HistoryItem }) {
       .replace(/crédité directement sur votre solde/gi, "credited directly to your balance")
     : item.description;
 
+  const reference = `T${item.id.replace(/^tx-/, "")}`;
   return (
-    <article className="flex items-center gap-3 rounded-[20px] border border-white/80 bg-white px-4 py-4 shadow-[0_8px_22px_rgba(6,83,49,.09)]">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white">
-        <img src={earningIcon} alt="Earnings icon" className="h-full w-full object-cover" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-bold text-[#173d2e]">{description || (lang === "en" ? "TGOOD earnings" : "Gain TGOOD")}</p>
-        <p className="mt-0.5 text-[11px] text-[#71877b]">{date}</p>
+    <article className="min-h-[92px] border-b border-white bg-[#f3f3f3] px-4 py-4">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[14px] font-medium text-[#202020]">{reference}</p>
+          <p className="mt-2 truncate text-[12px] text-[#8a8a8a]">{description || (lang === "en" ? "TGOOD earnings" : "Gain TGOOD")}</p>
+          <p className="mt-2 text-[12px] text-[#8a8a8a]">{date}</p>
+        </div>
+        <p className="shrink-0 text-[13px] text-[#16803b]">+{safeAmount} USDT</p>
       </div>
-      <p className="shrink-0 text-sm font-bold text-[#087a38]">+{safeAmount} USDT</p>
     </article>
   );
 }
@@ -138,16 +129,8 @@ function ActivityCard({ item }: { item: HistoryItem }) {
 function ActivityEmptyState() {
   const { lang } = useI18n();
   return (
-    <div className="flex min-h-[310px] flex-col items-center justify-center px-8 text-center">
-      <span className="flex h-16 w-16 items-center justify-center rounded-[22px] bg-white/80 text-[#81a894] shadow-sm">
-        <TrendingUp className="h-7 w-7" />
-      </span>
-      <p className="mt-4 text-sm font-semibold text-[#315443]">
-        {lang === "en" ? "No earnings or bonuses yet" : lang === "ar" ? "لا توجد أرباح أو مكافآت بعد" : lang === "zh" ? "暂无收益或奖金" : "Aucun gain ou bonus pour le moment"}
-      </p>
-      <p className="mt-1 text-xs leading-5 text-[#799084]">
-        {lang === "en" ? "Your earnings, commissions and bonuses will appear here." : lang === "ar" ? "ستظهر أرباحك وعمولاتك ومكافآتك هنا." : lang === "zh" ? "您的收益、佣金和奖金将显示在这里。" : "Vos gains, commissions et bonus apparaîtront ici."}
-      </p>
+    <div className="min-h-[92px] bg-white px-4 pt-3 text-center text-[14px] text-[#9a9a9a]">
+      {lang === "en" ? "More data" : lang === "ar" ? "مزيد من البيانات" : lang === "zh" ? "更多数据" : "Plus de données"}
     </div>
   );
 }

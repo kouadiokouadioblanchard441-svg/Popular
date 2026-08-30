@@ -1436,7 +1436,7 @@ export async function registerRoutes(
           status: d.status,
           description: d.paymentMethod || "Dépôt",
           createdAt: d.createdAt,
-          extra: { fees: null, netAmount: null, paymentMethod: d.paymentMethod },
+          extra: { fees: null, netAmount: null, paymentMethod: d.paymentMethod, reference: d.reference },
         })),
         ...withdrawals.map((w: any) => ({
           id: `wd-${w.id}`,
