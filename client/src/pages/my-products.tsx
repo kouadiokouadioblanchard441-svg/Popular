@@ -32,6 +32,21 @@ function EmptyProductsIllustration() {
   );
 }
 
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-1 text-[15px] leading-6">
+      <span className="text-white/90">{label}</span>
+      <span className="text-right text-white">{value}</span>
+    </div>
+  );
+}
+
+function getDisplayName(name: string | undefined, index: number) {
+  const value = name || `TGOOD GreenRide ${index + 1}`;
+  const vipMatch = value.match(/^VIP\s*(\d+)$/i);
+  return vipMatch ? `VIP${vipMatch[1]} TGOOD GreenRide` : value;
+}
+
 function PageHeader() {
   const [, navigate] = useLocation();
   return (
@@ -113,31 +128,46 @@ export default function MyProductsPage() {
               const earned = Number(userProduct.totalEarned || 0);
               const canCollect = product.collectAtEnd && daysRemaining <= 0 && earned > 0;
               const image = getProductVisual(product.imageUrl, index);
+              const displayName = getDisplayName(product.name, index);
 
               return (
-                <article key={userProduct.id} className="overflow-hidden rounded-xl border border-white/10 bg-[#151515]" data-testid={`product-card-${userProduct.id}`}>
-                  <img src={image} alt={product.name || "Produit TGOOD"} className="h-36 w-full object-cover" />
-                  <div className="p-4 text-white">
-                    <h2 className="text-lg font-semibold">{product.name || "TGOOD GreenRide"}</h2>
-                    <div className="mt-3 flex justify-between text-sm text-white/75">
-                      <span>Gains reçus</span><span>USDT {earned.toLocaleString("fr-FR")}</span>
+                <article
+                  key={userProduct.id}
+                  className="relative min-h-[326px] overflow-hidden border-b-[6px] border-black bg-[#202020]"
+                  data-testid={`product-card-${userProduct.id}`}
+                >
+                  <img
+                    src={image}
+                    alt={displayName}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    style={{ objectPosition: "center 54%" }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/10" />
+                  <div className="relative z-10 min-h-[320px] px-5 pb-5 pt-6 text-white">
+                    <h2 className="font-semibold" style={{ fontSize: 27, lineHeight: 1.15 }}>{displayName}</h2>
+                    <div className="mt-4 w-[82%] max-w-[350px] bg-black/50 px-2.5 py-2.5">
+                      <InfoRow label="Prix :" value={`USDT ${Number(product.price || 0).toLocaleString("fr-FR")}`} />
+                      <InfoRow label="Durée :" value={`${cycleDays} jours`} />
+                      <InfoRow label="Revenu quotidien :" value={`USDT ${Number(product.dailyEarnings || 0).toLocaleString("fr-FR")}`} />
+                      <InfoRow label="Revenu total :" value={`USDT ${Number(product.totalReturn || 0).toLocaleString("fr-FR")}`} />
+                      <InfoRow label="Gains reçus :" value={`USDT ${earned.toLocaleString("fr-FR")}`} />
                     </div>
-                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/15">
+                    <div className="mt-3 h-1.5 w-[82%] max-w-[350px] overflow-hidden rounded-full bg-white/25">
                       <div className="h-full rounded-full" style={{ width: `${progress}%`, background: TGOOD_GREEN }} />
                     </div>
-                    <p className="mt-1 text-xs text-white/55">{completedDays}/{cycleDays} jours</p>
+                    <p className="mt-1 text-xs text-white/75">{completedDays}/{cycleDays} jours complétés</p>
                     {canCollect ? (
                       <button
                         onClick={() => collectFinalMutation.mutate(userProduct.id)}
                         disabled={collectFinalMutation.isPending}
-                        className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg py-2.5 font-semibold text-black disabled:opacity-60"
+                        className="mt-3 flex h-10 w-[82%] max-w-[350px] items-center justify-center gap-2 font-bold text-black disabled:opacity-60"
                         style={{ background: TGOOD_GREEN }}
                       >
                         {collectFinalMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
                         Collecter USDT {earned.toLocaleString("fr-FR")}
                       </button>
                     ) : product.collectAtEnd ? (
-                      <p className="mt-3 flex items-center justify-center gap-1 text-sm text-white/55"><Lock size={14} /> Disponible en fin de cycle</p>
+                      <p className="mt-3 flex w-[82%] max-w-[350px] items-center justify-center gap-1 text-sm text-white/75"><Lock size={14} /> Disponible en fin de cycle</p>
                     ) : null}
                   </div>
                 </article>
