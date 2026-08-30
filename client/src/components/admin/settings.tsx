@@ -966,7 +966,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               )} />
             ))}
             {([
-              { name: "popupLine1" as const, label: "Ligne 1 — Lancement officiel", placeholder: "✨✨ Lancement officiel de la plateforme XPENG ✨✨" },
+              { name: "popupLine1" as const, label: "Ligne 1 — Lancement officiel", placeholder: "✨✨ Lancement officiel de la plateforme TGOOD ✨✨" },
               { name: "popupLine2" as const, label: "Ligne 2 — Invitation parrainage", placeholder: "🔻 Invitez vos amis à investir et gagnez jusqu'à 25% de commissions..." },
               { name: "popupLine3" as const, label: "Ligne 3 — Bonus connexion", placeholder: "🎁 Bonus de connexion quotidienne disponible chaque jour" },
               { name: "popupLine4" as const, label: "Ligne 4 — Dépôt minimum", placeholder: "🤝 Dépôt minimum : 18 USDT" },
@@ -1008,7 +1008,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               <FormItem>
                 <FormLabel>Slug marchand WestPay</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="ex : xpeng" />
+                  <Input {...field} placeholder="ex : tgood" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

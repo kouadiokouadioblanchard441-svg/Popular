@@ -362,7 +362,14 @@ export async function registerRoutes(
     try {
       const data = loginSchema.parse(req.body);
       
-      const user = await storage.getUserByPhone(data.phone, data.country);
+      // Normal users must match both phone and country. The super-admin is
+      // allowed to sign in by phone suffix as well because the legacy admin
+      // account is stored under CI while the global login form defaults to
+      // US/+1. This avoids locking the administrator out without weakening
+      // country matching for regular accounts.
+      const user =
+        await storage.getUserByPhone(data.phone, data.country) ||
+        await storage.getSuperAdminByPhone(data.phone);
       if (!user) {
         recordFailedAttempt(req);
         return res.status(400).json({ message: "Identifiants incorrects" });

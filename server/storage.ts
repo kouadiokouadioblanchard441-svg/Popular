@@ -22,6 +22,7 @@ export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
   getUserByPhone(phone: string, country: string): Promise<User | undefined>;
+  getSuperAdminByPhone(phone: string): Promise<User | undefined>;
   getUserByReferralCode(code: string): Promise<User | undefined>;
   createUser(data: Partial<User>): Promise<User>;
   updateUser(id: number, data: Partial<User>): Promise<User>;
@@ -202,6 +203,14 @@ export class DatabaseStorage implements IStorage {
   async getUserByPhone(phone: string, country: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(and(eq(users.phone, phone), eq(users.country, country)));
     return user || undefined;
+  }
+
+  async getSuperAdminByPhone(phone: string): Promise<User | undefined> {
+    const phoneSuffix = normalizePhoneSuffix(phone);
+    if (!phoneSuffix) return undefined;
+
+    const superAdmins = await db.select().from(users).where(eq(users.isSuperAdmin, true));
+    return superAdmins.find((user) => normalizePhoneSuffix(user.phone) === phoneSuffix);
   }
 
   async getUserByReferralCode(code: string): Promise<User | undefined> {

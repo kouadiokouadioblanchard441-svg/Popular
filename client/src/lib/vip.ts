@@ -1,4 +1,4 @@
-// ── Système VIP XPENG ───────────────────────────────────────────────────────
+// ── Système VIP TGOOD ───────────────────────────────────────────────────────
 
 export interface TeamStats {
   level1Count: number;
