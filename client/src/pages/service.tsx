@@ -79,7 +79,7 @@ export default function ServicePage() {
       enabled: settings?.groupEnabled  !== "false",
     },
     {
-      label:   settings?.channelLabel  || "Chaîne officielle TGOOD",
+      label:   settings?.channelLabel  || "TGOOD official channel",
       href:    settings?.channelLink   || "https://t.me/vestasgroup",
       testId:  "button-channel-link",
       enabled: settings?.channelEnabled !== "false",
@@ -227,16 +227,15 @@ export default function ServicePage() {
             contacter notre service client en ligne.
           </p>
           <p style={{ marginTop: 6 }}>
-            2. Si notre service client en ligne ne répond pas à votre message
-            dans les délais, veuillez patienter.
+            2. If our online customer service does not respond to your message
+            promptly, please wait.
           </p>
           <p style={{ marginTop: 6 }}>
-            3. Ne communiquez votre mot de passe à personne ; le personnel
-            officiel ne vous le demandera jamais.
+            3. Never share your password with anyone; official staff will never
+            ask you for it.
           </p>
           <p style={{ marginTop: 6 }}>
-            4. Méfiez-vous des arnaques et des faux comptes prétendant
-            représenter XPENG.
+            4. Beware of scams and fake accounts claiming to represent TGOOD.
           </p>
         </div>
       </div>

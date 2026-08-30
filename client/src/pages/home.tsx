@@ -20,18 +20,18 @@ import netflixLogo from "@/assets/partners/netflix.svg";
 const TGOOD_GREEN = "#08b83a";
 
 const ACTIVITY_MESSAGES = [
-  "****1847 a rechargé 125 USDT",
-  "****6521 a retiré 480 USDT",
-  "****3074 a reçu un bonus de 35 USDT",
-  "****9186 a rechargé 860 USDT",
-  "****2468 a effectué un retrait de 190 USDT",
-  "****7315 a reçu un bonus de bienvenue de 10 USDT",
-  "****5639 a rechargé 1250 USDT",
-  "****8093 a gagné un bonus quotidien de 75 USDT",
-  "****4217 a retiré 320 USDT",
-  "****6754 a rechargé 45 USDT",
-  "****1382 a reçu une commission de 210 USDT",
-  "****9546 a effectué un retrait de 1000 USDT",
+  "****1847 recharged 125 USDT",
+  "****6521 withdrew 480 USDT",
+  "****3074 received a 35 USDT bonus",
+  "****9186 recharged 860 USDT",
+  "****2468 made a 190 USDT withdrawal",
+  "****7315 received a 10 USDT welcome bonus",
+  "****5639 recharged 1250 USDT",
+  "****8093 earned a 75 USDT daily bonus",
+  "****4217 withdrew 320 USDT",
+  "****6754 recharged 45 USDT",
+  "****1382 received a 210 USDT commission",
+  "****9546 made a 1000 USDT withdrawal",
 ];
 
 const ACTIONS = [

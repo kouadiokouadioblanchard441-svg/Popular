@@ -134,7 +134,7 @@ export function ReceiptCard({ transaction }: { transaction: ReceiptTransaction }
       ? { approved: "تمت الموافقة", completed: "مكتمل", pending: "قيد الانتظار", pending_2fa: "التحقق مطلوب", processing: "قيد المعالجة", rejected: "مرفوض", failed: "فشل" }
       : lang === "zh"
         ? { approved: "已批准", completed: "已完成", pending: "处理中", pending_2fa: "需要验证", processing: "进行中", rejected: "已拒绝", failed: "失败" }
-        : { approved: "Validé", completed: "Validé", pending: "En attente", pending_2fa: "Vérification requise", processing: "En cours", rejected: "Refusé", failed: "Échoué" };
+        : { approved: "Approved", completed: "Completed", pending: "Pending", pending_2fa: "Verification required", processing: "Processing", rejected: "Rejected", failed: "Failed" };
   const statusLabel = statusLabels[transaction.status] || transaction.status || statusLabels.pending;
   const statusClass = {
     success: "text-[#16803b]",
@@ -181,7 +181,7 @@ export function ReceiptLoadingState() {
 export function ReceiptEmptyState({ kind }: { kind: ReceiptKind }) {
   return (
     <div className="min-h-[92px] border-b border-white bg-white px-4 pt-3 text-center text-[14px] text-[#9a9a9a]" data-kind={kind}>
-      Plus de données
+      No more data
     </div>
   );
 }
