@@ -2,6 +2,7 @@ import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { ChevronLeft, Loader2 } from "lucide-react";
+import { localeForLang, useI18n } from "@/lib/i18n";
 
 const TGOOD_GREEN = "#00c83c";
 
@@ -33,6 +34,7 @@ function EmptyEarningsIllustration() {
 export default function EarningsPage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
+  const { t, lang } = useI18n();
   const { data: userProducts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/user/products"] });
 
   if (!user) return null;
@@ -43,27 +45,27 @@ export default function EarningsPage() {
   return (
     <main className="flex min-h-screen flex-col bg-black">
       <header className="flex h-[80px] items-center border-b border-[#e5e5e5] bg-white px-5">
-        <button onClick={() => navigate("/invest")} className="w-12 active:opacity-60" aria-label="Retour aux produits">
+        <button onClick={() => navigate("/invest")} className="w-12 active:opacity-60" aria-label={t.back}>
           <ChevronLeft size={34} strokeWidth={1.8} />
         </button>
         <div className="flex flex-1 items-center justify-center">
           <img src="/tgood-logo.gif" alt="TGOOD" className="h-8 w-auto" />
         </div>
         <Link href="/my-products" className="w-[142px] text-center font-medium active:opacity-60" style={{ color: TGOOD_GREEN, fontSize: 19 }}>
-          MES PRODUITS
+          {t.myProductsTitle}
         </Link>
       </header>
       <div className="flex h-[52px] items-center gap-3 bg-[#f1f2f4] px-7 text-[#5b616a]">
         <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#626975] text-[10px] font-bold text-white">i</span>
         <div style={{ fontSize: 12, lineHeight: 1.55 }}>
-          <p>Les revenus du produit sont réglés toutes les 24 heures</p>
-          <p>Vous pouvez acheter plusieurs appareils pour augmenter vos revenus</p>
+          <p>{t.myProductsSettledEvery24h}</p>
+          <p>{t.purchaseSuccessDescription}</p>
         </div>
       </div>
       <section className="flex flex-1 flex-col bg-black pb-20">
         <div className="pt-3 text-center text-white">
-          <p className="font-semibold" style={{ fontSize: 42, lineHeight: 1.1 }}>USDT {totalEarnings.toLocaleString("fr-FR")}</p>
-          <p className="mt-3" style={{ color: TGOOD_GREEN, fontSize: 16 }}>Revenus totaux</p>
+          <p className="font-semibold" style={{ fontSize: 42, lineHeight: 1.1 }}>USDT {totalEarnings.toLocaleString(localeForLang(lang))}</p>
+          <p className="mt-3" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{t.totalRevenue}</p>
         </div>
         {isLoading ? (
           <div className="flex flex-1 items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-white" /></div>
@@ -71,7 +73,7 @@ export default function EarningsPage() {
           <div className="flex flex-1 flex-col items-center pt-28 text-center">
             <EmptyEarningsIllustration />
             <p className="mt-7 max-w-[230px]" style={{ color: "#a5a5a5", fontSize: 18, lineHeight: 1.45 }}>
-              Aucun produit pour le moment
+              {t.myProductsNone}
             </p>
           </div>
         ) : (
@@ -80,9 +82,9 @@ export default function EarningsPage() {
               <div key={item.id} className="flex items-center justify-between border-b border-white/15 py-4 text-white">
                 <div>
                   <p className="font-medium">{item.product?.name || "Produit TGOOD"}</p>
-                  <p className="mt-1 text-sm text-white/55">Revenu cumulé</p>
+                  <p className="mt-1 text-sm text-white/55">{t.ordersTotalEarnedLbl}</p>
                 </div>
-                <p className="font-semibold" style={{ color: TGOOD_GREEN }}>USDT {Number(item.totalEarned || 0).toLocaleString("fr-FR")}</p>
+                <p className="font-semibold" style={{ color: TGOOD_GREEN }}>USDT {Number(item.totalEarned || 0).toLocaleString(localeForLang(lang))}</p>
               </div>
             ))}
           </div>

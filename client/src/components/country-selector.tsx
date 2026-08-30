@@ -190,14 +190,14 @@ export function CountrySelector({
                     className="shrink-0 text-[#666]"
                     fill="#666"
                     color="white"
-                    aria-label="Pays sélectionné"
+                    aria-label="Selected country"
                   />
                 )}
               </button>
             );
           })}
           {visibleCountries.length === 0 && (
-            <p className="px-[14px] pt-5 text-[16px] text-[#687581]">Aucun pays trouvé</p>
+            <p className="px-[14px] pt-5 text-[16px] text-[#687581]">No country found</p>
           )}
         </div>
       </div>

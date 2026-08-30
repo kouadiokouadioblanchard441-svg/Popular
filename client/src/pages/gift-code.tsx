@@ -87,7 +87,7 @@ export default function GiftCodePage() {
             className="absolute right-[10%] top-[80px] whitespace-nowrap text-[18px] font-normal leading-none max-[380px]:right-5 max-[380px]:text-[16px]"
             style={{ color: GREEN }}
           >
-            Échanger un cadeau
+            Redeem a gift
           </h1>
         </header>
 

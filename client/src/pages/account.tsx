@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getCountryByCode } from "@/lib/countries";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useI18n } from "@/lib/i18n";
+import { localeForLang, useI18n } from "@/lib/i18n";
 import { useMutation } from "@tanstack/react-query";
 import {
   CalendarDays,
@@ -45,25 +45,25 @@ const PROFILE_ACTIONS: {
 ];
 
 const MORE_ACTIONS: {
-  label: string;
+  labelKey: "about" | "security" | "history" | "customerService" | "shareInformation" | "wallet" | "changePassword" | "redeem";
   href: string;
   Icon: LucideIcon;
 }[] = [
-  { label: "À propos de nous", href: "/about", Icon: Info },
-  { label: "Règlement", href: "/rules", Icon: Bookmark },
-  { label: "Historique", href: "/history", Icon: FileText },
-  { label: "Service client", href: "/service", Icon: Headphones },
-  { label: "Partage de rapport", href: "/share-information", Icon: Download },
-  { label: "Lier une carte bancaire", href: "/wallet", Icon: CreditCard },
-  { label: "Modifier le MDP", href: "/change-password", Icon: KeyRound },
-  { label: "Échanger un cadeau", href: "/gift-code", Icon: Gift },
+  { labelKey: "about", href: "/about", Icon: Info },
+  { labelKey: "security", href: "/rules", Icon: Bookmark },
+  { labelKey: "history", href: "/history", Icon: FileText },
+  { labelKey: "customerService", href: "/service", Icon: Headphones },
+  { labelKey: "shareInformation", href: "/share-information", Icon: Download },
+  { labelKey: "wallet", href: "/wallet", Icon: CreditCard },
+  { labelKey: "changePassword", href: "/change-password", Icon: KeyRound },
+  { labelKey: "redeem", href: "/gift-code", Icon: Gift },
 ];
 
 export default function AccountPage() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
   const [adminPin, setAdminPin] = useState("");
@@ -107,7 +107,7 @@ export default function AccountPage() {
 
   const handleInstall = async () => {
     if (!installPrompt) {
-      toast({ title: "Utilisez le menu de votre navigateur pour installer l'application." });
+        toast({ title: "Use your browser menu to install the app." });
       return;
     }
     setInstalling(true);
@@ -115,7 +115,7 @@ export default function AccountPage() {
       await installPrompt.prompt();
       const result = await installPrompt.userChoice;
       if (result.outcome === "accepted") {
-        toast({ title: "Application installée avec succès !" });
+        toast({ title: "App installed successfully!" });
         setInstallPrompt(null);
       }
     } finally {
@@ -138,7 +138,7 @@ export default function AccountPage() {
   const earnings = Number.isFinite(rawEarnings) ? rawEarnings : 0;
   const country = getCountryByCode(user.country);
   const phonePrefix = country?.phonePrefix ? `+${country.phonePrefix} ` : "";
-  const formatAmount = (value: number) => value.toLocaleString("fr-FR", {
+  const formatAmount = (value: number) => value.toLocaleString(localeForLang(lang), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
@@ -150,7 +150,7 @@ export default function AccountPage() {
           <div className="flex h-[112px] items-center px-4">
             <img
               src={profileBike}
-              alt="Vélo électrique TGOOD"
+              alt="TGOOD electric bike"
               className="h-[78px] w-[94px] object-contain"
             />
             <div className="min-w-0 flex-1 pl-2">
@@ -172,12 +172,12 @@ export default function AccountPage() {
                 data-testid="button-logout"
               >
                 <LogOut size={26} strokeWidth={2.2} />
-                <span style={{ fontSize: 13 }}>Quitter</span>
+                <span style={{ fontSize: 13 }}>{t.logout}</span>
               </button>
               <button
                 onClick={() => setShowAccountMenu(true)}
                 className="h-5 w-6 text-[#777] active:opacity-60"
-                aria-label="Ouvrir les paramètres du compte"
+                aria-label="Open account settings"
                 data-testid="button-account-menu"
               >
                 <MoreVertical size={17} className="mx-auto" />
@@ -192,7 +192,7 @@ export default function AccountPage() {
               data-testid="button-profile-balance"
             >
               <p className="font-normal" style={{ color: TGOOD_GREEN, fontSize: 26 }}>USDT {formatAmount(balance)}</p>
-              <p className="mt-1" style={{ color: "#222", fontSize: 14 }}>Solde du compte</p>
+              <p className="mt-1" style={{ color: "#222", fontSize: 14 }}>{t.accountBalance}</p>
             </button>
             <button
               onClick={() => navigate("/earnings")}
@@ -200,7 +200,7 @@ export default function AccountPage() {
               data-testid="button-profile-earnings"
             >
               <p className="font-normal" style={{ color: TGOOD_GREEN, fontSize: 26 }}>USDT {formatAmount(earnings)}</p>
-              <p className="mt-1" style={{ color: "#222", fontSize: 14 }}>Revenus cumulés</p>
+              <p className="mt-1" style={{ color: "#222", fontSize: 14 }}>{t.revenue}</p>
             </button>
           </div>
         </section>
@@ -228,15 +228,15 @@ export default function AccountPage() {
         <section className="relative mx-3 mt-3 h-[272px] overflow-hidden" style={{ borderRadius: 12 }}>
           <img
             src={missionBanner}
-            alt="Mobilité durable avec les vélos électriques TGOOD"
+            alt="Sustainable mobility with TGOOD electric bikes"
             className="h-full w-full object-cover"
             style={{ objectPosition: "center" }}
           />
           <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(8,18,10,.05) 0%, rgba(8,18,10,.18) 42%, rgba(8,18,10,.64) 100%)" }} />
           <div className="absolute right-5 top-[46px] w-[53%] text-white">
-            <h1 className="font-semibold whitespace-nowrap" style={{ fontSize: 29, lineHeight: 1.1 }}>Centre de tâches</h1>
+            <h1 className="font-semibold whitespace-nowrap" style={{ fontSize: 29, lineHeight: 1.1 }}>{t.taskCenterTitle}</h1>
             <p className="mt-3" style={{ fontSize: 19, lineHeight: 1.42 }}>
-              Accomplissez des tâches et obtenez de généreux bonus
+              Complete tasks and earn generous bonuses
             </p>
             <button
               onClick={() => navigate("/tasks")}
@@ -244,17 +244,17 @@ export default function AccountPage() {
               style={{ background: "#20c95f", borderRadius: 24, fontSize: 17, transition: "transform 120ms ease" }}
               data-testid="button-mission-center"
             >
-              Aller
+              Go
             </button>
           </div>
         </section>
 
         <section className="mx-3 mt-3 bg-white px-3 pt-5 pb-3" style={{ borderRadius: 11, boxShadow: "0 1px 5px rgba(0,0,0,.035)" }}>
-          <h2 className="ml-3 font-normal" style={{ color: "#1e1e1e", fontSize: 22 }}>Plus</h2>
+           <h2 className="ml-3 font-normal" style={{ color: "#1e1e1e", fontSize: 22 }}>More</h2>
           <div className="mt-5 grid grid-cols-4">
-            {MORE_ACTIONS.map(({ label, href, Icon }) => (
+          {MORE_ACTIONS.map(({ labelKey, href, Icon }) => (
               <button
-                key={label}
+              key={href}
                 onClick={() => navigate(href)}
                 className="flex min-w-0 flex-col items-center gap-2 px-0.5 py-3 active:scale-95"
                 style={{ color: "#111", transition: "transform 120ms ease" }}
@@ -262,7 +262,7 @@ export default function AccountPage() {
               >
                 <Icon size={43} strokeWidth={2.5} />
                 <span className="min-h-[36px] text-center leading-snug" style={{ fontSize: 15 }}>
-                  {label}
+                {t[labelKey]}
                 </span>
               </button>
             ))}
@@ -273,17 +273,17 @@ export default function AccountPage() {
       <Dialog open={showAccountMenu} onOpenChange={setShowAccountMenu}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Mon compte</DialogTitle>
+            <DialogTitle>My account</DialogTitle>
           </DialogHeader>
           <div className="space-y-1">
             <div className="mb-3 rounded-xl bg-[#f3faf5] px-4 py-3">
               <p className="font-medium text-[#1f2933]">{phonePrefix}{user.phone}</p>
-              <p className="mt-1 text-xs text-[#65736e]">Membre TGOOD</p>
+              <p className="mt-1 text-xs text-[#65736e]">TGOOD member</p>
             </div>
             {[
-              { label: "Changer le mot de passe", href: "/change-password", Icon: KeyRound },
-              { label: "Portefeuille", href: "/wallet", Icon: CreditCard },
-              { label: "Échanger un cadeau", href: "/gift-code", Icon: Gift },
+              { label: t.changePassword, href: "/change-password", Icon: KeyRound },
+              { label: t.wallet, href: "/wallet", Icon: CreditCard },
+              { label: t.redeem, href: "/gift-code", Icon: Gift },
             ].map(({ label, href, Icon }) => (
               <button
                 key={href}
@@ -300,7 +300,7 @@ export default function AccountPage() {
               className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left active:bg-slate-50 disabled:opacity-60"
             >
               <Download size={19} color={TGOOD_GREEN} />
-              <span className="text-sm text-[#30363a]">{installing ? "Installation…" : "Télécharger l'application"}</span>
+              <span className="text-sm text-[#30363a]">{installing ? "Installing…" : "Install app"}</span>
             </button>
             {user.isAdmin && (
               <button
@@ -308,7 +308,7 @@ export default function AccountPage() {
                 className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left active:bg-slate-50"
               >
                 <Shield size={19} color={TGOOD_GREEN} />
-                <span className="text-sm text-[#30363a]">Administration</span>
+                <span className="text-sm text-[#30363a]">{t.adminPanel}</span>
               </button>
             )}
             <button
@@ -316,7 +316,7 @@ export default function AccountPage() {
               className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#fff0f0] px-3 py-3 font-medium text-[#d22f2f] active:opacity-70"
             >
               <LogOut size={18} />
-              Se déconnecter
+              {t.logout}
             </button>
           </div>
         </DialogContent>
@@ -350,7 +350,7 @@ export default function AccountPage() {
               style={{ backgroundColor: TGOOD_GREEN }}
               data-testid="button-verify-pin"
             >
-              {verifyPinMutation.isPending ? "Vérification…" : t.confirm}
+              {verifyPinMutation.isPending ? "Verifying…" : t.confirm}
             </Button>
           </div>
         </DialogContent>

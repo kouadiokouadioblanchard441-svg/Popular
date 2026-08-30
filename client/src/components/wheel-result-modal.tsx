@@ -1,7 +1,5 @@
 /**
- * Popup carte blanche — résultat d'un tour de roue.
- * Victoire : "Félicitations vous avez gagné X USDT"
- * Défaite  : "Pas de chance !"
+ * White result card shown after a wheel spin.
  */
 interface Props {
   open: boolean;
@@ -38,24 +36,24 @@ export default function WheelResultModal({ open, onClose, won, amount, label }: 
             <>
               <div className="text-5xl mb-1">🎉</div>
               <p className="text-lg font-bold text-gray-900">
-                Félicitations !
+                Congratulations!
               </p>
               <p className="text-[15px] leading-relaxed text-gray-700">
-                Vous avez gagné{" "}
+                You won{" "}
                 <span className="font-extrabold" style={{ color: "#E63946" }}>
                   {displayAmount}
                 </span>
-                {" "}crédité directement sur votre solde.
+                {" "}credited directly to your balance.
               </p>
             </>
           ) : (
             <>
               <div className="text-5xl mb-1">😔</div>
               <p className="text-lg font-bold text-gray-900">
-                Pas de chance !
+                Better luck next time!
               </p>
               <p className="text-[14px] leading-relaxed text-gray-500">
-                Réessayez lors de votre prochain tour.
+                Try again on your next spin.
               </p>
             </>
           )}

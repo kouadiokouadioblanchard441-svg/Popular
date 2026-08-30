@@ -54,7 +54,7 @@ export default function WalletPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/wallets"] });
-      toast({ title: "Moyen de retrait ajouté avec succès" });
+      toast({ title: "Withdrawal method added successfully" });
       setShowForm(false);
       setAddress("");
     },
@@ -103,8 +103,8 @@ export default function WalletPage() {
   const handleConfirm = () => {
     if (!/^0x[a-fA-F0-9]{40}$/.test(address.trim())) {
       toast({
-        title: "Adresse USDT BEP20 invalide",
-        description: "Utilisez une adresse BSC commençant par 0x et contenant 40 caractères hexadécimaux.",
+        title: "Invalid USDT BEP20 address",
+        description: "Use a BSC address starting with 0x and containing 40 hexadecimal characters.",
         variant: "destructive",
       });
       return;
@@ -122,7 +122,7 @@ export default function WalletPage() {
 
   const backLink = selectMode ? "/withdrawal" : "/account";
   const pickerOptions = picker === "asset" ? [WITHDRAWAL_ASSET] : [WITHDRAWAL_NETWORK];
-  const pickerTitle = picker === "asset" ? "Type de retrait" : "Réseau";
+  const pickerTitle = picker === "asset" ? "Withdrawal type" : "Network";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white">
@@ -189,7 +189,7 @@ export default function WalletPage() {
                   type="text"
                   value={address}
                   onChange={(event) => setAddress(event.target.value.trim())}
-                  placeholder="Saisissez l'adresse du réseau"
+                  placeholder="Enter the network address"
                   maxLength={42}
                   spellCheck={false}
                   autoCapitalize="off"
@@ -312,7 +312,7 @@ export default function WalletPage() {
             type="button"
             className="absolute inset-0 w-full bg-[#0f2c20]/65"
             onClick={() => setPicker(null)}
-            aria-label="Fermer la sélection"
+            aria-label="Close selection"
           />
           <section className="absolute inset-x-0 bottom-0 min-h-[286px] bg-white pb-8 shadow-[0_-8px_24px_rgba(0,0,0,0.16)]">
             <div className="flex h-[68px] items-center justify-between px-6 text-[16px]">

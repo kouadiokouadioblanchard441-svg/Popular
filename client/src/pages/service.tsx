@@ -1,7 +1,7 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
-import { getContent } from "@/lib/content";
 import { useI18n } from "@/lib/i18n";
 
 /* ── Palette TGOOD ───────────────────────── */
@@ -38,20 +38,26 @@ function toAmPm(h: number): string {
 
 export default function ServicePage() {
   const { t } = useI18n();
+  const [currentHour, setCurrentHour] = useState(() => new Date().getHours());
+
+  useEffect(() => {
+    const updateHour = () => setCurrentHour(new Date().getHours());
+    const timer = window.setInterval(updateHour, 60_000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const { data: settings } = useQuery<LinksSettings>({
     queryKey: ["/api/settings/links"],
   });
 
-  const { data: allSettings } = useQuery<Record<string, string>>({
-    queryKey: ["/api/settings"],
-  });
-
-  const servicePageTitle = getContent(allSettings, "content_service_pageTitle", t.customerService);
+  const servicePageTitle = t.serviceTitle;
 
   const startHour = parseInt(settings?.withdrawalStartHour || "9", 10);
   const endHour   = parseInt(settings?.withdrawalEndHour   || "19", 10);
   const hoursDisplay = `${toAmPm(startHour)}-${toAmPm(endHour)}`;
+  const isServiceOnline = startHour < endHour
+    ? currentHour >= startHour && currentHour < endHour
+    : currentHour >= startHour || currentHour < endHour;
 
   const allLinks = [
     {
@@ -73,7 +79,7 @@ export default function ServicePage() {
       enabled: settings?.groupEnabled  !== "false",
     },
     {
-      label:   settings?.channelLabel  || "Chaîne officielle TGOOD",
+      label:   settings?.channelLabel  || "TGOOD official channel",
       href:    settings?.channelLink   || "https://t.me/vestasgroup",
       testId:  "button-channel-link",
       enabled: settings?.channelEnabled !== "false",
@@ -145,7 +151,10 @@ export default function ServicePage() {
             {hoursDisplay}
           </p>
           <p style={{ fontSize: 14, color: "rgba(255,255,255,0.85)", marginTop: 6 }}>
-            Horaires en ligne
+            {t.serviceHoursLabel}
+            <span className="mt-1 block font-semibold" style={{ color: "#fff" }}>
+              {isServiceOnline ? t.serviceOnlineNow : t.serviceOfflineNow}
+            </span>
           </p>
         </div>
       </div>
@@ -170,8 +179,9 @@ export default function ServicePage() {
           {links.map((link) => (
             <button
               key={link.testId}
-              onClick={() => window.open(link.href, "_blank")}
-              className="w-full flex items-center justify-between active:opacity-80 transition-opacity"
+              onClick={() => isServiceOnline && window.open(link.href, "_blank", "noopener,noreferrer")}
+              disabled={!isServiceOnline}
+              className="w-full flex items-center justify-between active:opacity-80 transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
               style={{
                 background: GREEN,
                 borderRadius: 999,
@@ -217,16 +227,15 @@ export default function ServicePage() {
             contacter notre service client en ligne.
           </p>
           <p style={{ marginTop: 6 }}>
-            2. Si notre service client en ligne ne répond pas à votre message
-            dans les délais, veuillez patienter.
+            2. If our online customer service does not respond to your message
+            promptly, please wait.
           </p>
           <p style={{ marginTop: 6 }}>
-            3. Ne communiquez votre mot de passe à personne ; le personnel
-            officiel ne vous le demandera jamais.
+            3. Never share your password with anyone; official staff will never
+            ask you for it.
           </p>
           <p style={{ marginTop: 6 }}>
-            4. Méfiez-vous des arnaques et des faux comptes prétendant
-            représenter XPENG.
+            4. Beware of scams and fake accounts claiming to represent TGOOD.
           </p>
         </div>
       </div>

@@ -57,7 +57,7 @@ export default function TeamPage() {
       <section className="mx-auto w-full max-w-[480px] bg-white">
         <header className="flex items-center justify-between px-5 pt-6 pb-5">
           <h1 className="font-black tracking-tight" style={{ color: "#111", fontSize: 34, lineHeight: 1 }}>
-            Équipe
+            Team
           </h1>
           <button
             onClick={() => navigate("/members")}
@@ -65,14 +65,14 @@ export default function TeamPage() {
             style={{ color: "#53565a", fontSize: 19 }}
             data-testid="button-my-team"
           >
-            Mon équipe &gt;
+            My team &gt;
           </button>
         </header>
 
         <div className="px-5">
           <img
             src={teamHero}
-            alt="Station de recharge électrique TGOOD"
+              alt="TGOOD electric charging station"
             className="w-full object-cover"
             style={{ height: 226, borderRadius: 12, objectPosition: "center" }}
           />
@@ -87,7 +87,7 @@ export default function TeamPage() {
           />
           <div className="min-w-0 pl-0.5">
             <h2 className="mb-1 font-normal" style={{ color: "#151515", fontSize: 18, lineHeight: 1.38 }}>
-              Commencez à inviter vos amis
+              Start inviting your friends
             </h2>
             <p className="mb-2" style={{ color: "#353535", fontSize: 12, lineHeight: 1.25 }}>
               Partagez le code ou le lien d&apos;invitation
@@ -101,7 +101,7 @@ export default function TeamPage() {
               {referralCode}
             </div>
             <button
-              onClick={() => copy(referralCode, "Code copié !")}
+              onClick={() => copy(referralCode, "Code copied!")}
               className="mb-1 h-8 w-full font-medium text-white active:scale-[0.98]"
               style={{ background: TGOOD_GREEN, borderRadius: 18, fontSize: 14, transition: "transform 120ms ease" }}
               data-testid="button-copy-code"
@@ -116,7 +116,7 @@ export default function TeamPage() {
               {referralLink}
             </div>
             <button
-              onClick={() => copy(referralLink, "Lien copié !")}
+              onClick={() => copy(referralLink, "Link copied!")}
               className="h-8 w-full font-medium text-white active:scale-[0.98]"
               style={{ background: TGOOD_GREEN, borderRadius: 18, fontSize: 14, transition: "transform 120ms ease" }}
               data-testid="button-copy-link"
@@ -144,7 +144,7 @@ export default function TeamPage() {
           className="px-5 py-4 text-center font-normal uppercase"
           style={{ color: TGOOD_LIGHT_GREEN, fontSize: 23, lineHeight: 1.55 }}
         >
-          Invitez vos amis à rejoindre l&apos;équipe
+          Invite your friends to join the team
         </h2>
 
         <section className="pb-1">
@@ -176,10 +176,10 @@ export default function TeamPage() {
         </section>
 
         <section className="px-[10px] pt-5 pb-10" style={{ color: "#5b6068", fontSize: 15, lineHeight: 1.55 }}>
-          <p>Lorsqu&apos;un ami que vous parrainez s&apos;inscrit et investit, vous recevez immédiatement une commission de {levelRates[0]} % sur son investissement.</p>
-          <p className="mt-1">Lorsque les membres de votre équipe de deuxième niveau investissent, vous recevez une commission de {levelRates[1]} %.</p>
-          <p className="mt-1">Lorsque les membres de votre équipe de troisième niveau investissent, vous recevez une commission de {levelRates[2]} %.</p>
-          <p className="mt-1">Une fois que les membres de votre équipe ont investi, la commission est immédiatement créditée sur votre compte et vous pouvez la retirer instantanément.</p>
+          <p>When a referred friend signs up and invests, you immediately receive a {levelRates[0]}% commission on their investment.</p>
+          <p className="mt-1">When second-level team members invest, you receive a {levelRates[1]}% commission.</p>
+          <p className="mt-1">When third-level team members invest, you receive a {levelRates[2]}% commission.</p>
+          <p className="mt-1">Once your team members invest, the commission is credited to your account immediately and can be withdrawn instantly.</p>
         </section>
       </section>
     </main>

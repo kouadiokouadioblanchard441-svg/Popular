@@ -38,13 +38,13 @@ export default function WheelNoToursModal({ open, onClose, referralCode }: Props
           </div>
 
           <p className="text-[15px] leading-relaxed text-gray-800 text-center font-semibold">
-            Vous n'avez aucun tour disponible.
+            You have no spins available.
           </p>
 
           <p className="text-[14px] leading-relaxed text-gray-600 text-center">
-            Invitez vos amis à s'inscrire grâce à votre lien. Lorsqu'ils achètent un produit, vous obtenez des tours gratuits. Vous pouvez aussi{" "}
-            <span className="font-bold text-gray-800">acheter un produit</span>{" "}
-            vous-même pour gagner des tours.
+            Invite your friends to sign up using your link. When they buy a product, you get free spins. You can also{" "}
+            <span className="font-bold text-gray-800">buy a product</span>{" "}
+            yourself to earn spins.
           </p>
 
           {/* Referral link box */}
@@ -63,7 +63,7 @@ export default function WheelNoToursModal({ open, onClose, referralCode }: Props
                 className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition active:scale-95"
                 style={{ background: "#3B82F6", color: "#fff" }}
               >
-                Copier
+                Copy
               </button>
             </div>
           )}

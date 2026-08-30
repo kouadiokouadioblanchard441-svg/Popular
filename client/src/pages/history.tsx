@@ -130,7 +130,7 @@ function ActivityEmptyState() {
   const { lang } = useI18n();
   return (
     <div className="min-h-[92px] bg-white px-4 pt-3 text-center text-[14px] text-[#9a9a9a]">
-      {lang === "en" ? "More data" : lang === "ar" ? "مزيد من البيانات" : lang === "zh" ? "更多数据" : "Plus de données"}
+      More data
     </div>
   );
 }

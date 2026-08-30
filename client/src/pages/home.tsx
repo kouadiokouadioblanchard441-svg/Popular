@@ -1,7 +1,7 @@
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useI18n } from "@/lib/i18n";
+import { localeForLang, useI18n } from "@/lib/i18n";
 import { Bell, CircleDollarSign, HandCoins, MessagesSquare, CalendarDays } from "lucide-react";
 import type { Product } from "@shared/schema";
 import homeHero from "@assets/generated_images/tgood-home-products-hero.jpg";
@@ -20,18 +20,18 @@ import netflixLogo from "@/assets/partners/netflix.svg";
 const TGOOD_GREEN = "#08b83a";
 
 const ACTIVITY_MESSAGES = [
-  "****1847 a rechargé 125 USDT",
-  "****6521 a retiré 480 USDT",
-  "****3074 a reçu un bonus de 35 USDT",
-  "****9186 a rechargé 860 USDT",
-  "****2468 a effectué un retrait de 190 USDT",
-  "****7315 a reçu un bonus de bienvenue de 10 USDT",
-  "****5639 a rechargé 1250 USDT",
-  "****8093 a gagné un bonus quotidien de 75 USDT",
-  "****4217 a retiré 320 USDT",
-  "****6754 a rechargé 45 USDT",
-  "****1382 a reçu une commission de 210 USDT",
-  "****9546 a effectué un retrait de 1000 USDT",
+  "****1847 recharged 125 USDT",
+  "****6521 withdrew 480 USDT",
+  "****3074 received a 35 USDT bonus",
+  "****9186 recharged 860 USDT",
+  "****2468 made a 190 USDT withdrawal",
+  "****7315 received a 10 USDT welcome bonus",
+  "****5639 recharged 1250 USDT",
+  "****8093 earned a 75 USDT daily bonus",
+  "****4217 withdrew 320 USDT",
+  "****6754 recharged 45 USDT",
+  "****1382 received a 210 USDT commission",
+  "****9546 made a 1000 USDT withdrawal",
 ];
 
 const ACTIONS = [
@@ -46,7 +46,7 @@ const PARTNERS = [
   { name: "BYD", logo: bydLogo },
   { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
   { name: "Binance", logo: binanceLogo },
-  { name: "XPENG", logo: "/xpeng-logo-full.jpg" },
+  { name: "TGOOD", logo: "/tgood-logo.gif" },
   { name: "Netflix", logo: netflixLogo },
 ];
 
@@ -77,7 +77,7 @@ export default function HomePage() {
   const rawTotalEarnings = parseFloat(user.totalEarnings || "0");
   const balance = Number.isFinite(rawBalance) ? rawBalance : 0;
   const totalEarnings = Number.isFinite(rawTotalEarnings) ? rawTotalEarnings : 0;
-  const formatAmount = (value: number) => value.toLocaleString("fr-FR", {
+  const formatAmount = (value: number) => value.toLocaleString(localeForLang(lang), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
@@ -88,7 +88,7 @@ export default function HomePage() {
         <div className="relative h-[382px] overflow-hidden">
           <img
             src={homeHero}
-            alt="Gamme de mobilité électrique et recharge TGOOD avec vélo, scooter et cyclomoteur"
+            alt="TGOOD electric mobility and charging range with bikes, scooters, and mopeds"
             className="h-full w-full object-cover"
             style={{ objectPosition: "center 42%" }}
           />
@@ -125,7 +125,7 @@ export default function HomePage() {
         <section
           className="mx-3 mt-3 flex h-[58px] items-center overflow-hidden bg-white"
           style={{ borderRadius: 8 }}
-          aria-label={lang === "en" ? "Latest transactions" : "Dernières transactions"}
+            aria-label="Latest transactions"
         >
           <Bell className="ml-4 shrink-0" size={25} fill={TGOOD_GREEN} color={TGOOD_GREEN} strokeWidth={2.3} />
           <div className="ml-3 overflow-hidden">
@@ -150,7 +150,7 @@ export default function HomePage() {
             data-testid="button-account-balance"
           >
             <div className="relative h-[164px] overflow-hidden bg-[#f1f1f1] shadow-sm">
-              <img src={electricScooter} alt="Trottinette électrique verte" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
+              <img src={electricScooter} alt="Green electric scooter" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
               <div
                 className="absolute inset-x-0 bottom-6 text-center font-normal"
                 style={{
@@ -176,7 +176,7 @@ export default function HomePage() {
             data-testid="button-cumulative-earnings"
           >
             <div className="relative h-[164px] overflow-hidden bg-[#f1f1f1] shadow-sm">
-              <img src={electricMoped} alt="Scooter électrique vert" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
+              <img src={electricMoped} alt="Green electric moped" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
               <div
                 className="absolute inset-x-0 bottom-6 text-center font-normal"
                 style={{
@@ -191,17 +191,17 @@ export default function HomePage() {
               </div>
             </div>
             <p className="mt-3 min-h-[24px] font-normal" style={{ color: TGOOD_GREEN, fontSize: 20, lineHeight: 1.2 }}>
-              Revenus cumulés
+              Total earnings
             </p>
           </button>
         </section>
 
         <section className="mt-12 px-3 pb-8">
           <h2 className="text-center font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-            Expérience
+            Experience
           </h2>
           <p className="mt-4 text-center font-normal" style={{ color: "#50545a", fontSize: 24 }}>
-            Durabilité
+            Sustainability
           </p>
 
           <div className="mt-5 grid grid-cols-4 gap-[7px]">
@@ -232,14 +232,14 @@ export default function HomePage() {
         <section className="px-3 pb-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-              {lang === "en" ? "Special products" : "Produits spéciaux"}
+              Special products
             </h2>
             <button
               onClick={() => navigate("/invest")}
               className="active:opacity-60"
               style={{ color: TGOOD_GREEN, fontSize: 14 }}
             >
-              {lang === "en" ? "View all" : "Voir tout"} &gt;
+              {"View all"} &gt;
             </button>
           </div>
 
@@ -262,7 +262,7 @@ export default function HomePage() {
                 <div className="px-3 py-3">
                   <p className="truncate font-medium" style={{ color: "#222", fontSize: 14 }}>{product.name}</p>
                   <p className="mt-1 font-normal" style={{ color: TGOOD_GREEN, fontSize: 16 }}>
-                    USDT {Number(product.price).toLocaleString("fr-FR")}
+                    USDT {Number(product.price).toLocaleString(localeForLang(lang))}
                   </p>
                 </div>
               </button>
@@ -271,14 +271,14 @@ export default function HomePage() {
 
           {products.filter(product => !product.isFree).length === 0 && (
             <div className="bg-white py-8 text-center" style={{ borderRadius: 10, color: "#777", fontSize: 14 }}>
-              {lang === "en" ? "No special products available" : "Aucun produit spécial disponible"}
+              No special products available
             </div>
           )}
         </section>
 
         <section className="px-3 pb-10">
           <h2 className="mb-4 text-center font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-            {lang === "en" ? "Our partners" : "Nos partenaires"}
+            {"Our partners"}
           </h2>
           <div className="grid grid-cols-3 gap-3">
             {PARTNERS.map((partner) => (

@@ -205,7 +205,7 @@ export default function TeamDetailsPage() {
         className="flex mx-3 mt-4"
         style={{ borderBottom: "1px solid #e8e8e8", paddingBottom: 8 }}
       >
-        {["Date", "Code", "Dépôt total", "Ma Commission"].map((col, i) => (
+        {["Date", "Code", "Total deposit", "My commission"].map((col, i) => (
           <div
             key={i}
             className="flex-1 text-center"

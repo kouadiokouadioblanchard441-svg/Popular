@@ -129,7 +129,7 @@ export default function TransactionHistoryModal({ open, onClose }: TransactionHi
                 ))
               ) : (
                 <div className="min-h-[92px] bg-white px-4 pt-3 text-center text-[14px] text-[#9a9a9a]">
-                  Plus de données
+                  No more data
                 </div>
               )}
             </TabsContent>

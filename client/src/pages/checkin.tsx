@@ -71,18 +71,18 @@ export default function CheckinPage() {
   // The page title follows the selected UI language. Admin content settings are
   // language-neutral and may contain the legacy French title.
   const headerTitle = t.checkinBtn;
-  const rewardTitle = getContent(settings, "content_checkin_cardTitle", "Récompense de\npointage quotidien");
+  const rewardTitle = getContent(settings, "content_checkin_cardTitle", "Daily check-in reward");
   const rewardDescription = getContent(
     settings,
     "content_checkin_cardSubtitle",
-    "Recevez une récompense aléatoire\nchaque jour",
+    "Receive a random reward every day",
   );
-  const streakLabel = getContent(settings, "content_checkin_streakLabel", "Jours de pointage");
-  const totalLabel = getContent(settings, "content_checkin_totalLabel", "Bonus cumulé");
+  const streakLabel = getContent(settings, "content_checkin_streakLabel", "Check-in days");
+  const totalLabel = getContent(settings, "content_checkin_totalLabel", "Accumulated bonus");
   const configuredRule1 = getContent(
     settings,
     "content_checkin_rule1",
-    `1. À chaque pointage, vous recevez aléatoirement entre ${formatReward(DAILY_REWARD_MIN)} et ${formatReward(DAILY_REWARD_MAX)} ${currency}.`,
+    `1. Each check-in randomly awards between ${formatReward(DAILY_REWARD_MIN)} and ${formatReward(DAILY_REWARD_MAX)} ${currency}.`,
   );
   const rule1 = configuredRule1
     .replace(/0[,.]20/g, formatReward(DAILY_REWARD_MIN))
@@ -120,7 +120,7 @@ export default function CheckinPage() {
       </header>
 
       <section className="w-full" style={{ aspectRatio: "720 / 318" }}>
-        <img src={checkinHero} alt="Vélo électrique" className="block h-full w-full object-cover" />
+        <img src={checkinHero} alt="Electric bike" className="block h-full w-full object-cover" />
       </section>
 
       <section className="px-[11px] pt-[18px]">
@@ -181,7 +181,7 @@ export default function CheckinPage() {
             {streakLabel}
           </p>
           <p className="mt-2 whitespace-nowrap font-normal" style={{ fontSize: 19, lineHeight: 1.15 }}>
-            Nombre total de jours pointés
+            Total check-in days
           </p>
           <p className="mt-3 font-normal whitespace-nowrap" style={{ fontSize: 43, lineHeight: 1 }}>
             {daysPointed} jours
@@ -260,10 +260,10 @@ export default function CheckinPage() {
             style={{ color: "#5e646b", fontSize: 15, lineHeight: 1.55 }}
             data-testid="text-random-reward-description"
           >
-            Récompense aléatoire : entre {formatReward(DAILY_REWARD_MIN)} et {formatReward(DAILY_REWARD_MAX)} {currency} par pointage.
+            Random reward: between {formatReward(DAILY_REWARD_MIN)} and {formatReward(DAILY_REWARD_MAX)} {currency} per check-in.
           </p>
           <p className="font-normal" style={{ color: "#5e646b", fontSize: 15, lineHeight: 1.55 }}>
-            3. Connectez-vous à nouveau après minuit chaque jour.
+            3. Check in again after midnight each day.
           </p>
         </div>
       </section>
