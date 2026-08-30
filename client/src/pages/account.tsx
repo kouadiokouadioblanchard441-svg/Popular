@@ -45,7 +45,7 @@ const PROFILE_ACTIONS: {
 ];
 
 const MORE_ACTIONS: {
-  labelKey: "about" | "security" | "history" | "customerService" | "wallet" | "changePassword" | "redeem";
+  labelKey: "about" | "security" | "history" | "customerService" | "shareInformation" | "wallet" | "changePassword" | "redeem";
   href: string;
   Icon: LucideIcon;
 }[] = [
@@ -53,7 +53,7 @@ const MORE_ACTIONS: {
   { labelKey: "security", href: "/rules", Icon: Bookmark },
   { labelKey: "history", href: "/history", Icon: FileText },
   { labelKey: "customerService", href: "/service", Icon: Headphones },
-  { labelKey: "customerService", href: "/share-information", Icon: Download },
+  { labelKey: "shareInformation", href: "/share-information", Icon: Download },
   { labelKey: "wallet", href: "/wallet", Icon: CreditCard },
   { labelKey: "changePassword", href: "/change-password", Icon: KeyRound },
   { labelKey: "redeem", href: "/gift-code", Icon: Gift },
