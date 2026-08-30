@@ -68,7 +68,9 @@ export default function CheckinPage() {
   const currency = "USDT";
   const totalBonusClaimed = bonusStatus?.totalBonusClaimed || 0;
   const daysPointed = bonusStatus?.daysPointed || 0;
-  const headerTitle = getContent(settings, "content_checkin_headerTitle", "Pointage");
+  // The page title follows the selected UI language. Admin content settings are
+  // language-neutral and may contain the legacy French title.
+  const headerTitle = t.checkinBtn;
   const rewardTitle = getContent(settings, "content_checkin_cardTitle", "Récompense de\npointage quotidien");
   const rewardDescription = getContent(
     settings,

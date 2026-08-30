@@ -44,7 +44,7 @@ export const ENGLISH_TRANSLATIONS = {
     earnings:           "Earnings",
     team:               "Team",
     me:                 "Me",
-    deposit:            "Deposit",
+    deposit:            "Recharge",
     withdraw:           "Withdraw",
     customerService:    "Customer service",
     informationCenter:  "Information center",

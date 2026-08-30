@@ -1232,7 +1232,7 @@ const TRANSLATION_OVERRIDES: Record<Exclude<Lang, "fr">, Partial<Translations>> 
     earnings: "Earnings",
     team: "Team",
     me: "Me",
-    deposit: "Deposit",
+    deposit: "Recharge",
     withdraw: "Withdraw",
     customerService: "Customer service",
     informationCenter: "Information center",

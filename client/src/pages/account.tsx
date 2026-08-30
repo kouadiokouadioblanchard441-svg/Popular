@@ -33,15 +33,15 @@ import missionBanner from "@assets/generated_images/tgood-tasks-bike-banner.jpg"
 const TGOOD_GREEN = "#08b83a";
 
 const PROFILE_ACTIONS: {
-  label: string;
+  labelKey: "deposit" | "withdraw" | "history" | "checkinBtn";
   href: string;
   Icon: LucideIcon;
   color: string;
 }[] = [
-  { label: "Rechargement", href: "/deposit", Icon: CircleDollarSign, color: "#050505" },
-  { label: "Retrait", href: "/withdrawal", Icon: HandCoins, color: "#050505" },
-  { label: "Historique", href: "/history", Icon: ReceiptText, color: "#050505" },
-  { label: "Pointage", href: "/checkin", Icon: CalendarDays, color: "#050505" },
+  { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign, color: "#050505" },
+  { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins, color: "#050505" },
+  { labelKey: "history", href: "/history", Icon: ReceiptText, color: "#050505" },
+  { labelKey: "checkinBtn", href: "/checkin", Icon: CalendarDays, color: "#050505" },
 ];
 
 const MORE_ACTIONS: {
@@ -209,9 +209,9 @@ export default function AccountPage() {
           className="mx-3 mt-3 grid grid-cols-4 bg-white px-2 py-3"
           style={{ borderRadius: 11, boxShadow: "0 2px 8px rgba(0,0,0,.045)" }}
         >
-          {PROFILE_ACTIONS.map(({ label, href, Icon, color }) => (
+          {PROFILE_ACTIONS.map(({ labelKey, href, Icon, color }) => (
             <button
-              key={label}
+              key={labelKey}
               onClick={() => navigate(href)}
               className="flex min-w-0 flex-col items-center justify-start gap-2 py-2 active:scale-95"
               style={{ color: "#252525", transition: "transform 120ms ease" }}
@@ -219,7 +219,7 @@ export default function AccountPage() {
             >
               <Icon size={42} strokeWidth={2.35} color={color} aria-hidden="true" />
               <span className="px-0.5 text-center leading-tight" style={{ fontSize: 15 }}>
-                {label}
+                {t[labelKey]}
               </span>
             </button>
           ))}
