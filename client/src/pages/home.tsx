@@ -239,7 +239,7 @@ export default function HomePage() {
               className="active:opacity-60"
               style={{ color: TGOOD_GREEN, fontSize: 14 }}
             >
-              {lang === "en" ? "View all" : "Voir tout"} &gt;
+              {"View all"} &gt;
             </button>
           </div>
 
@@ -278,7 +278,7 @@ export default function HomePage() {
 
         <section className="px-3 pb-10">
           <h2 className="mb-4 text-center font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-            {lang === "en" ? "Our partners" : "Nos partenaires"}
+            {"Our partners"}
           </h2>
           <div className="grid grid-cols-3 gap-3">
             {PARTNERS.map((partner) => (

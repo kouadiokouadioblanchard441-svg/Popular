@@ -12,6 +12,7 @@ export function LanguagePicker({ global = false }: LanguagePickerProps) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const selectedLanguage = LANGUAGES.find((language) => language.code === lang) ?? LANGUAGES[0];
+  const selectedLabel = lang === "fr" ? "sélectionné" : lang === "ar" ? "محدد" : lang === "zh" ? "已选" : "selected";
 
   const close = useCallback(() => {
     setOpen(false);
@@ -133,7 +134,7 @@ export function LanguagePicker({ global = false }: LanguagePickerProps) {
                       </span>
                       <span className="text-[17px] font-medium text-[#202124]">{language.nativeName}</span>
                     </span>
-                    {isSelected && <Check size={22} strokeWidth={2.7} color="#087a38" aria-label={`${language.nativeName} sélectionné`} />}
+                    {isSelected && <Check size={22} strokeWidth={2.7} color="#087a38" aria-label={`${language.nativeName} ${selectedLabel}`} />}
                   </button>
                 );
               })}

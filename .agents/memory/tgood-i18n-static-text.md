@@ -14,3 +14,9 @@ New browser sessions intentionally start in English after the interface cleanup,
 **Why:** Existing saved language preferences could reopen the refreshed site in French even after English became the reviewed default.
 
 **How to apply:** Preserve the versioned language-storage key when changing the default-language migration so old preferences do not silently override the English starting state.
+
+Every supported locale must provide a complete catalog; Arabic and Chinese must never be built by spreading the French catalog and overriding only a few labels.
+
+**Why:** Partial locale objects caused large portions of the interface to remain French after users selected Arabic or Chinese.
+
+**How to apply:** When adding a translation key, add it to all four locale catalogs and run the catalog completeness and placeholder checks before shipping.

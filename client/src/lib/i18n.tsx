@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { ENGLISH_TRANSLATIONS } from "./i18n-en.generated";
+import { ARABIC_TRANSLATIONS, CHINESE_TRANSLATIONS } from "./i18n-generated-locales";
 
 export type Lang = "fr" | "en" | "ar" | "zh";
 
@@ -1774,8 +1775,8 @@ const en: Translations = Object.fromEntries(
 export const I18N_CATALOG: Record<Lang, Translations> = {
   fr,
   en,
-  ar: { ...fr, ...TRANSLATION_OVERRIDES.ar },
-  zh: { ...fr, ...TRANSLATION_OVERRIDES.zh },
+  ar: { ...ARABIC_TRANSLATIONS, ...TRANSLATION_OVERRIDES.ar } as Translations,
+  zh: { ...CHINESE_TRANSLATIONS, ...TRANSLATION_OVERRIDES.zh } as Translations,
 };
 
 type StaticTranslationRow = readonly [string, string, string, string];
@@ -1899,10 +1900,87 @@ const STATIC_UI_TRANSLATIONS: StaticTranslationRow[] = [
   ["Vos retraits USDT BEP20 apparaîtront ici.", "Your USDT BEP20 withdrawals will appear here.", "ستظهر سحوباتك USDT BEP20 هنا.", "您的 USDT BEP20 提现将显示在这里。"],
   ["Aucun gain ou bonus pour le moment", "No earnings or bonuses yet", "لا توجد أرباح أو مكافآت حالياً", "暂无收益或奖金"],
   ["Vos gains, commissions et bonus apparaîtront ici.", "Your earnings, commissions and bonuses will appear here.", "ستظهر أرباحك وعمولاتك ومكافآتك هنا.", "您的收益、佣金和奖金将显示在这里。"],
+  ["Rechercher un pays ou un indicatif", "Search country or code", "ابحث عن دولة أو رمز", "搜索国家或区号"],
+  ["Liste des pays", "Country list", "قائمة الدول", "国家列表"],
+  ["Pays sélectionné", "Selected country", "الدولة المختارة", "已选国家"],
+  ["Selected country", "Selected country", "الدولة المختارة", "已选国家"],
+  ["Search", "Search", "بحث", "搜索"],
+  ["Latest transactions", "Latest transactions", "أحدث المعاملات", "最近交易"],
+  ["Navigation principale", "Main navigation", "التنقل الرئيسي", "主导航"],
+  ["Retour", "Back", "رجوع", "返回"],
+  ["Back", "Back", "رجوع", "返回"],
+  ["Crypto payment", "Crypto payment", "الدفع بالعملات الرقمية", "加密货币支付"],
+  ["Send exactly", "Send exactly", "أرسل المبلغ بالضبط", "准确发送"],
+  ["Recharge issue", "Recharge issue", "مشكلة في الشحن", "充值问题"],
+  ["Enter your wallet number", "Enter your wallet number", "أدخل رقم محفظتك", "输入您的钱包号码"],
+  ["Enter the recharge amount", "Enter the recharge amount", "أدخل مبلغ الشحن", "输入充值金额"],
+  ["Recharge amount", "Recharge amount", "مبلغ الشحن", "充值金额"],
+  ["Recharge method", "Recharge method", "طريقة الشحن", "充值方式"],
+  ["Deposit bank", "Deposit bank", "بنك الإيداع", "存款银行"],
+  ["If you have a recharge order that was not received, please submit the recharge information.", "If you have a recharge order that was not received, please submit the recharge information.", "إذا كان طلب الشحن لم يصل، يرجى إرسال معلومات الشحن.", "如果充值订单未到账，请提交充值信息。"],
+  ["1. Your wallet number", "1. Your wallet number", "1. رقم محفظتك", "1. 您的钱包号码"],
+  ["2. Recharge proof", "2. Recharge proof", "2. إثبات الشحن", "2. 充值凭证"],
+  ["3. The latest recharge order has been processing for more than 20 minutes", "3. The latest recharge order has been processing for more than 20 minutes", "3. تتم معالجة أحدث طلب شحن منذ أكثر من 20 دقيقة", "3. 最新充值订单已处理超过 20 分钟"],
+  ["TGOOD member", "TGOOD member", "عضو TGOOD", "TGOOD 会员"],
+  ["My account", "My account", "حسابي", "我的账户"],
+  ["More", "More", "المزيد", "更多"],
+  ["Commission", "Commission", "العمولة", "佣金"],
+  ["Users", "Users", "المستخدمون", "用户"],
+  ["Rewards", "Rewards", "المكافآت", "奖励"],
+  ["Utilisateurs totaux", "Total users", "إجمالي المستخدمين", "用户总数"],
+  ["Récompenses totales", "Total rewards", "إجمالي المكافآت", "奖励总额"],
+  ["Once your team members invest, the commission is credited to your account immediately and can be withdrawn instantly.", "Once your team members invest, the commission is credited to your account immediately and can be withdrawn instantly.", "عند استثمار أعضاء فريقك، تُضاف العمولة إلى حسابك فوراً ويمكن سحبها مباشرة.", "团队成员投资后，佣金会立即记入您的账户并可即时提现。"],
+  ["No product purchased", "No product purchased", "لم يتم شراء أي منتج", "尚未购买产品"],
+  ["Active product", "Active product", "المنتج النشط", "活跃产品"],
+  ["Please select an image as your share proof.", "Please select an image as your share proof.", "يرجى اختيار صورة كإثبات للمشاركة.", "请选择一张图片作为分享证明。"],
+  ["Please enter your share link and upload your share proof.", "Please enter your share link and upload your share proof.", "يرجى إدخال رابط المشاركة ورفع إثبات المشاركة.", "请输入分享链接并上传分享证明。"],
+  ["Please enter your share link", "Please enter your share link", "يرجى إدخال رابط المشاركة", "请输入分享链接"],
+  ["Back to currency selection", "Back to currency selection", "العودة إلى اختيار العملة", "返回货币选择"],
+  ["Back to deposit amount", "Back to deposit amount", "العودة إلى مبلغ الشحن", "返回充值金额"],
+  ["Back to deposit", "Back to deposit", "العودة إلى الشحن", "返回充值"],
+  ["Back to home", "Back to home", "العودة إلى الرئيسية", "返回首页"],
+  ["Deposit history", "Deposit history", "سجل الإيداعات", "充值记录"],
+  ["Withdrawal type", "Withdrawal type", "نوع السحب", "提现类型"],
+  ["Close selection", "Close selection", "إغلاق الاختيار", "关闭选择"],
+  ["Open account settings", "Open account settings", "فتح إعدادات الحساب", "打开账户设置"],
+  ["Share information form", "Share information form", "نموذج مشاركة المعلومات", "分享信息表单"],
+  ["Go to previous page", "Go to previous page", "الانتقال إلى الصفحة السابقة", "转到上一页"],
+  ["Go to next page", "Go to next page", "الانتقال إلى الصفحة التالية", "转到下一页"],
+  ["Previous slide", "Previous slide", "الشريحة السابقة", "上一张幻灯片"],
+  ["Next slide", "Next slide", "الشريحة التالية", "下一张幻灯片"],
+  ["More pages", "More pages", "المزيد من الصفحات", "更多页面"],
+  ["Close", "Close", "إغلاق", "关闭"],
+  ["Conducteur rechargeant une voiture électrique dans une station TGOOD", "Driver charging an electric car at a TGOOD station", "سائق يشحن سيارة كهربائية في محطة TGOOD", "司机正在 TGOOD 充电站为电动汽车充电"],
+  ["Borne de recharge TGOOD", "TGOOD charging station", "محطة شحن TGOOD", "TGOOD 充电桩"],
+  ["Masquer le mot de passe", "Hide password", "إخفاء كلمة المرور", "隐藏密码"],
+  ["Afficher le mot de passe", "Show password", "إظهار كلمة المرور", "显示密码"],
+  ["Masquer la confirmation du mot de passe", "Hide password confirmation", "إخفاء تأكيد كلمة المرور", "隐藏密码确认"],
+  ["Afficher la confirmation du mot de passe", "Show password confirmation", "إظهار تأكيد كلمة المرور", "显示密码确认"],
+  ["Veuillez saisir le code cadeau", "Enter the gift code", "يرجى إدخال رمز الهدية", "请输入礼品码"],
+  ["Use your browser menu to install the app.", "Use your browser menu to install the app.", "استخدم قائمة المتصفح لتثبيت التطبيق。", "请使用浏览器菜单安装应用。"],
+  ["App installed successfully!", "App installed successfully!", "تم تثبيت التطبيق بنجاح！", "应用已成功安装！"],
+  ["View all", "View all", "عرض الكل", "查看全部"],
+  ["Voir tout", "View all", "عرض الكل", "查看全部"],
+  ["Our partners", "Our partners", "شركاؤنا", "我们的合作伙伴"],
+  ["Nos partenaires", "Our partners", "شركاؤنا", "我们的合作伙伴"],
 ];
 
 const STATIC_UI_LOOKUP = new Map<string, StaticTranslationRow>();
 STATIC_UI_TRANSLATIONS.forEach((row) => row.forEach((value) => STATIC_UI_LOOKUP.set(value, row)));
+
+// Catalog-backed labels can also be rendered directly by older JSX screens.
+// Register every catalog value so changing language translates those labels
+// in both directions instead of only translating the original French source.
+Object.keys(fr).forEach((key) => {
+  const translationKey = key as keyof Translations;
+  const row: StaticTranslationRow = [
+    fr[translationKey],
+    en[translationKey],
+    I18N_CATALOG.ar[translationKey],
+    I18N_CATALOG.zh[translationKey],
+  ];
+  row.forEach((value) => STATIC_UI_LOOKUP.set(value, row));
+});
 
 function getStaticTranslation(source: string, lang: Lang) {
   const row = STATIC_UI_LOOKUP.get(source);
