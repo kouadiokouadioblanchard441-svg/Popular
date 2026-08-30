@@ -7,4 +7,5 @@
 - [TGOOD brand identity](tgood-branding.md) — use the TGOOD green wordmark and green palette; do not reintroduce XPENG visual branding.
 - [Global country selection](rdc-only-market.md) — use worldwide country codes in auth; default new forms to US/+1 and keep all monetary labels in USDT.
 - [NOWPayments payout integrity](nowpayments-payout-integrity.md) — ambiguous provider responses require reconciliation, never automatic refund; payout states must be monotonic.
+- [TGOOD withdrawal policy](tgood-withdrawal-policy.md) — deposits start at 18 USDT, withdrawals at 1 USDT, and users receive the requested amount in full.
 - [TGOOD static interface translations](tgood-i18n-static-text.md) — English mode must cover legacy JSX labels as well as typed catalog entries.

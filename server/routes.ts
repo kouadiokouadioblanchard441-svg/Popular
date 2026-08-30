@@ -1582,7 +1582,7 @@ export async function registerRoutes(
       });
       return res.json({
         ...withdrawal,
-        withdrawalMode: normalizeWithdrawalMode(settings.withdrawalMode),
+        withdrawalMode: normalizeWithdrawalMode(settingsForWithdrawal.withdrawalMode),
       });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
