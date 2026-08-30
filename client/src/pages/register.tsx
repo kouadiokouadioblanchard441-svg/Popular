@@ -20,7 +20,7 @@ const TGOOD_GREEN = "#00c853";
 
 function TgoodHero() {
   return (
-    <div className="relative h-[46vh] min-h-[310px] max-h-[455px] overflow-hidden">
+    <div className="relative h-[42vh] min-h-[285px] max-h-[420px] overflow-hidden">
       <img src={tgoodChargingStation} alt="Conducteur rechargeant une voiture électrique dans une station TGOOD" className="absolute inset-0 h-full w-full object-cover object-center" />
       <div className="absolute inset-0 bg-gradient-to-b from-[#003a1e]/12 via-[#003a1e]/8 to-[#001f10]/42" />
       <span className="absolute left-1/2 top-1 -translate-x-1/2 font-black tracking-[-3px] text-white drop-shadow-md" style={{ fontSize: "clamp(48px, 15vw, 70px)" }}>
