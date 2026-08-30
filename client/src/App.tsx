@@ -190,35 +190,38 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 }
 
 function RouterComponent() {
+  const [location] = useLocation();
+
   return (
-    <Switch>
-      <Route path="/login">
-        <PublicRoute>
-          <LoginPage />
-        </PublicRoute>
-      </Route>
-      <Route path="/register">
-        <PublicRoute>
-          <RegisterPage />
-        </PublicRoute>
-      </Route>
-      <Route path="/invitation">
-        <PublicRoute>
-          <RegisterPage />
-        </PublicRoute>
-      </Route>
-      <Route path="/rejoindre">
-        <PublicRoute>
-          <RegisterPage />
-        </PublicRoute>
-      </Route>
-      <Route path="/">
-        <ProtectedRoute>
-          <AppLayout>
-            <HomePage />
-          </AppLayout>
-        </ProtectedRoute>
-      </Route>
+    <>
+      <Switch>
+        <Route path="/login">
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        </Route>
+        <Route path="/register">
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        </Route>
+        <Route path="/invitation">
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        </Route>
+        <Route path="/rejoindre">
+          <PublicRoute>
+            <RegisterPage />
+          </PublicRoute>
+        </Route>
+        <Route path="/">
+          <ProtectedRoute>
+            <AppLayout>
+              <HomePage />
+            </AppLayout>
+          </ProtectedRoute>
+        </Route>
       <Route path="/tasks">
         <ProtectedRoute>
           <AppLayout>
@@ -409,8 +412,10 @@ function RouterComponent() {
           <BankerPage />
         </BankerRoute>
       </Route>
-      <Route component={NotFound} />
-    </Switch>
+        <Route component={NotFound} />
+      </Switch>
+      {location === "/" && <LanguagePicker global />}
+    </>
   );
 }
 
@@ -423,7 +428,6 @@ function App() {
             <Router hook={useHashPath} searchHook={useHashSearch}>
               <RouterComponent />
             </Router>
-            <LanguagePicker global />
             <NavigationLoader />
             <Toaster />
           </AuthProvider>
