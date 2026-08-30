@@ -16,7 +16,16 @@ import tronIcon from "@/assets/crypto/tron.png";
 
 const CURRENCY = "USDT";
 const TGOOD_GREEN = "#32c95b";
-const DEPOSIT_AMOUNTS = [3000, 10000, 20000, 45000, 100000, 200000, 400000, 800000];
+const DEFAULT_DEPOSIT_AMOUNTS = [3500, 5000, 7000, 10000, 15000, 20000, 50000, 70000];
+
+function parseDepositPresetAmounts(value: string | undefined): number[] {
+  const amounts = (value || "")
+    .split(",")
+    .map((entry) => Number(entry.trim()))
+    .filter((entry) => Number.isSafeInteger(entry) && entry > 0);
+
+  return amounts.length > 0 ? amounts : DEFAULT_DEPOSIT_AMOUNTS;
+}
 
 type DepositView = "main" | "currency" | "crypto-payment" | "issue";
 
@@ -111,6 +120,7 @@ export default function DepositPage() {
     queryKey: ["/api/settings"],
   });
   const minDeposit = Number.parseInt(settings.minDeposit || "18", 10) || 18;
+  const depositPresetAmounts = parseDepositPresetAmounts(settings.depositPresetAmounts);
 
   const createDeposit = useMutation({
     mutationFn: async (payload: { amount: number; accountNumber: string; screenshot?: string }) => {
@@ -492,7 +502,7 @@ export default function DepositPage() {
           />
         </div>
         <div className="mt-5 grid grid-cols-4 gap-x-[10px] gap-y-[10px]">
-          {DEPOSIT_AMOUNTS.map((preset) => {
+          {depositPresetAmounts.map((preset) => {
             const selected = amount === preset;
             return (
               <button
