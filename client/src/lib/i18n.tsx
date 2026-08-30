@@ -166,6 +166,12 @@ export type Translations = {
   tasksRewardClaimed: string;
   tasksRewardClaimedDesc: string;
   tasksTierFallback: string;
+  taskPageTitle: string;
+  taskRewardTitle: string;
+  taskRewardNote: string;
+  taskValidInvitation: string;
+  taskRewardLabel: string;
+  taskReceived: string;
   // my-products page
   myProductsTitle: string;
   myProductsDevice: string;
@@ -887,6 +893,12 @@ const fr: Translations = {
     tasksRewardClaimed: "Récompense réclamée !",
     tasksRewardClaimedDesc: "Le bonus a été ajouté à votre compte.",
     tasksTierFallback:  "Palier",
+     taskPageTitle:       "Tâche",
+     taskRewardTitle:     "Récompense de tâche",
+     taskRewardNote:      "Remarque : votre ami doit acheter au moins un vélo pour être une invitation valide.",
+     taskValidInvitation: "invitation valide",
+     taskRewardLabel:     "Récompense",
+     taskReceived:        "Reçu",
     myProductsTitle:    "Mes Produits",
     myProductsDevice:   "Mon appareil",
     myProductsEarnings: "Mes revenus",
