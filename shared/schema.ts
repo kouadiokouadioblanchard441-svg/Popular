@@ -310,6 +310,19 @@ export const platformSettings = pgTable("platform_settings", {
   modifiedAt: timestamp("modified_at"),
 });
 
+// Legacy storage retained to avoid deleting existing records when syncing the schema.
+// The Company page, its routes, APIs, and administration have been removed.
+export const companyContent = pgTable("company_content", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  body: text("body").notNull().default(""),
+  imageUrl: text("image_url"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at"),
+});
+
 // Admin audit log
 export const adminAuditLog = pgTable("admin_audit_log", {
   id: serial("id").primaryKey(),
