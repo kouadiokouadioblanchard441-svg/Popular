@@ -5,6 +5,7 @@ import { ChevronLeft, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getProductVisual } from "@/lib/product-visuals";
+import { localeForLang, useI18n } from "@/lib/i18n";
 
 const TGOOD_GREEN = "#00c83c";
 function EmptyProductsIllustration() {
@@ -49,24 +50,25 @@ function getDisplayName(name: string | undefined, index: number) {
 
 function PageHeader() {
   const [, navigate] = useLocation();
+  const { t } = useI18n();
   return (
     <>
       <header className="flex h-[80px] items-center border-b border-[#e5e5e5] bg-white px-5">
-        <button onClick={() => navigate("/invest")} className="w-12 active:opacity-60" aria-label="Retour aux produits">
+        <button onClick={() => navigate("/invest")} className="w-12 active:opacity-60" aria-label={t.back}>
           <ChevronLeft size={34} strokeWidth={1.8} />
         </button>
         <div className="flex flex-1 items-center justify-center">
           <img src="/tgood-logo.gif" alt="TGOOD" className="h-8 w-auto" />
         </div>
         <Link href="/earnings" className="w-[142px] text-center font-medium active:opacity-60" style={{ color: TGOOD_GREEN, fontSize: 19 }}>
-          MES REVENUS
+          {t.earnings}
         </Link>
       </header>
       <div className="flex h-[52px] items-center gap-3 bg-[#f1f2f4] px-7 text-[#5b616a]">
         <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#626975] text-[10px] font-bold text-white">i</span>
         <div style={{ fontSize: 12, lineHeight: 1.55 }}>
-          <p>Les revenus du produit sont réglés toutes les 24 heures</p>
-          <p>Vous pouvez acheter plusieurs appareils pour augmenter vos revenus</p>
+          <p>{t.myProductsSettledEvery24h}</p>
+          <p>{t.purchaseSuccessDescription}</p>
         </div>
       </div>
     </>
@@ -76,6 +78,7 @@ function PageHeader() {
 export default function MyProductsPage() {
   const { user, refreshUser } = useAuth();
   const { toast } = useToast();
+  const { t, lang } = useI18n();
   const { data: userProducts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/user/products"] });
 
   const collectFinalMutation = useMutation({
@@ -90,7 +93,7 @@ export default function MyProductsPage() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/user/products"] });
       refreshUser();
-      toast({ title: "Gains collectés !", description: `${Number(data.collected).toLocaleString("fr-FR")} USDT ajoutés à votre solde.` });
+      toast({ title: t.rewardsSuccessTitle, description: `${Number(data.collected).toLocaleString(localeForLang(lang))} USDT ${t.rewardsReceived.toLowerCase()}.` });
     },
     onError: (error: Error) => toast({ title: error.message, variant: "destructive" }),
   });
@@ -104,8 +107,8 @@ export default function MyProductsPage() {
       <PageHeader />
       <section className="flex flex-1 flex-col bg-black pb-20">
         <div className="pt-3 text-center text-white">
-          <p className="font-semibold" style={{ fontSize: 42, lineHeight: 1.1 }}>USDT {totalEarned.toLocaleString("fr-FR")}</p>
-          <p className="mt-3" style={{ color: TGOOD_GREEN, fontSize: 16 }}>Revenus totaux</p>
+          <p className="font-semibold" style={{ fontSize: 42, lineHeight: 1.1 }}>USDT {totalEarned.toLocaleString(localeForLang(lang))}</p>
+          <p className="mt-3" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{t.totalRevenue}</p>
         </div>
 
         {isLoading ? (
@@ -114,7 +117,7 @@ export default function MyProductsPage() {
           <div className="flex flex-1 flex-col items-center pt-28 text-center">
             <EmptyProductsIllustration />
             <p className="mt-7 max-w-[230px]" style={{ color: "#a5a5a5", fontSize: 18, lineHeight: 1.45 }}>
-              Aucun produit pour le moment
+              {t.myProductsNone}
             </p>
           </div>
         ) : (
@@ -146,16 +149,16 @@ export default function MyProductsPage() {
                   <div className="relative z-10 min-h-[320px] px-5 pb-5 pt-6 text-white">
                     <h2 className="font-semibold" style={{ fontSize: 27, lineHeight: 1.15 }}>{displayName}</h2>
                     <div className="mt-4 w-[82%] max-w-[350px] bg-black/50 px-2.5 py-2.5">
-                      <InfoRow label="Prix :" value={`USDT ${Number(product.price || 0).toLocaleString("fr-FR")}`} />
-                      <InfoRow label="Durée :" value={`${cycleDays} jours`} />
-                      <InfoRow label="Revenu quotidien :" value={`USDT ${Number(product.dailyEarnings || 0).toLocaleString("fr-FR")}`} />
-                      <InfoRow label="Revenu total :" value={`USDT ${Number(product.totalReturn || 0).toLocaleString("fr-FR")}`} />
-                      <InfoRow label="Gains reçus :" value={`USDT ${earned.toLocaleString("fr-FR")}`} />
+                      <InfoRow label={`${t.price}:`} value={`USDT ${Number(product.price || 0).toLocaleString(localeForLang(lang))}`} />
+                      <InfoRow label={`${t.duration}:`} value={`${cycleDays} ${t.myProductsDays}`} />
+                      <InfoRow label={`${t.dailyRevenue}:`} value={`USDT ${Number(product.dailyEarnings || 0).toLocaleString(localeForLang(lang))}`} />
+                      <InfoRow label={`${t.totalRevenue}:`} value={`USDT ${Number(product.totalReturn || 0).toLocaleString(localeForLang(lang))}`} />
+                      <InfoRow label={`${t.myProductsRevenueReceived}:`} value={`USDT ${earned.toLocaleString(localeForLang(lang))}`} />
                     </div>
                     <div className="mt-3 h-1.5 w-[82%] max-w-[350px] overflow-hidden rounded-full bg-white/25">
                       <div className="h-full rounded-full" style={{ width: `${progress}%`, background: TGOOD_GREEN }} />
                     </div>
-                    <p className="mt-1 text-xs text-white/75">{completedDays}/{cycleDays} jours complétés</p>
+                    <p className="mt-1 text-xs text-white/75">{completedDays}/{cycleDays} {t.myProductsProgress}</p>
                     {canCollect ? (
                       <button
                         onClick={() => collectFinalMutation.mutate(userProduct.id)}
@@ -164,10 +167,10 @@ export default function MyProductsPage() {
                         style={{ background: TGOOD_GREEN }}
                       >
                         {collectFinalMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                        Collecter USDT {earned.toLocaleString("fr-FR")}
+                        {t.rewardsClaim} USDT {earned.toLocaleString(localeForLang(lang))}
                       </button>
                     ) : product.collectAtEnd ? (
-                      <p className="mt-3 flex w-[82%] max-w-[350px] items-center justify-center gap-1 text-sm text-white/75"><Lock size={14} /> Disponible en fin de cycle</p>
+                      <p className="mt-3 flex w-[82%] max-w-[350px] items-center justify-center gap-1 text-sm text-white/75"><Lock size={14} /> {t.ordersRemainingLbl}</p>
                     ) : null}
                   </div>
                 </article>

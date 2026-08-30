@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { getCountryByCode } from "@/lib/countries";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useI18n } from "@/lib/i18n";
+import { localeForLang, useI18n } from "@/lib/i18n";
 import { useMutation } from "@tanstack/react-query";
 import {
   CalendarDays,
@@ -63,7 +63,7 @@ export default function AccountPage() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
   const [adminPin, setAdminPin] = useState("");
@@ -138,7 +138,7 @@ export default function AccountPage() {
   const earnings = Number.isFinite(rawEarnings) ? rawEarnings : 0;
   const country = getCountryByCode(user.country);
   const phonePrefix = country?.phonePrefix ? `+${country.phonePrefix} ` : "";
-  const formatAmount = (value: number) => value.toLocaleString("fr-FR", {
+  const formatAmount = (value: number) => value.toLocaleString(localeForLang(lang), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });

@@ -1,7 +1,7 @@
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useI18n } from "@/lib/i18n";
+import { localeForLang, useI18n } from "@/lib/i18n";
 import { Bell, CircleDollarSign, HandCoins, MessagesSquare, CalendarDays } from "lucide-react";
 import type { Product } from "@shared/schema";
 import homeHero from "@assets/generated_images/tgood-home-products-hero.jpg";
@@ -77,7 +77,7 @@ export default function HomePage() {
   const rawTotalEarnings = parseFloat(user.totalEarnings || "0");
   const balance = Number.isFinite(rawBalance) ? rawBalance : 0;
   const totalEarnings = Number.isFinite(rawTotalEarnings) ? rawTotalEarnings : 0;
-  const formatAmount = (value: number) => value.toLocaleString("fr-FR", {
+  const formatAmount = (value: number) => value.toLocaleString(localeForLang(lang), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
@@ -262,7 +262,7 @@ export default function HomePage() {
                 <div className="px-3 py-3">
                   <p className="truncate font-medium" style={{ color: "#222", fontSize: 14 }}>{product.name}</p>
                   <p className="mt-1 font-normal" style={{ color: TGOOD_GREEN, fontSize: 16 }}>
-                    USDT {Number(product.price).toLocaleString("fr-FR")}
+                    USDT {Number(product.price).toLocaleString(localeForLang(lang))}
                   </p>
                 </div>
               </button>

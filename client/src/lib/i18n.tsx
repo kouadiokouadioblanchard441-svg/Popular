@@ -3,6 +3,10 @@ import { ENGLISH_TRANSLATIONS } from "./i18n-en.generated";
 
 export type Lang = "fr" | "en" | "ar" | "zh";
 
+export function localeForLang(lang: Lang): string {
+  return lang === "fr" ? "fr-FR" : lang === "ar" ? "ar" : lang === "zh" ? "zh-CN" : "en-US";
+}
+
 export const LANGUAGES: { code: Lang; label: string; shortLabel: string; nativeName: string; flag: string }[] = [
   { code: "fr", label: "French", shortLabel: "FR", nativeName: "Français", flag: "🇫🇷" },
   { code: "en", label: "English", shortLabel: "EN", nativeName: "English", flag: "🇬🇧" },
@@ -320,6 +324,9 @@ export type Translations = {
   // service modal
   serviceTitle: string;
   serviceOnlineConsult: string;
+  serviceHoursLabel: string;
+  serviceOnlineNow: string;
+  serviceOfflineNow: string;
   serviceAnnouncements: string;
   serviceCommunity: string;
   // home
@@ -919,6 +926,9 @@ const fr: Translations = {
     transactionNetAmountLabel: "Reçu :",
     serviceTitle:       "Service client",
     serviceOnlineConsult: "Consultation en ligne",
+    serviceHoursLabel:  "Horaires du service client",
+    serviceOnlineNow:   "En ligne maintenant",
+    serviceOfflineNow:  "Hors ligne actuellement",
     serviceAnnouncements: "Annonces et actualités",
     serviceCommunity:   "Échanger avec les membres",
     depositSuccessTitle: "Recharge réussie !",
