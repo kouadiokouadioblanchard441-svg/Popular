@@ -193,9 +193,8 @@ export default function HomePage() {
             {Array.from({ length: 12 }, (_, index) => {
               const product = EXPERIENCE_PRODUCTS[index % EXPERIENCE_PRODUCTS.length];
               return (
-                <button
+                <div
                   key={index}
-                  onClick={() => navigate("/company")}
                   className="aspect-[1.55] overflow-hidden active:opacity-80"
                   style={{
                     borderRadius: 7,
@@ -209,7 +208,7 @@ export default function HomePage() {
                     alt={product.label}
                     className="h-full w-full object-cover"
                   />
-                </button>
+                </div>
               );
             })}
           </div>

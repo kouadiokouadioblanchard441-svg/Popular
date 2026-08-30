@@ -166,14 +166,6 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     ],
   },
   {
-    id: "company",
-    title: "公司页面",
-    fields: [
-      { key: "content_company_pageTitle", label: "页面标题", defaultValue: "公司" },
-      { key: "content_company_intro", label: "介绍", defaultValue: "了解我们的公司、投资计划以及平台的重要信息。", multiline: true },
-    ],
-  },
-  {
     id: "service",
     title: "Page Service client",
     fields: [

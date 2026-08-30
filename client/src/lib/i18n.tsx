@@ -323,7 +323,6 @@ export type Translations = {
   serviceAnnouncements: string;
   serviceCommunity: string;
   // home
-  companyLabel: string;
   // deposit-callback page
   depositSuccessTitle: string;
   depositSuccessDesc: string;
@@ -470,7 +469,6 @@ export type Translations = {
   adminTabTasks: string;
   adminTabWheel: string;
   adminTabContent: string;
-  adminTabCompany: string;
   // ─── Team / Admin extended ─────────────────────────────────────────────────
   teamRegisteredOn: string;
   teamActiveProduct: string;
@@ -571,34 +569,6 @@ export type Translations = {
   adminCountryAdded: string;
   adminCountryDeleted: string;
   adminNoCountries: string;
-  // Admin: company content
-  adminCompanyDesc: string;
-  adminCompanyAdd: string;
-  adminCompanyEditBlock: string;
-  adminCompanyNewBlock: string;
-  adminCompanyBlockTitle: string;
-  adminCompanyBlockTitlePlaceholder: string;
-  adminCompanyBlockBody: string;
-  adminCompanyBlockBodyPlaceholder: string;
-  adminCompanyBlockImage: string;
-  adminCompanyBlockImageOptional: string;
-  adminCompanyBlockPreview: string;
-  adminCompanyBlockImageRemove: string;
-  adminCompanyBlockImageChange: string;
-  adminCompanyBlockImageChoose: string;
-  adminCompanyBlockImageUrlPlaceholder: string;
-  adminCompanyBlockOrder: string;
-  adminCompanyBlockVisible: string;
-  adminCompanyBlockHidden: string;
-  adminCompanyBlockNoText: string;
-  adminCompanyEmpty: string;
-  adminCompanyBlockModified: string;
-  adminCompanyBlockAdded: string;
-  adminCompanyBlockDeleted: string;
-  adminCompanyBlockImageTooBig: string;
-  adminCompanyBlockImageMaxSize: string;
-  adminCompanyBlockDeletePrefix: string;
-  adminCompanyBlockSave: string;
   // Admin: content editor
   adminContentDesc: string;
   adminContentSaved: string;
@@ -952,7 +922,6 @@ const fr: Translations = {
     serviceOnlineConsult: "Consultation en ligne",
     serviceAnnouncements: "Annonces et actualités",
     serviceCommunity:   "Échanger avec les membres",
-    companyLabel:       "Entreprise",
     depositSuccessTitle: "Recharge réussie !",
     depositSuccessDesc: "Votre solde a bien été crédité.",
     depositRefLabel:    "Référence :",
@@ -1081,7 +1050,6 @@ const fr: Translations = {
     adminTabTasks:          "Tâches",
     adminTabWheel:          "Roue",
     adminTabContent:        "Contenu",
-    adminTabCompany:        "Compagnie",
     teamRegisteredOn: "Date d'inscription",
     teamActiveProduct: "Produit actif",
     teamDeposited: "Déposé",
@@ -1179,33 +1147,6 @@ const fr: Translations = {
     adminCountryAdded: "Pays ajouté !",
     adminCountryDeleted: "Pays supprimé !",
     adminNoCountries: "Aucun pays configuré",
-    adminCompanyDesc: "Ajoutez les informations de l'entreprise, les plans et les images.",
-    adminCompanyAdd: "Ajouter",
-    adminCompanyEditBlock: "Modifier le bloc",
-    adminCompanyNewBlock: "Nouveau bloc",
-    adminCompanyBlockTitle: "Titre",
-    adminCompanyBlockTitlePlaceholder: "Ex. Notre entreprise",
-    adminCompanyBlockBody: "Texte",
-    adminCompanyBlockBodyPlaceholder: "Présentez l'entreprise...",
-    adminCompanyBlockImage: "Image",
-    adminCompanyBlockImageOptional: "(optionnelle)",
-    adminCompanyBlockPreview: "Aperçu",
-    adminCompanyBlockImageRemove: "Supprimer l'image",
-    adminCompanyBlockImageChange: "Changer l'image",
-    adminCompanyBlockImageChoose: "Choisir une image",
-    adminCompanyBlockImageUrlPlaceholder: "Ou coller une URL https://...",
-    adminCompanyBlockOrder: "Ordre d'affichage",
-    adminCompanyBlockVisible: "Visible",
-    adminCompanyBlockHidden: "Masqué",
-    adminCompanyBlockNoText: "Aucun texte",
-    adminCompanyEmpty: "Aucun contenu. Ajoutez votre premier bloc.",
-    adminCompanyBlockModified: "Bloc modifié",
-    adminCompanyBlockAdded: "Bloc ajouté",
-    adminCompanyBlockDeleted: "Bloc supprimé",
-    adminCompanyBlockImageTooBig: "Image trop lourde",
-    adminCompanyBlockImageMaxSize: "Maximum 2 Mo",
-    adminCompanyBlockDeletePrefix: "Supprimer «",
-    adminCompanyBlockSave: "Enregistrer",
     adminContentDesc: "Modifiez ici tous les textes, messages et pop-up de l'application. Les modifications sont appliquées après enregistrement.",
     adminContentSaved: "Textes enregistrés !",
     adminContentSave: "Enregistrer les textes",

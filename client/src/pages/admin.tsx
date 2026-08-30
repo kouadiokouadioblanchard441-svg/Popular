@@ -15,7 +15,6 @@ import AdminSettings from "@/components/admin/settings";
 import AdminGiftCodes from "@/components/admin/gift-codes";
 import AdminCountries from "@/components/admin/countries";
 import AdminContent from "@/components/admin/content";
-import AdminCompanyContent from "@/components/admin/company-content";
 import AdminWheel from "@/components/admin/wheel";
 import AdminVipSettings from "@/components/admin/vip-settings";
 import AdminDepositChannels from "@/components/admin/deposit-channels";
@@ -59,7 +58,6 @@ export default function AdminPage() {
               <TabsTrigger value="settings" data-testid="tab-settings">{t.adminTabSettings}</TabsTrigger>
               <TabsTrigger value="wheel" data-testid="tab-wheel">{t.adminTabWheel}</TabsTrigger>
               <TabsTrigger value="content" data-testid="tab-content">{t.adminTabContent}</TabsTrigger>
-              <TabsTrigger value="company" data-testid="tab-company">{t.adminTabCompany}</TabsTrigger>
               <TabsTrigger value="banners" data-testid="tab-banners">🖼 Bannières</TabsTrigger>
               <TabsTrigger value="vip" data-testid="tab-vip">⭐ VIP</TabsTrigger>
             </TabsList>
@@ -121,9 +119,6 @@ export default function AdminPage() {
             <AdminContent />
           </TabsContent>
 
-          <TabsContent value="company" className="mt-4">
-            <AdminCompanyContent />
-          </TabsContent>
 
           <TabsContent value="banners" className="mt-4">
             <AdminBannerConfig />

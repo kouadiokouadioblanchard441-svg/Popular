@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { users, products, tasks, paymentChannels, paymentNumbers, platformSettings, companyContent, countries, stakingProducts, depositChannels, productSeries } from "@shared/schema";
+import { users, products, tasks, paymentChannels, paymentNumbers, platformSettings, countries, stakingProducts, depositChannels, productSeries } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import { and, eq, sql } from "drizzle-orm";
 
@@ -36,44 +36,6 @@ export async function seed() {
   await db.execute(sql`
     CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire")
   `);
-
-  // Company page content blocks (admin-editable)
-  await db.execute(sql`
-    CREATE TABLE IF NOT EXISTS "company_content" (
-      "id" serial PRIMARY KEY,
-      "title" text NOT NULL,
-      "body" text NOT NULL DEFAULT '',
-      "image_url" text,
-      "sort_order" integer NOT NULL DEFAULT 0,
-      "is_active" boolean NOT NULL DEFAULT true,
-      "created_at" timestamp NOT NULL DEFAULT now(),
-      "updated_at" timestamp
-    )
-  `);
-  const existingCompanyContent = await db.select({ id: companyContent.id }).from(companyContent).limit(1);
-  if (existingCompanyContent.length === 0) {
-    await db.insert(companyContent).values([
-      {
-        title: "我们是谁？",
-        body: "了解我们的公司、愿景以及为客户提供的解决方案。",
-        sortOrder: 1,
-        isActive: true,
-      },
-      {
-        title: "投资计划",
-        body: "这里提供投资计划、相关条件以及平台机会的详细信息。",
-        sortOrder: 2,
-        isActive: true,
-      },
-      {
-        title: "我们的承诺",
-        body: "我们重视透明度、服务质量，并为每一位会员提供支持。",
-        sortOrder: 3,
-        isActive: true,
-      },
-    ]);
-    console.log("Company content initialized");
-  }
 
   // Ensure countries table exists
   await db.execute(sql`

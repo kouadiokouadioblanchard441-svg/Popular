@@ -1,9 +1,9 @@
 import { 
   users, products, userProducts, deposits, shareReports, withdrawals, withdrawalWallets,
-  paymentChannels, paymentNumbers, depositChannels, stakingProducts, userStakings, referralCommissions, tasks, userTasks, transactions, platformSettings, companyContent, adminAuditLog,
+  paymentChannels, paymentNumbers, depositChannels, stakingProducts, userStakings, referralCommissions, tasks, userTasks, transactions, platformSettings, adminAuditLog,
   giftCodes, giftCodeClaims, countries,
   type User, type Product, type UserProduct, type Deposit, type ShareReport, type Withdrawal, type WithdrawalWallet,
-  type PaymentChannel, type PaymentNumber, type DepositChannel, type StakingProduct, type UserStaking, type ReferralCommission, type Task, type UserTask, type Transaction, type PlatformSetting, type CompanyContent,
+  type PaymentChannel, type PaymentNumber, type DepositChannel, type StakingProduct, type UserStaking, type ReferralCommission, type Task, type UserTask, type Transaction, type PlatformSetting,
   type GiftCode, type GiftCodeClaim, type Country
 } from "@shared/schema";
 import { db } from "./db";
@@ -139,12 +139,6 @@ export interface IStorage {
   getSettings(): Promise<Record<string, string>>;
   setSetting(key: string, value: string, modifiedBy?: number): Promise<void>;
 
-  // Company page content
-  getCompanyContent(activeOnly?: boolean): Promise<CompanyContent[]>;
-  createCompanyContent(data: Partial<CompanyContent>): Promise<CompanyContent>;
-  updateCompanyContent(id: number, data: Partial<CompanyContent>): Promise<CompanyContent>;
-  deleteCompanyContent(id: number): Promise<void>;
-  
   // Admin
   getStats(): Promise<any>;
   logAdminAction(adminId: number, action: string, targetUserId: number | null, details: string): Promise<void>;
@@ -1595,39 +1589,6 @@ export class DatabaseStorage implements IStorage {
     } else {
       await db.insert(platformSettings).values({ key, value, modifiedBy, modifiedAt: new Date() });
     }
-  }
-
-  // Company page content
-  async getCompanyContent(activeOnly = false): Promise<CompanyContent[]> {
-    const query = db.select().from(companyContent);
-    return activeOnly
-      ? await query.where(eq(companyContent.isActive, true)).orderBy(asc(companyContent.sortOrder), asc(companyContent.id))
-      : await query.orderBy(asc(companyContent.sortOrder), asc(companyContent.id));
-  }
-
-  async createCompanyContent(data: Partial<CompanyContent>): Promise<CompanyContent> {
-    const [content] = await db.insert(companyContent).values({
-      title: data.title || "Nouveau bloc",
-      body: data.body || "",
-      imageUrl: data.imageUrl || null,
-      sortOrder: data.sortOrder ?? 0,
-      isActive: data.isActive ?? true,
-      updatedAt: new Date(),
-    }).returning();
-    return content;
-  }
-
-  async updateCompanyContent(id: number, data: Partial<CompanyContent>): Promise<CompanyContent> {
-    const [content] = await db.update(companyContent)
-      .set({ ...data, updatedAt: new Date() })
-      .where(eq(companyContent.id, id))
-      .returning();
-    if (!content) throw new Error("Bloc de contenu introuvable");
-    return content;
-  }
-
-  async deleteCompanyContent(id: number): Promise<void> {
-    await db.delete(companyContent).where(eq(companyContent.id, id));
   }
 
   // Admin
