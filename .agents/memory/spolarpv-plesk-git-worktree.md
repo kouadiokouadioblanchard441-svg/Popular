@@ -9,4 +9,10 @@ Plesk's remote-Git deployment needs a real work tree for the checkout destinatio
 
 **How to apply:** If changing the deployment path does not repair the existing record, remove and recreate the Plesk Git repository using the GitHub URL and `main` branch, then set the website-root deployment path. Keep `dist/index.cjs` and `dist/public/` committed because Plesk runs the prebuilt bundle.
 
+A successful GitHub push does not prove that the Plesk domain has deployed the new bundle. Always verify the live domain after pulling `main`; if its behavior still matches the old code, restart the existing Node.js application and rebuild the committed `dist` artifacts before testing again.
+
+**Why:** The live domain continued serving the previous authentication behavior after the corrected source and server bundle were present on GitHub.
+
+**How to apply:** In Plesk, pull the `main` branch into the website root, run the configured production build when required, restart the existing Node.js application, then verify `/api/health` and the affected user flow on the public domain.
+
 Plesk also rejects creating a second Node.js application with the same application root. Edit the existing Node.js application when it is the intended app; otherwise remove only the duplicate Node.js application record or assign the new app a distinct subdirectory containing its own document root.
