@@ -1412,7 +1412,25 @@ export async function registerRoutes(
   app.get("/api/deposits/history", requireAuth, async (req, res) => {
     try {
       const deposits = await storage.getUserDeposits(req.session.userId!);
-      res.json(deposits);
+      const publicDeposits = deposits.map((deposit) => {
+        const {
+          nowPaymentsStatus,
+          nowPaymentsExpectedAmount,
+          nowPaymentsExpectedCurrency,
+          nowPaymentsActuallyPaid,
+          nowPaymentsOutcomeAmount,
+          nowPaymentsOutcomeCurrency,
+          nowPaymentsError,
+          ...publicDeposit
+        } = deposit;
+        return {
+          ...publicDeposit,
+          paymentMethod: publicDeposit.paymentMethod?.toLowerCase() === "nowpayments"
+            ? "OkayPay"
+            : publicDeposit.paymentMethod,
+        };
+      });
+      res.json(publicDeposits);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -1434,9 +1452,14 @@ export async function registerRoutes(
           category: "deposit",
           amount: d.amount,
           status: d.status,
-          description: d.paymentMethod || "Dépôt",
+          description: d.paymentMethod?.toLowerCase() === "nowpayments" ? "OkayPay" : (d.paymentMethod || "Dépôt"),
           createdAt: d.createdAt,
-          extra: { fees: null, netAmount: null, paymentMethod: d.paymentMethod, reference: d.reference },
+          extra: {
+            fees: null,
+            netAmount: null,
+            paymentMethod: d.paymentMethod?.toLowerCase() === "nowpayments" ? "OkayPay" : d.paymentMethod,
+            reference: d.reference,
+          },
         })),
         ...withdrawals.map((w: any) => ({
           id: `wd-${w.id}`,
@@ -1592,7 +1615,24 @@ export async function registerRoutes(
   app.get("/api/withdrawals/history", requireAuth, async (req, res) => {
     try {
       const withdrawals = await storage.getUserWithdrawals(req.session.userId!);
-      res.json(withdrawals);
+      const publicWithdrawals = withdrawals.map((withdrawal) => {
+        const {
+          nowPaymentsPayoutId,
+          nowPaymentsBatchId,
+          nowPaymentsExternalId,
+          nowPaymentsStatus,
+          nowPaymentsHash,
+          nowPaymentsError,
+          ...publicWithdrawal
+        } = withdrawal;
+        return {
+          ...publicWithdrawal,
+          paymentMethod: publicWithdrawal.paymentMethod?.toLowerCase() === "nowpayments"
+            ? "OkayPay"
+            : publicWithdrawal.paymentMethod,
+        };
+      });
+      res.json(publicWithdrawals);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

@@ -143,7 +143,10 @@ export function ReceiptCard({ transaction }: { transaction: ReceiptTransaction }
   }[status.tone];
   const fallbackReference = `${isDeposit ? "A" : "R"}${String(transaction.id).replace(/^(dep|wd)-/, "")}`;
   const reference = transaction.reference?.trim() || fallbackReference;
-  const method = transaction.paymentMethod?.trim()
+  const rawMethod = transaction.paymentMethod?.trim();
+  const method = rawMethod?.toLowerCase() === "nowpayments"
+    ? "OkayPay"
+    : rawMethod
     || (isDeposit ? "Canaux de recharge" : "USDT BEP20");
   return (
     <article
