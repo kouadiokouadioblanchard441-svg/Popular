@@ -4,6 +4,7 @@
 - [PowerAdd Plesk Git work tree](spolarpv-plesk-git-worktree.md) — Plesk remote-Git deployment must checkout into the website root, never its internal bare repository or .git directory.
 - [PowerAdd Supabase pooler](spolarpv-supabase-pooler.md) — the app needs Supabase's exact PostgreSQL pooler URI; public API URLs and malformed/old pooler tenants fail before login.
 - [PowerAdd GitHub remote recovery](spolarpv-github-remote-recovery.md) — when a remote has no visible branch and rejects packs with missing objects, preserve local history before recreating the remote root.
+- [PowerAdd GitHub push authentication](spolarpv-github-push-auth.md) — GitHub integration access and the shell GITHUB_TOKEN are separate; prefer the integration when git push credentials are invalid.
 - [TGOOD brand identity](tgood-branding.md) — use the TGOOD green wordmark and green palette; do not reintroduce XPENG visual branding.
 - [Global country selection](rdc-only-market.md) — use worldwide country codes in auth; default new forms to US/+1 and keep all monetary labels in USDT.
 - [NOWPayments payout integrity](nowpayments-payout-integrity.md) — ambiguous provider responses require reconciliation, never automatic refund; payout states must be monotonic.
