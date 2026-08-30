@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { localeForLang, useI18n } from "@/lib/i18n";
 import depositHero from "@assets/generated_images/tgood-deposit-hero.jpg";
 import tetherIcon from "@/assets/crypto/tether.png";
 import usdCoinIcon from "@/assets/crypto/usd-coin.png";
@@ -103,6 +104,7 @@ function LabelledInput({
 
 export default function DepositPage() {
   const { user } = useAuth();
+  const { lang } = useI18n();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const proofInput = useRef<HTMLInputElement>(null);
@@ -128,23 +130,23 @@ export default function DepositPage() {
         amount: payload.amount,
         accountName: user?.fullName || user?.phone || "Client TGOOD",
         accountNumber: payload.accountNumber,
-        paymentMethod: "Banque de dépôt",
-        channelName: "Banque de dépôt",
+        paymentMethod: "Deposit bank",
+        channelName: "Deposit bank",
         country: user?.country || "CD",
         screenshot: payload.screenshot || null,
         reference: payload.accountNumber,
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Le dépôt n'a pas pu être envoyé.");
+        throw new Error(error.message || "The deposit could not be submitted.");
       }
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/deposits/history"] });
       toast({
-        title: "Dépôt enregistré",
-        description: "Votre demande de recharge est en cours de vérification.",
+        title: "Deposit recorded",
+        description: "Your recharge request is being reviewed.",
       });
       setView("main");
       setProof(null);
@@ -152,7 +154,7 @@ export default function DepositPage() {
       setIssueAmount("");
     },
     onError: (error: Error) => {
-      toast({ title: "Impossible d'envoyer le dépôt", description: error.message, variant: "destructive" });
+      toast({ title: "Unable to submit deposit", description: error.message, variant: "destructive" });
     },
   });
 
@@ -164,7 +166,7 @@ export default function DepositPage() {
       });
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Le paiement crypto n'a pas pu être créé.");
+        throw new Error(error.message || "The crypto payment could not be created.");
       }
       return response.json() as Promise<CryptoPayment>;
     },
@@ -174,7 +176,7 @@ export default function DepositPage() {
       setView("crypto-payment");
     },
     onError: (error: Error) => {
-      toast({ title: "Paiement indisponible", description: error.message, variant: "destructive" });
+      toast({ title: "Payment unavailable", description: error.message, variant: "destructive" });
     },
     onSettled: () => {
       setPendingCurrencyCode(null);
@@ -185,11 +187,11 @@ export default function DepositPage() {
     const file = event.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      toast({ title: "Image requise", description: "Veuillez sélectionner une image de preuve.", variant: "destructive" });
+      toast({ title: "Image required", description: "Please select a proof image.", variant: "destructive" });
       return;
     }
     if (file.size > 3 * 1024 * 1024) {
-      toast({ title: "Image trop volumineuse", description: "Le justificatif ne doit pas dépasser 3 Mo.", variant: "destructive" });
+      toast({ title: "Image too large", description: "The proof image must not exceed 3 MB.", variant: "destructive" });
       return;
     }
     const reader = new FileReader();
@@ -204,7 +206,7 @@ export default function DepositPage() {
     if (!amount || amount < minDeposit) {
       toast({
         title: "Montant invalide",
-        description: `Le dépôt minimum est de ${minDeposit.toLocaleString("fr-FR")} ${CURRENCY}.`,
+        description: `The minimum deposit is ${minDeposit.toLocaleString(localeForLang(lang))} ${CURRENCY}.`,
         variant: "destructive",
       });
       return;
@@ -216,9 +218,9 @@ export default function DepositPage() {
     if (!cryptoPayment?.payAddress) return;
     try {
       await navigator.clipboard.writeText(cryptoPayment.payAddress);
-      toast({ title: "Adresse copiée" });
+      toast({ title: "Address copied" });
     } catch {
-      toast({ title: "Impossible de copier l'adresse", variant: "destructive" });
+      toast({ title: "Unable to copy address", variant: "destructive" });
     }
   };
 
@@ -226,8 +228,8 @@ export default function DepositPage() {
     const parsedAmount = Number(issueAmount.replace(/[^\d]/g, ""));
     if (!walletNumber.trim() || !parsedAmount || !proof) {
       toast({
-        title: "Informations manquantes",
-        description: "Ajoutez votre numéro de portefeuille, le montant et le justificatif.",
+        title: "Missing information",
+        description: "Add your wallet number, amount, and proof.",
         variant: "destructive",
       });
       return;
@@ -235,7 +237,7 @@ export default function DepositPage() {
     if (parsedAmount < minDeposit) {
       toast({
         title: "Montant invalide",
-        description: `Le dépôt minimum est de ${minDeposit.toLocaleString("fr-FR")} ${CURRENCY}.`,
+        description: `The minimum deposit is ${minDeposit.toLocaleString(localeForLang(lang))} ${CURRENCY}.`,
         variant: "destructive",
       });
       return;
@@ -254,37 +256,37 @@ export default function DepositPage() {
             type="button"
             onClick={() => setView("currency")}
             className="flex h-10 w-9 items-center justify-center rounded-full active:bg-white/10"
-            aria-label="Retour à la sélection des devises"
+            aria-label="Back to currency selection"
             data-testid="button-crypto-payment-back"
           >
             <ArrowLeft size={27} strokeWidth={2} />
           </button>
-          <h1 className="flex-1 text-center text-[20px] font-medium pr-9">Paiement crypto</h1>
+          <h1 className="flex-1 text-center text-[20px] font-medium pr-9">Crypto payment</h1>
         </header>
 
         <section className="mx-4 mt-3 rounded-[16px] bg-white px-4 py-4 shadow-[0_6px_16px_rgba(0,70,30,.08)]">
-          <p className="text-center text-[14px] text-[#66746b]">Envoyez exactement</p>
+           <p className="text-center text-[14px] text-[#66746b]">Send exactly</p>
           <p className="mt-0.5 text-center text-[27px] font-bold text-[#087a38]">
             {Number(cryptoPayment.payAmount).toLocaleString(undefined, { maximumFractionDigits: 8 })} {cryptoPayment.payCurrency.toUpperCase()}
           </p>
-          <p className="mt-0.5 text-center text-[13px] text-[#66746b]">sur le réseau {selectedCurrencyLabel}</p>
+           <p className="mt-0.5 text-center text-[13px] text-[#66746b]">on the {selectedCurrencyLabel} network</p>
 
-          <img src={cryptoPayment.qrCode} alt="QR code de paiement" className="mx-auto mt-3 h-[160px] w-[160px] rounded-[8px]" />
+           <img src={cryptoPayment.qrCode} alt="Payment QR code" className="mx-auto mt-3 h-[160px] w-[160px] rounded-[8px]" />
 
           <div className="mt-3 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-2.5">
-            <p className="mb-0.5 text-[12px] font-medium text-[#53705d]">Adresse de paiement {selectedCurrencyLabel}</p>
+             <p className="mb-0.5 text-[12px] font-medium text-[#53705d]">Payment address {selectedCurrencyLabel}</p>
             <p className="break-all font-mono text-[13px] leading-4 text-[#173f26]">{cryptoPayment.payAddress}</p>
           </div>
           {(cryptoPayment.payinExtraId || cryptoPayment.network) && (
             <div className="mt-2 grid gap-1 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-2.5 text-[13px]">
               {cryptoPayment.network && (
                 <p className="text-[#53705d]">
-                  Réseau : <span className="font-semibold uppercase text-[#173f26]">{cryptoPayment.network}</span>
+                   Network: <span className="font-semibold uppercase text-[#173f26]">{cryptoPayment.network}</span>
                 </p>
               )}
               {cryptoPayment.payinExtraId && (
                 <p className="text-[#53705d]">
-                  Mémo / tag : <span className="break-all font-mono font-semibold text-[#173f26]">{cryptoPayment.payinExtraId}</span>
+                   Memo / tag: <span className="break-all font-mono font-semibold text-[#173f26]">{cryptoPayment.payinExtraId}</span>
                 </p>
               )}
             </div>
@@ -296,19 +298,19 @@ export default function DepositPage() {
             style={{ background: "#FF0000" }}
             data-testid="button-copy-crypto-address"
           >
-            <Copy size={17} /> Copier l&apos;adresse
+             <Copy size={17} /> Copy address
           </button>
         </section>
 
         <div className="mx-4 mt-3 flex gap-2.5 rounded-[11px] border border-[#ef9a9a] bg-[#fff1f1] px-3 py-2.5 text-[#b4232f]">
           <AlertTriangle size={20} className="mt-0.5 shrink-0 text-[#c52233]" />
           <p className="text-[13px] leading-[1.125rem]">
-            Envoyez uniquement <strong>{selectedCurrencyLabel}</strong> sur le réseau correspondant. Un envoi depuis un autre réseau peut être perdu.
+             Send only <strong>{selectedCurrencyLabel}</strong> on the corresponding network. Sending from another network may result in a loss.
           </p>
         </div>
 
         <p className="mx-5 mt-3 text-center text-[13px] leading-[1.125rem] text-[#66746b]">
-          Le dépôt sera crédité automatiquement après la confirmation du réseau.
+           The deposit will be credited automatically after network confirmation.
         </p>
       </main>
     );
