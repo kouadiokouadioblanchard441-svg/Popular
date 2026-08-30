@@ -1354,6 +1354,13 @@ const TRANSLATION_OVERRIDES: Record<Exclude<Lang, "fr">, Partial<Translations>> 
     withdrawalSubmittedDesc: "تم إرسال طلب السحب الخاص بك.",
     checkinBonusTitle: "تم استلام المكافأة!",
     checkinBonusDesc: "تمت إضافة مكافأتك اليومية إلى رصيدك",
+    serviceTitle: "خدمة العملاء",
+    serviceOnlineConsult: "استشارة عبر الإنترنت",
+    serviceHoursLabel: "ساعات خدمة العملاء",
+    serviceOnlineNow: "متصل الآن",
+    serviceOfflineNow: "غير متصل حالياً",
+    serviceAnnouncements: "الإعلانات والأخبار",
+    serviceCommunity: "الدردشة مع الأعضاء",
   },
   zh: {
     languageLabel: "语言",
@@ -1423,6 +1430,13 @@ const TRANSLATION_OVERRIDES: Record<Exclude<Lang, "fr">, Partial<Translations>> 
     withdrawalSubmittedDesc: "您的提现申请已提交。",
     checkinBonusTitle: "奖励已到账！",
     checkinBonusDesc: "每日奖励已添加到您的余额",
+    serviceTitle: "客服",
+    serviceOnlineConsult: "在线咨询",
+    serviceHoursLabel: "客服服务时间",
+    serviceOnlineNow: "当前在线",
+    serviceOfflineNow: "当前离线",
+    serviceAnnouncements: "公告和新闻",
+    serviceCommunity: "与会员聊天",
   },
 };
 

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
-import { getContent } from "@/lib/content";
 import { useI18n } from "@/lib/i18n";
 
 /* ── Palette TGOOD ───────────────────────── */
@@ -49,10 +48,6 @@ export default function ServicePage() {
 
   const { data: settings } = useQuery<LinksSettings>({
     queryKey: ["/api/settings/links"],
-  });
-
-  const { data: allSettings } = useQuery<Record<string, string>>({
-    queryKey: ["/api/settings"],
   });
 
   const servicePageTitle = t.serviceTitle;
