@@ -19,6 +19,21 @@ import netflixLogo from "@/assets/partners/netflix.svg";
 
 const TGOOD_GREEN = "#08b83a";
 
+const ACTIVITY_MESSAGES = [
+  "****1847 a rechargé 125 USDT",
+  "****6521 a retiré 480 USDT",
+  "****3074 a reçu un bonus de 35 USDT",
+  "****9186 a rechargé 860 USDT",
+  "****2468 a effectué un retrait de 190 USDT",
+  "****7315 a reçu un bonus de bienvenue de 10 USDT",
+  "****5639 a rechargé 1250 USDT",
+  "****8093 a gagné un bonus quotidien de 75 USDT",
+  "****4217 a retiré 320 USDT",
+  "****6754 a rechargé 45 USDT",
+  "****1382 a reçu une commission de 210 USDT",
+  "****9546 a effectué un retrait de 1000 USDT",
+];
+
 const ACTIONS = [
   { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign },
   { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins },
@@ -122,7 +137,7 @@ export default function HomePage() {
                 animation: "home-ticker 14s linear infinite",
               }}
             >
-              ****9792 a rechargé 55 000 USDT &nbsp;&nbsp; ******6521 a rechargé 10 000 USDT
+              {ACTIVITY_MESSAGES.join("   •   ")}
             </p>
           </div>
         </section>
