@@ -62,6 +62,7 @@ export type Translations = {
   deposit: string;
   withdraw: string;
   customerService: string;
+  shareInformation: string;
   informationCenter: string;
   previous: string;
   next: string;
@@ -1601,6 +1602,7 @@ const ENGLISH_WORDS: Record<string, string> = {
   "transparentes": "transparent", "trois": "three", "trop": "too", "uniquement": "only",
   "validez": "validate", "verifiez": "check", "version": "version", "veuillez": "please",
   "via": "via", "virgule": "comma", "voir": "view", "vous": "you", "y": "there",
+  "Bénin": "Benin", "Côte": "Coast", "demandé": "requested", "intégralement": "in full",
   "L'adresse": "The address", "l'adresse": "the address", "L'administrateur": "The administrator",
   "l'administrateur": "the administrator", "L'application": "The app", "l'application": "the app",
   "L'appareil": "The device", "l'appareil": "the device", "L'accueil": "Home",
