@@ -34,7 +34,7 @@ export default function HomeAnnouncementModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="mt-10 w-[calc(100%-3rem)] max-w-[410px] overflow-visible border-0 bg-[#eaffe7] p-0 shadow-2xl [&>button]:hidden"
+        className="w-[calc(100%-3rem)] max-w-[410px] overflow-visible border-0 bg-[#eaffe7] p-0 shadow-2xl [&>button]:hidden"
         style={{ borderRadius: 10, maxHeight: "calc(100vh - 110px)" }}
       >
         <img
