@@ -983,7 +983,7 @@ export async function registerRoutes(
       }
 
       const settings = await storage.getSettings();
-      const minDeposit = parseInt(settings.minDeposit || "3500", 10);
+      const minDeposit = parseInt(settings.minDeposit || "18", 10);
       if (amountValue < minDeposit) {
         return res.status(400).json({ message: `Montant minimum: ${minDeposit.toLocaleString()} USDT` });
       }
@@ -1254,7 +1254,7 @@ export async function registerRoutes(
       }
 
       const settings = await storage.getSettings();
-       const minDeposit = parseInt(settings.minDeposit || "3000");
+      const minDeposit = parseInt(settings.minDeposit || "18");
       if (amount < minDeposit) {
         return res.status(400).json({ message: `Montant minimum: ${minDeposit.toLocaleString()} USDT` });
       }
@@ -1327,7 +1327,7 @@ export async function registerRoutes(
       }
 
       const settings = await storage.getSettings();
-      const minDeposit = parseInt(settings.minDeposit || "3500");
+      const minDeposit = parseInt(settings.minDeposit || "18");
       if (Number(amount) < minDeposit)
         return res.status(400).json({
           message: `Montant minimum : ${minDeposit.toLocaleString()} USDT`,
@@ -1486,11 +1486,6 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Montant de retrait invalide" });
       }
 
-      // Les deux derniers chiffres doivent être 0 (multiple de 100)
-      if (amount % 100 !== 0) {
-        return res.status(400).json({ message: "Le montant doit se terminer par 00 (ex : 1000, 5500, 12000)" });
-      }
-
       const settingsForWithdrawal = await storage.getSettings();
       if (settingsForWithdrawal.withdrawalEnabled === "false") {
         return res.status(400).json({ message: "Les retraits sont temporairement désactivés par l'administration" });
@@ -1518,7 +1513,7 @@ export async function registerRoutes(
           return res.status(400).json({ message: `Les retraits sont disponibles de ${startHour}h à ${endHour}h` });
         }
       }
-      const minWithdrawal = parseInt(settingsForWithdrawal.minWithdrawal || "1000");
+      const minWithdrawal = parseInt(settingsForWithdrawal.minWithdrawal || "1");
       if (amount < minWithdrawal) {
         return res.status(400).json({ message: `Montant minimum : ${minWithdrawal.toLocaleString()} USDT` });
       }
@@ -1566,11 +1561,6 @@ export async function registerRoutes(
         return res.status(400).json({ message: `Maximum ${maxPerDay} retrait${maxPerDay > 1 ? 's' : ''} par jour` });
       }
 
-      const settings = await storage.getSettings();
-      const fees = parseFloat(settings.withdrawalFees || "10");
-      const feeAmount = Math.round(amount * fees / 100);
-      const netAmount = amount - feeAmount;
-
       // Deduct from totalEarnings (solde des revenus)
       await storage.updateUser(user.id, {
         totalEarnings: (balance - amount).toFixed(2),
@@ -1582,8 +1572,8 @@ export async function registerRoutes(
       const withdrawal = await storage.createWithdrawal({
         userId: user.id,
         amount,
-        netAmount,
-        fees: feeAmount,
+        netAmount: amount,
+        fees: 0,
         accountName: wallet.accountName,
         accountNumber: wallet.accountNumber,
         country: user.country,
@@ -1944,12 +1934,11 @@ export async function registerRoutes(
       const settings = await storage.getSettings();
       res.json({
         withdrawalEnabled: settings.withdrawalEnabled !== "false",
-        withdrawalFees: parseFloat(settings.withdrawalFees || "10"),
         withdrawalStartHour: parseInt(settings.withdrawalStartHour || "10"),
         withdrawalEndHour: parseInt(settings.withdrawalEndHour || "16"),
         withdrawalDays: settings.withdrawalDays || "1,2,3,4,5",
         maxWithdrawalsPerDay: parseInt(settings.maxWithdrawalsPerDay || "1"),
-        minWithdrawal: parseInt(settings.minWithdrawal || "1000"),
+        minWithdrawal: parseInt(settings.minWithdrawal || "1"),
       });
     } catch (error: any) {
       res.status(500).json({ message: error.message });

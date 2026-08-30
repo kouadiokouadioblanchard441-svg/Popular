@@ -37,7 +37,6 @@ export default function WithdrawModal({ open, onClose }: WithdrawModalProps) {
 
   const { data: withdrawalSettings } = useQuery<{
     withdrawalEnabled: boolean;
-    withdrawalFees: number;
     withdrawalStartHour: number;
     withdrawalEndHour: number;
     maxWithdrawalsPerDay: number;
@@ -84,13 +83,10 @@ export default function WithdrawModal({ open, onClose }: WithdrawModalProps) {
   const balance = parseFloat(user.balance || "0");
   const defaultWallet = wallets?.find(w => w.isDefault);
   const withdrawalEnabled = withdrawalSettings?.withdrawalEnabled ?? true;
-  const fees = withdrawalSettings?.withdrawalFees || 15;
   const minWithdrawal = withdrawalSettings?.minWithdrawal || 1;
   const currency = "USDT";
 
   const amount = parseInt(form.watch("amount") || "0");
-  const feeAmount = Math.round(amount * fees / 100);
-  const netAmount = amount - feeAmount;
 
   const canWithdraw = withdrawalEnabled && user.hasDeposited && user.hasActiveProduct && !user.isWithdrawalBlocked && defaultWallet;
 
@@ -100,7 +96,7 @@ export default function WithdrawModal({ open, onClose }: WithdrawModalProps) {
         <DialogHeader>
           <DialogTitle>{t.withdrawTitle}</DialogTitle>
           <DialogDescription>
-            {t.withdrawMinFee.replace("{0}", String(minWithdrawal)).replace("{1}", String(fees))}
+            {t.withdrawMinFee.replace("{0}", String(minWithdrawal))}
           </DialogDescription>
         </DialogHeader>
 
@@ -163,13 +159,9 @@ export default function WithdrawModal({ open, onClose }: WithdrawModalProps) {
                     <span className="text-muted-foreground">{t.withdrawAmountRow}</span>
                     <span className="text-foreground">{amount.toLocaleString()} {currency}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t.depositSec1} ({fees}%)</span>
-                    <span className="text-destructive">-{feeAmount.toLocaleString()} {currency}</span>
-                  </div>
                   <div className="flex justify-between border-t pt-2">
                     <span className="font-medium text-foreground">{t.withdrawNetAmount}</span>
-                    <span className="font-bold text-primary">{netAmount.toLocaleString()} {currency}</span>
+                    <span className="font-bold text-primary">{amount.toLocaleString()} {currency}</span>
                   </div>
                 </div>
               )}

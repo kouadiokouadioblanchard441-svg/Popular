@@ -42,7 +42,6 @@ export default function WithdrawalPage() {
   const currency = "USDT";
 
   const { data: withdrawalSettings } = useQuery<{
-    withdrawalFees: number;
     withdrawalEnabled: boolean;
     withdrawalStartHour: number;
     withdrawalEndHour: number;
@@ -59,10 +58,9 @@ export default function WithdrawalPage() {
     queryKey: ["/api/settings"],
   });
 
-  const minWithdrawal = withdrawalSettings?.minWithdrawal ?? 1000;
+  const minWithdrawal = withdrawalSettings?.minWithdrawal ?? 1;
   const maxWithdrawal = parseInt(allSettings?.maxWithdrawal || "1000000");
   const withdrawalEnabled = withdrawalSettings?.withdrawalEnabled ?? true;
-  const withdrawalFee = withdrawalSettings?.withdrawalFees ?? 10;
   const withdrawalStartHour = withdrawalSettings?.withdrawalStartHour ?? 10;
   const withdrawalEndHour = withdrawalSettings?.withdrawalEndHour ?? 16;
   const withdrawalDaysRaw = withdrawalSettings?.withdrawalDays ?? "1,2,3,4,5";
@@ -79,8 +77,6 @@ export default function WithdrawalPage() {
     : allowedDayNums.map(d => DAY_NAMES[d] ?? d).join(", ");
 
   const withdrawalWarningNoProduct = getContent(allSettings, "content_withdrawal_warningNoProduct", "Vous devez posséder un produit actif pour effectuer un retrait.");
-
-  const amountAfterFees = amount ? Math.floor(Number(amount) * (1 - withdrawalFee / 100)) : 0;
 
   const { data: wallets = [], isLoading: walletsLoading } = useQuery<WalletData[]>({
     queryKey: ["/api/wallets"],
@@ -155,10 +151,6 @@ export default function WithdrawalPage() {
       toast({ title: "Montant trop élevé", description: `Le montant maximum est ${maxWithdrawal.toLocaleString()} ${currency}`, variant: "destructive" });
       return;
     }
-    if (Number(amount) % 100 !== 0) {
-      toast({ title: "Montant invalide", description: "Les deux derniers chiffres du montant doivent être 00 (ex : 1000, 5500, 12000)", variant: "destructive" });
-      return;
-    }
     if (!selectedWallet) {
       toast({ title: "Sélectionnez un compte", description: "Veuillez lier un compte de retrait.", variant: "destructive" });
       return;
@@ -179,9 +171,9 @@ export default function WithdrawalPage() {
     ? customInstructions.split("\n").map((l: string) => l.trim()).filter(Boolean)
     : [
         `1. Montant minimum de retrait : ${minWithdrawal.toLocaleString()} ${currency}.`,
-        `2. Les frais de retrait s'élèvent à ${withdrawalFee}% du montant retiré.`,
-        "3. Vous pouvez effectuer des retraits à tout moment. Les retraits sont disponibles sous 4 à 24 heures.",
-        "4. Afin de protéger les intérêts de la plateforme et de ses membres, vous devez disposer d’au moins un appareil pour activer la fonction de retrait.",
+          "2. Vous recevrez le montant demandé sans frais de retrait.",
+          "3. Vous pouvez effectuer des retraits à tout moment. Les retraits sont disponibles sous 4 à 24 heures.",
+          "4. Afin de protéger les intérêts de la plateforme et de ses membres, vous devez disposer d’au moins un appareil pour activer la fonction de retrait.",
       ];
 
   return (
@@ -350,10 +342,7 @@ export default function WithdrawalPage() {
 
           <div className="mt-[12px] flex items-center justify-between px-[10px]">
             <p className="font-normal" style={{ color: "#626262", fontSize: 15 }}>
-              Montant reçu : {currency} {amountAfterFees.toLocaleString()}
-            </p>
-            <p className="font-normal" style={{ color: "#626262", fontSize: 15 }}>
-              Taux de frais : {withdrawalFee}%
+              Montant reçu : {currency} {amount ? Number(amount).toLocaleString() : "0"}
             </p>
           </div>
         </div>

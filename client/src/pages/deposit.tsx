@@ -110,7 +110,7 @@ export default function DepositPage() {
   const { data: settings = {} } = useQuery<Record<string, string>>({
     queryKey: ["/api/settings"],
   });
-  const minDeposit = Number.parseInt(settings.minDeposit || "3000", 10) || 3000;
+  const minDeposit = Number.parseInt(settings.minDeposit || "18", 10) || 18;
 
   const createDeposit = useMutation({
     mutationFn: async (payload: { amount: number; accountNumber: string; screenshot?: string }) => {

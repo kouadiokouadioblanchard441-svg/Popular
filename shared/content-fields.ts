@@ -141,7 +141,7 @@ export const CONTENT_GROUPS: ContentGroup[] = [
       { key: "content_withdrawal_instructionsTitle", label: "Titre section instructions", defaultValue: "Instructions de retrait" },
       { key: "content_withdrawal_instruction1", label: "Instruction 1", defaultValue: "1. Le montant minimum de retrait est défini dans les paramètres de la plateforme.", multiline: true },
       { key: "content_withdrawal_instruction2", label: "Instruction 2", defaultValue: "2. Il n'y a pas de limite de temps pour les retraits, mais une limite de trois retraits par jour est autorisée.", multiline: true },
-      { key: "content_withdrawal_instruction3", label: "Instruction 3", defaultValue: "3. Des frais de traitement seront appliqués sur chaque retrait (voir paramètres).", multiline: true },
+      { key: "content_withdrawal_instruction3", label: "Instruction 3", defaultValue: "3. Vous recevrez le montant demandé sans frais de retrait.", multiline: true },
       { key: "content_withdrawal_instruction4", label: "Instruction 4", defaultValue: "4. Les retraits seront disponibles sous 2 heures, et exceptionnellement sous 24 heures.", multiline: true },
       { key: "content_withdrawal_instruction5", label: "Instruction 5", defaultValue: "5. Si le retrait échoue, vérifiez que votre adresse USDT BEP20 est correcte, puis soumettez à nouveau la demande.", multiline: true },
       { key: "content_withdrawal_instruction6", label: "Instruction 6", defaultValue: "6. Consultez les conditions de retrait affichées par la plateforme avant votre demande.", multiline: true },

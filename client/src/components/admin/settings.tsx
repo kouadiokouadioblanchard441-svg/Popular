@@ -47,7 +47,6 @@ const settingsSchema = z.object({
   minWithdrawal: z.string().min(1, "Montant requis"),
   maxWithdrawal: z.string().min(1, "Montant requis"),
   withdrawalEnabled: z.boolean(),
-  withdrawalFees: z.string().min(1, "Frais requis"),
   maxWithdrawalsPerDay: z.string().min(1, "Requis"),
   withdrawalInstructions: z.string().optional(),
   withdrawalDays: z.string().min(1, "Jours requis"),
@@ -81,7 +80,6 @@ const settingsSchema = z.object({
   popupLine3: z.string().optional(),
   popupLine4: z.string().optional(),
   popupLine5: z.string().optional(),
-  popupLine6: z.string().optional(),
   popupLine7: z.string().optional(),
 });
 
@@ -217,12 +215,11 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
       support2Enabled: true,
       channelEnabled: true,
       groupEnabled: true,
-      minDeposit: "4000",
+      minDeposit: "18",
       depositPresetAmounts: "3500,5000,7000,10000,15000,20000,50000,70000",
-      minWithdrawal: "1000",
+      minWithdrawal: "1",
       maxWithdrawal: "1000000",
       withdrawalEnabled: true,
-      withdrawalFees: "10",
       maxWithdrawalsPerDay: "1",
       withdrawalInstructions: "",
       withdrawalDays: "1,2,3,4,5",
@@ -272,12 +269,11 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
       support2Enabled:        settings.support2Enabled        !== "false",
       channelEnabled:         settings.channelEnabled         !== "false",
       groupEnabled:           settings.groupEnabled           !== "false",
-      minDeposit:             settings.minDeposit             ?? "4000",
+      minDeposit:             settings.minDeposit             ?? "18",
       depositPresetAmounts:   settings.depositPresetAmounts   ?? "3500,5000,7000,10000,15000,20000,50000,70000",
-      minWithdrawal:          settings.minWithdrawal          ?? "1000",
+      minWithdrawal:          settings.minWithdrawal          ?? "1",
       maxWithdrawal:          settings.maxWithdrawal          ?? "1000000",
       withdrawalEnabled:      settings.withdrawalEnabled      !== "false",
-      withdrawalFees:         settings.withdrawalFees         ?? "10",
       maxWithdrawalsPerDay:   settings.maxWithdrawalsPerDay   ?? "1",
       withdrawalInstructions: settings.withdrawalInstructions ?? "",
       withdrawalDays:         settings.withdrawalDays         ?? "1,2,3,4,5",
@@ -301,7 +297,6 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
       popupLine3:             settings.popupLine3             ?? "",
       popupLine4:             settings.popupLine4             ?? "",
       popupLine5:             settings.popupLine5             ?? "",
-      popupLine6:             settings.popupLine6             ?? "",
       popupLine7:             settings.popupLine7             ?? "",
       westpayMerchantSlug:    settings.westpayMerchantSlug    ?? "",
       westpayWebhookSecret:   settings.westpayWebhookSecret   ?? "",
@@ -725,14 +720,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               )} />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField control={form.control} name="withdrawalFees" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Frais de retrait (%)</FormLabel>
-                  <FormControl><Input {...field} type="number" min="0" max="100" /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
+            <div className="grid grid-cols-1 gap-4">
               <FormField control={form.control} name="maxWithdrawalsPerDay" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nb. max de retraits par jour</FormLabel>
@@ -749,7 +737,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                   <textarea
                     {...field}
                     rows={6}
-                    placeholder={"1. Le montant minimum de retrait est de 1000 USDT\n2. Les deux derniers chiffres du montant doivent être 0\n3. Des frais de 10% seront déduits\n4. Maximum 1 retrait par jour"}
+                    placeholder={"1. Le montant minimum de retrait est de 1 USDT\n2. Vous recevrez le montant demandé sans frais de retrait\n3. Les retraits sont disponibles sous 4 à 24 heures\n4. Maximum 1 retrait par jour"}
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-y"
                   />
                 </FormControl>
@@ -981,9 +969,8 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               { name: "popupLine1" as const, label: "Ligne 1 — Lancement officiel", placeholder: "✨✨ Lancement officiel de la plateforme XPENG ✨✨" },
               { name: "popupLine2" as const, label: "Ligne 2 — Invitation parrainage", placeholder: "🔻 Invitez vos amis à investir et gagnez jusqu'à 25% de commissions..." },
               { name: "popupLine3" as const, label: "Ligne 3 — Bonus connexion", placeholder: "🎁 Bonus de connexion quotidienne disponible chaque jour" },
-              { name: "popupLine4" as const, label: "Ligne 4 — Dépôt minimum", placeholder: "🤝 Dépôt minimum : 3 000 USDT" },
-              { name: "popupLine5" as const, label: "Ligne 5 — Retrait minimum", placeholder: "💚 Retrait minimum : 1 000 USDT" },
-              { name: "popupLine6" as const, label: "Ligne 6 — Frais de retrait", placeholder: "⚙️ Frais de retrait : 10%" },
+              { name: "popupLine4" as const, label: "Ligne 4 — Dépôt minimum", placeholder: "🤝 Dépôt minimum : 18 USDT" },
+              { name: "popupLine5" as const, label: "Ligne 5 — Retrait minimum", placeholder: "💚 Retrait minimum : 1 USDT" },
               { name: "popupLine7" as const, label: "Ligne 7 — Horaires retraits", placeholder: "🍀 Retraits disponibles du Lundi au Vendredi de 10h à 16h" },
             ]).map(({ name, label, placeholder }) => (
               <FormField key={name} control={form.control} name={name} render={({ field }) => (

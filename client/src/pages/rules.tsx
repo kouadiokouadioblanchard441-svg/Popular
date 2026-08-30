@@ -8,9 +8,8 @@ export default function RulesPage() {
   });
 
   const signupBonus = settings?.signupBonusAmount || "2";
-  const minDeposit = settings?.minDeposit || "4000";
-  const minWithdrawal = settings?.minWithdrawal || "1500";
-  const withdrawalFees = settings?.withdrawalFees || "18";
+  const minDeposit = settings?.minDeposit || "18";
+  const minWithdrawal = settings?.minWithdrawal || "1";
   const withdrawalStartHour = settings?.withdrawalStartHour || "9";
   const withdrawalEndHour = settings?.withdrawalEndHour || "17";
   const maxWithdrawalsPerDay = settings?.maxWithdrawalsPerDay || "1";
@@ -58,7 +57,6 @@ export default function RulesPage() {
           <ul className="list-disc space-y-2 pl-5 text-sm text-[#3f4d45]">
             <li>Montant minimum de recharge : {parseInt(minDeposit).toLocaleString()} USDT.</li>
             <li>Montant minimum de retrait : {parseInt(minWithdrawal).toLocaleString()} USDT.</li>
-            <li>Frais de retrait : {withdrawalFees}%, couvrant les frais de traitement et de maintenance.</li>
             <li>Horaires de retrait : {withdrawalStartHour}h00 – {withdrawalEndHour}h00.</li>
             <li>Maximum {maxWithdrawalsPerDay} retrait(s) par jour et par utilisateur.</li>
           </ul>
