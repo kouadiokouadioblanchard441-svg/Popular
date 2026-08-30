@@ -1220,6 +1220,7 @@ const fr: Translations = {
 const TRANSLATION_OVERRIDES: Record<Exclude<Lang, "fr">, Partial<Translations>> = {
   en: {
     languageLabel: "Language",
+    shareInformation: "Share information",
     yourNumber: "your phone number",
     yourPassword: "your password",
     rememberMe: "remember me",
