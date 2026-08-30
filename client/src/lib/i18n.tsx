@@ -342,7 +342,6 @@ export type Translations = {
   withdrawalAddressLabel: string;
   withdrawalSelectBep20: string;
   withdrawalAddWallet: string;
-  withdrawalFeeLabel: string;
   withdrawalAmountPlaceholder: string;
   withdrawalNetAmountLabel: string;
   withdrawalMinimumNote: string;
@@ -939,7 +938,6 @@ const fr: Translations = {
     withdrawalAddressLabel: "Adresse de retrait",
     withdrawalSelectBep20: "Sélectionner une adresse BEP20",
     withdrawalAddWallet: "Ajouter un portefeuille de retrait",
-    withdrawalFeeLabel: "Frais :",
     withdrawalAmountPlaceholder: "Entrez le montant du retrait",
     withdrawalNetAmountLabel: "Montant reçu :",
     withdrawalMinimumNote: "(Min. {0} {1})",
@@ -1436,7 +1434,6 @@ const ENGLISH_PHRASES: Record<string, string> = {
   "Le montant maximum est": "The maximum amount is",
   "Les deux derniers chiffres du montant doivent être 00": "The last two digits of the amount must be 00",
   "Vous devez posséder un produit actif pour effectuer un retrait.": "You must have an active product to make a withdrawal.",
-  "Les frais de retrait s'élèvent à": "Withdrawal fees are",
   "Vous pouvez effectuer des retraits à tout moment.": "You can make withdrawals at any time.",
   "Les retraits sont disponibles sous 4 à 24 heures.": "Withdrawals are available within 4 to 24 hours.",
   "Aucune opération pour le moment": "No transactions yet",

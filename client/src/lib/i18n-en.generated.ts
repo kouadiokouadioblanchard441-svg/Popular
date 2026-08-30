@@ -303,7 +303,6 @@ export const ENGLISH_TRANSLATIONS = {
     withdrawalAddressLabel: "Withdrawal address",
     withdrawalSelectBep20: "Select a BEP20 address",
     withdrawalAddWallet: "Add withdrawal wallet",
-    withdrawalFeeLabel: "Fees:",
     withdrawalAmountPlaceholder: "Enter withdrawal amount",
     withdrawalNetAmountLabel: "Amount received:",
     withdrawalMinimumNote: "(Min. {0} {1})",

@@ -171,7 +171,7 @@ export default function WithdrawalPage() {
     ? customInstructions.split("\n").map((l: string) => l.trim()).filter(Boolean)
     : [
         `1. Montant minimum de retrait : ${minWithdrawal.toLocaleString()} ${currency}.`,
-          "2. Vous recevrez le montant demandé sans frais de retrait.",
+          "2. Le montant demandé sera reçu intégralement.",
           "3. Vous pouvez effectuer des retraits à tout moment. Les retraits sont disponibles sous 4 à 24 heures.",
           "4. Afin de protéger les intérêts de la plateforme et de ses membres, vous devez disposer d’au moins un appareil pour activer la fonction de retrait.",
       ];

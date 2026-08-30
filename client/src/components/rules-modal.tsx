@@ -26,7 +26,7 @@ export default function RulesModal({ open, onClose }: RulesModalProps) {
   const s1Title = getContent(settings, "content_rules_section1Title", "1. Deposits");
   const s1Body = getContent(settings, "content_rules_section1Body", `- Minimum amount: ${parseInt(minDeposit).toLocaleString()} USDT\n- Deposits are processed promptly\n- Make sure payment information is correct`);
   const s2Title = getContent(settings, "content_rules_section2Title", "2. Withdrawals");
-  const s2Body = getContent(settings, "content_rules_section2Body", `- Minimum amount: ${parseInt(minWithdrawal).toLocaleString()} USDT\n- You receive the requested amount without withdrawal fees\n- Hours: ${withdrawalStartHour}h - ${withdrawalEndHour}h\n- Maximum ${maxWithdrawalsPerDay} withdrawal(s) per day\n- An active product is required to withdraw\n- A withdrawal wallet must be registered`);
+  const s2Body = getContent(settings, "content_rules_section2Body", `- Minimum amount: ${parseInt(minWithdrawal).toLocaleString()} USDT\n- The requested amount is received in full\n- Hours: ${withdrawalStartHour}h - ${withdrawalEndHour}h\n- Maximum ${maxWithdrawalsPerDay} withdrawal(s) per day\n- An active product is required to withdraw\n- A withdrawal wallet must be registered`);
   const s3Title = getContent(settings, "content_rules_section3Title", "3. Products");
   const s3Body = getContent(settings, "content_rules_section3Body", "- Standard cycle: 80 days\n- Daily automatic earnings\n- Earnings are credited 24h after purchase");
   const s4Title = getContent(settings, "content_rules_section4Title", "4. Referral");
