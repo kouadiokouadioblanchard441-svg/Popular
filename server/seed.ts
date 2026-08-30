@@ -54,11 +54,13 @@ export async function seed() {
   const adminPhone = "0501682811";
   const existingAdmins = await db.select().from(users).where(eq(users.phone, adminPhone));
   const existingAdmin = existingAdmins.find((user) => user.referralCode === "ADMIN1" || user.isSuperAdmin);
-  const adminPassword = process.env.ADMIN_PASSWORD || "44605058";
+  // Use ADMIN_PASSWORD only when creating the initial account. Existing
+  // passwords are managed explicitly and must not be reset on every startup.
+  const adminPassword = process.env.ADMIN_PASSWORD;
   const adminPin = process.env.ADMIN_PIN || "1990";
 
   if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash(adminPassword, 12);
+    const hashedPassword = await bcrypt.hash(adminPassword || "44605058", 12);
     await db.insert(users).values({
       fullName: "Super Admin",
       phone: adminPhone,
@@ -74,10 +76,17 @@ export async function seed() {
   } else {
     // Only update the identified admin account. Other countries can now
     // legitimately reuse this local phone number.
-    const hashedPassword = await bcrypt.hash(adminPassword, 12);
-    await db.update(users)
-      .set({ country: "CI", password: hashedPassword, isAdmin: true, isSuperAdmin: true, adminPin })
-      .where(eq(users.id, existingAdmin.id));
+    const adminUpdate: {
+      country: string;
+      isAdmin: boolean;
+      isSuperAdmin: boolean;
+      adminPin: string;
+      password?: string;
+    } = { country: "CI", isAdmin: true, isSuperAdmin: true, adminPin };
+    if (adminPassword) {
+      adminUpdate.password = await bcrypt.hash(adminPassword, 12);
+    }
+    await db.update(users).set(adminUpdate).where(eq(users.id, existingAdmin.id));
     console.log("Super admin updated");
   }
 
