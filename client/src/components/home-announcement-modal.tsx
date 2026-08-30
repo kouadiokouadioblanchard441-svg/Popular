@@ -7,14 +7,14 @@ import popupMascot from "@assets/generated_images/tgood-popup-mascot.png";
 const TGOOD_GREEN = "#08b83a";
 
 const DEFAULT_LINES = [
-  "🚀 TGOOD RDC : lancement officiel !",
-  "📅 Une toute nouvelle expérience commence le 20 août 2026 !",
-  "✅ Investissez 3 000 USDT et demandez un retrait de 1 500 USDT",
-  "✅ Bonus d'inscription : 2 USDT",
-  "✅ Connexion quotidienne : 50 USDT",
-  "👥 Invitez vos amis à participer et gagnez une commission de 39 %",
-  "🔥 Taux de rendement quotidien : 25 % à 40 %",
-  "🔥 Vos gains sont automatiquement crédités sur votre compte chaque jour 📈 Achetez plusieurs appareils pour multiplier vos gains",
+  "🚀 TGOOD RDC: official launch!",
+  "📅 A brand-new experience begins on August 20, 2026!",
+  "✅ Invest 3,000 USDT and request a 1,500 USDT withdrawal",
+  "✅ Registration bonus: 2 USDT",
+  "✅ Daily check-in: 50 USDT",
+  "👥 Invite your friends and earn a 39% commission",
+  "🔥 Daily return rate: 25% to 40%",
+  "🔥 Your earnings are credited to your account every day 📈 Buy multiple devices to increase your earnings",
 ];
 
 export default function HomeAnnouncementModal() {
@@ -29,7 +29,7 @@ export default function HomeAnnouncementModal() {
     : "https://t.me/vestasgroup";
   const telegramLabel = settings.popupTelegramLabel || "Telegram >";
   const confirmLabel = settings.popupConfirmLabel || "OK";
-  const announcementTitle = settings.popupTitle || "Annonce TGOOD";
+  const announcementTitle = settings.popupTitle || "TGOOD Announcement";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

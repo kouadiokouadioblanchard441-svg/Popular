@@ -46,7 +46,7 @@ const PARTNERS = [
   { name: "BYD", logo: bydLogo },
   { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
   { name: "Binance", logo: binanceLogo },
-  { name: "XPENG", logo: "/xpeng-logo-full.jpg" },
+  { name: "TGOOD", logo: "/tgood-logo.gif" },
   { name: "Netflix", logo: netflixLogo },
 ];
 
@@ -88,7 +88,7 @@ export default function HomePage() {
         <div className="relative h-[382px] overflow-hidden">
           <img
             src={homeHero}
-            alt="Gamme de mobilité électrique et recharge TGOOD avec vélo, scooter et cyclomoteur"
+            alt="TGOOD electric mobility and charging range with bikes, scooters, and mopeds"
             className="h-full w-full object-cover"
             style={{ objectPosition: "center 42%" }}
           />
@@ -125,7 +125,7 @@ export default function HomePage() {
         <section
           className="mx-3 mt-3 flex h-[58px] items-center overflow-hidden bg-white"
           style={{ borderRadius: 8 }}
-          aria-label={lang === "en" ? "Latest transactions" : "Dernières transactions"}
+            aria-label="Latest transactions"
         >
           <Bell className="ml-4 shrink-0" size={25} fill={TGOOD_GREEN} color={TGOOD_GREEN} strokeWidth={2.3} />
           <div className="ml-3 overflow-hidden">
@@ -150,7 +150,7 @@ export default function HomePage() {
             data-testid="button-account-balance"
           >
             <div className="relative h-[164px] overflow-hidden bg-[#f1f1f1] shadow-sm">
-              <img src={electricScooter} alt="Trottinette électrique verte" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
+              <img src={electricScooter} alt="Green electric scooter" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
               <div
                 className="absolute inset-x-0 bottom-6 text-center font-normal"
                 style={{
@@ -176,7 +176,7 @@ export default function HomePage() {
             data-testid="button-cumulative-earnings"
           >
             <div className="relative h-[164px] overflow-hidden bg-[#f1f1f1] shadow-sm">
-              <img src={electricMoped} alt="Scooter électrique vert" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
+              <img src={electricMoped} alt="Green electric moped" className="h-full w-full scale-[1.02] object-contain blur-[2px]" />
               <div
                 className="absolute inset-x-0 bottom-6 text-center font-normal"
                 style={{
@@ -191,17 +191,17 @@ export default function HomePage() {
               </div>
             </div>
             <p className="mt-3 min-h-[24px] font-normal" style={{ color: TGOOD_GREEN, fontSize: 20, lineHeight: 1.2 }}>
-              Revenus cumulés
+              Total earnings
             </p>
           </button>
         </section>
 
         <section className="mt-12 px-3 pb-8">
           <h2 className="text-center font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-            Expérience
+            Experience
           </h2>
           <p className="mt-4 text-center font-normal" style={{ color: "#50545a", fontSize: 24 }}>
-            Durabilité
+            Sustainability
           </p>
 
           <div className="mt-5 grid grid-cols-4 gap-[7px]">
@@ -232,7 +232,7 @@ export default function HomePage() {
         <section className="px-3 pb-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-              {lang === "en" ? "Special products" : "Produits spéciaux"}
+              Special products
             </h2>
             <button
               onClick={() => navigate("/invest")}
@@ -271,7 +271,7 @@ export default function HomePage() {
 
           {products.filter(product => !product.isFree).length === 0 && (
             <div className="bg-white py-8 text-center" style={{ borderRadius: 10, color: "#777", fontSize: 14 }}>
-              {lang === "en" ? "No special products available" : "Aucun produit spécial disponible"}
+              No special products available
             </div>
           )}
         </section>

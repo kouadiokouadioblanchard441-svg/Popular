@@ -8,3 +8,9 @@ The typed translation catalog alone does not cover older screens that render lit
 **Why:** Several user and admin pages bypassed the catalog and stayed partly French even when the English language was selected.
 
 **How to apply:** When adding or editing a screen, use translation keys for visible UI text; if legacy literals remain, add their complete phrase to the shared static translation map rather than relying only on word-by-word fallback.
+
+New browser sessions intentionally start in English after the interface cleanup, while the language picker remains available for users who explicitly choose another language.
+
+**Why:** Existing saved language preferences could reopen the refreshed site in French even after English became the reviewed default.
+
+**How to apply:** Preserve the versioned language-storage key when changing the default-language migration so old preferences do not silently override the English starting state.

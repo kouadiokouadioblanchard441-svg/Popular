@@ -690,6 +690,7 @@ const fr: Translations = {
     deposit:            "Recharger",
     withdraw:           "Retirer",
     customerService:    "Service client",
+    shareInformation:   "Partager les informations",
     informationCenter:  "Centre d'information",
     previous:           "Précédent",
     next:               "Suivant",
@@ -1998,7 +1999,10 @@ const I18nContext = createContext<I18nCtx>({
   t: I18N_CATALOG.en,
 });
 
-const STORAGE_KEY = "tgood_lang_v1";
+// Start every existing browser session in English after the interface cleanup.
+// Users can still choose another language from the picker and that choice is
+// persisted under the new key.
+const STORAGE_KEY = "tgood_lang_v2";
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {

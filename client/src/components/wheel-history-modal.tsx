@@ -102,7 +102,7 @@ function HistoryRow({ tx, noGainLabel }: { tx: Transaction; noGainLabel: string 
         {won ? (
           <img
             src="/trophy.jpg"
-            alt="Trophée"
+            alt="Trophy"
             className="w-full h-full rounded-full object-cover object-top"
           />
         ) : (

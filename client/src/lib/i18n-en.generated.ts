@@ -47,6 +47,7 @@ export const ENGLISH_TRANSLATIONS = {
     deposit:            "Recharge",
     withdraw:           "Withdraw",
     customerService:    "Customer service",
+    shareInformation:   "Share information",
     informationCenter:  "Information center",
     previous:           "Previous",
     next:               "Next",

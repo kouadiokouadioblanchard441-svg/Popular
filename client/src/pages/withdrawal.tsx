@@ -65,18 +65,18 @@ export default function WithdrawalPage() {
   const withdrawalEndHour = withdrawalSettings?.withdrawalEndHour ?? 16;
   const withdrawalDaysRaw = withdrawalSettings?.withdrawalDays ?? "1,2,3,4,5";
 
-  // Convertit "1,2,3,4,5" → "Lundi au Vendredi" ou liste des jours
+  // Convert "1,2,3,4,5" into a weekday range or a list of days
   const DAY_NAMES: Record<number, string> = {
-    0: "Dimanche", 1: "Lundi", 2: "Mardi", 3: "Mercredi",
-    4: "Jeudi", 5: "Vendredi", 6: "Samedi",
+    0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday",
+    4: "Thursday", 5: "Friday", 6: "Saturday",
   };
   const allowedDayNums = withdrawalDaysRaw.split(",").map(d => parseInt(d.trim())).filter(n => !isNaN(n));
   const isConsecutiveWeekdays = JSON.stringify(allowedDayNums.sort()) === JSON.stringify([1,2,3,4,5]);
   const daysLabel = isConsecutiveWeekdays
-    ? "du Lundi au Vendredi"
+    ? "Monday to Friday"
     : allowedDayNums.map(d => DAY_NAMES[d] ?? d).join(", ");
 
-  const withdrawalWarningNoProduct = getContent(allSettings, "content_withdrawal_warningNoProduct", "Vous devez posséder un produit actif pour effectuer un retrait.");
+  const withdrawalWarningNoProduct = getContent(allSettings, "content_withdrawal_warningNoProduct", "You must have an active product to make a withdrawal.");
 
   const { data: wallets = [], isLoading: walletsLoading } = useQuery<WalletData[]>({
     queryKey: ["/api/wallets"],
@@ -148,11 +148,11 @@ export default function WithdrawalPage() {
       return;
     }
     if (amount > maxWithdrawal) {
-      toast({ title: "Montant trop élevé", description: `Le montant maximum est ${maxWithdrawal.toLocaleString()} ${currency}`, variant: "destructive" });
+      toast({ title: "Amount too high", description: `The maximum amount is ${maxWithdrawal.toLocaleString()} ${currency}`, variant: "destructive" });
       return;
     }
     if (!selectedWallet) {
-      toast({ title: "Sélectionnez un compte", description: "Veuillez lier un compte de retrait.", variant: "destructive" });
+      toast({ title: "Select an account", description: "Please link a withdrawal account.", variant: "destructive" });
       return;
     }
     withdrawMutation.mutate({ amount: Number(amount), walletId: selectedWallet.id });
@@ -164,16 +164,16 @@ export default function WithdrawalPage() {
   const balance = parseFloat(user?.balance || "0");
   const earningsBalance = parseFloat(user?.totalEarnings || "0");
 
-  // Instructions : depuis l'admin si définies, sinon générées automatiquement
+  // Use admin instructions when configured, otherwise generate the defaults.
   const customInstructions = allSettings?.withdrawalInstructions?.trim();
   const maxPerDay = withdrawalSettings?.maxWithdrawalsPerDay ?? 1;
   const instructions: string[] = customInstructions
     ? customInstructions.split("\n").map((l: string) => l.trim()).filter(Boolean)
     : [
-        `1. Montant minimum de retrait : ${minWithdrawal.toLocaleString()} ${currency}.`,
-          "2. Le montant demandé sera reçu intégralement.",
-          "3. Vous pouvez effectuer des retraits à tout moment. Les retraits sont disponibles sous 4 à 24 heures.",
-          "4. Afin de protéger les intérêts de la plateforme et de ses membres, vous devez disposer d’au moins un appareil pour activer la fonction de retrait.",
+        `1. Minimum withdrawal amount: ${minWithdrawal.toLocaleString()} ${currency}.`,
+          "2. You will receive the full requested amount.",
+          "3. You can make withdrawals at any time. Withdrawals are available within 4 to 24 hours.",
+          "4. To protect the platform and its members, you must have at least one device to enable withdrawals.",
       ];
 
   return (
@@ -235,7 +235,7 @@ export default function WithdrawalPage() {
 
         <div className="mt-[29px]">
           <p className="font-normal" style={{ fontSize: 20, lineHeight: 1.2 }}>
-            Veuillez sélectionner votre carte bancaire
+            Please select your bank card
           </p>
           {selectedWallet ? (
             <button
@@ -320,7 +320,7 @@ export default function WithdrawalPage() {
 
         <div className="mt-[29px]">
           <p className="font-normal" style={{ fontSize: 20, lineHeight: 1.2 }}>
-            Entrez le montant du retrait
+            Enter the withdrawal amount
           </p>
           <div
             className="mt-[16px] flex w-full items-center bg-[#f9f9f9]"
@@ -333,7 +333,7 @@ export default function WithdrawalPage() {
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value ? Number(e.target.value) : "")}
-              placeholder="Veuillez saisir le montant du retrait"
+              placeholder="Enter the withdrawal amount"
               className="min-w-0 flex-1 bg-transparent pr-2 font-normal outline-none placeholder:text-[#a6abb4]"
               style={{ color: "#404040", fontSize: 19 }}
               data-testid="input-withdrawal-amount"
@@ -342,14 +342,14 @@ export default function WithdrawalPage() {
 
           <div className="mt-[12px] flex items-center justify-between px-[10px]">
             <p className="font-normal" style={{ color: "#626262", fontSize: 15 }}>
-              Montant reçu : {currency} {amount ? Number(amount).toLocaleString() : "0"}
+              Amount received: {currency} {amount ? Number(amount).toLocaleString() : "0"}
             </p>
           </div>
         </div>
 
         {!withdrawalEnabled && (
           <div className="mt-5 rounded-lg border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-red-600">
-            Les retraits sont actuellement désactivés.
+            Withdrawals are currently disabled.
           </div>
         )}
         <button

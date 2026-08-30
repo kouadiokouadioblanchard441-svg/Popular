@@ -38,7 +38,7 @@ export default function DepositHistoryPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <HistoryPageHeader title={t.depositHistory || "Historique des dépôts"} backHref="/deposit" />
+      <HistoryPageHeader title={t.depositHistory || "Deposit history"} backHref="/deposit" />
       <HistoryDecor>
         <section aria-live="polite">
           {isLoading ? (

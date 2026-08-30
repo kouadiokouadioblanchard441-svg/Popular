@@ -17,17 +17,17 @@ export default function RulesPage() {
   const lv2 = settings?.level2Commission || "3";
   const lv3 = settings?.level3Commission || "1";
 
-  const rPageTitle = "Règles TGOOD";
+  const rPageTitle = "TGOOD Rules";
   const rS1Title = "1. Utilisation des produits TGOOD";
-  const rS1b1 = "Les produits TGOOD disponibles sont présentés avec leur prix, leur durée et leurs conditions avant toute activation.";
-  const rS1b2 = "Les revenus liés à un produit actif sont calculés et crédités selon le calendrier indiqué sur sa fiche.";
-  const rS1b3 = "Chaque membre doit consulter les informations du produit et s'assurer qu'elles correspondent à ses besoins avant confirmation.";
+  const rS1b1 = "Available TGOOD products are shown with their price, duration, and terms before activation.";
+  const rS1b2 = "Earnings from an active product are calculated and credited according to the schedule shown on its details.";
+  const rS1b3 = "Each member must review the product information and make sure it meets their needs before confirming.";
   const rS2Title = "2. Rechargement & retrait";
   const rS3Title = "3. Programme de parrainage";
-  const rS3b4 = "Toute fraude, tentative de manipulation ou utilisation de plusieurs comptes peut entraîner la suspension du compte.";
-  const rS4Title = "4. Bonus & récompenses";
-  const rS5Title = "5. Sécurité & assistance";
-  const rS5b1 = "Chaque membre est responsable de la sécurité de son mot de passe et de ses moyens de paiement.";
+  const rS3b4 = "Fraud, attempted manipulation, or use of multiple accounts may result in account suspension.";
+  const rS4Title = "4. Bonuses & rewards";
+  const rS5Title = "5. Security & support";
+  const rS5b1 = "Each member is responsible for the security of their password and payment methods.";
   const rS5b2 = "Ne partagez jamais vos identifiants, codes de validation ou adresse de portefeuille avec un tiers.";
   const rS5b3 = "Le support officiel TGOOD ne vous demandera jamais votre mot de passe ni vos codes confidentiels.";
 
@@ -75,7 +75,7 @@ export default function RulesPage() {
         <section className="space-y-3 rounded-2xl bg-white p-5 shadow-sm">
           <h2 className="border-l-4 border-[#00a651] pl-3 text-lg font-bold text-[#087a38]">{rS4Title}</h2>
           <ul className="list-disc space-y-2 pl-5 text-sm text-[#3f4d45]">
-            <li>Chaque nouveau membre reçoit un bonus de {parseInt(signupBonus).toLocaleString()} USDT à l'inscription.</li>
+            <li>Each new member receives a {parseInt(signupBonus).toLocaleString()} USDT bonus upon registration.</li>
           </ul>
         </section>
 

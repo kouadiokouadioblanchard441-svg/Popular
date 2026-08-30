@@ -324,18 +324,18 @@ export default function DepositPage() {
             type="button"
             onClick={() => setView("main")}
             className="flex h-10 w-9 items-center justify-center rounded-full active:bg-white/10"
-            aria-label="Retour au montant du dépôt"
+            aria-label="Back to deposit amount"
             data-testid="button-currency-back"
           >
             <ArrowLeft size={28} strokeWidth={2} />
           </button>
-          <h1 className="flex-1 text-center text-[21px] font-medium pr-9">Sélectionnez la devise</h1>
+          <h1 className="flex-1 text-center text-[21px] font-medium pr-9">Select currency</h1>
         </header>
 
         <section className="mx-5 overflow-hidden rounded-[19px] border border-white/60 bg-white/90 shadow-[0_12px_28px_rgba(0,84,38,.22)] backdrop-blur-sm">
           {createCryptoDeposit.isPending && selectedCryptoCurrency && (
             <p role="status" className="border-b border-[#d6e7da] bg-[#eef9f1] px-4 py-3 text-center text-[13px] font-medium text-[#087a38]">
-              Préparation du paiement {selectedCryptoCurrency.label}…
+              Preparing {selectedCryptoCurrency.label} payment…
             </p>
           )}
           {CRYPTO_CURRENCIES.map((currency, index) => (
@@ -380,31 +380,31 @@ export default function DepositPage() {
           <button
             onClick={() => setView("main")}
             className="flex h-10 w-8 items-center justify-center active:scale-95"
-            aria-label="Retour au dépôt"
+            aria-label="Back to deposit"
             data-testid="button-issue-back"
           >
             <ArrowLeft size={31} strokeWidth={1.7} />
           </button>
-          <h1 className="font-normal" style={{ color: "#0bad32", fontSize: 20 }}>Problème de rechargement</h1>
+          <h1 className="font-normal" style={{ color: "#0bad32", fontSize: 20 }}>Recharge issue</h1>
         </header>
 
         <section className="mx-5 mt-6 rounded-[10px] bg-white px-5 pb-10 pt-6 shadow-[0_1px_4px_rgba(0,0,0,.03)]">
           <LabelledInput
-            label="Numéro de portefeuille"
+            label="Wallet number"
             value={walletNumber}
             onChange={setWalletNumber}
-            placeholder="Veuillez saisir votre numéro de portefeuille"
+            placeholder="Enter your wallet number"
           />
           <LabelledInput
-            label="Montant du rechargement"
+            label="Recharge amount"
             value={issueAmount}
             onChange={setIssueAmount}
-            placeholder="Veuillez saisir le montant du rechargement"
+            placeholder="Enter the recharge amount"
             type="number"
           />
           <div>
             <p className="mb-4 font-semibold" style={{ color: "#2b2b2b", fontSize: 18 }}>
-              <span style={{ color: "#ea4f55" }}>* </span>Justificatif de rechargement
+              <span style={{ color: "#ea4f55" }}>* </span>Recharge proof
             </p>
             <input ref={proofInput} className="hidden" type="file" accept="image/*" onChange={chooseProof} />
             <button
@@ -416,12 +416,12 @@ export default function DepositPage() {
             >
               {proof ? (
                 <>
-                  <img src={proof} alt="Justificatif sélectionné" className="mb-2 h-[74px] max-w-[180px] rounded object-cover" />
+                  <img src={proof} alt="Selected proof" className="mb-2 h-[74px] max-w-[180px] rounded object-cover" />
                   <span className="max-w-[85%] truncate text-sm">{proofName}</span>
                 </>
               ) : (
                 <span className="flex items-center gap-2" style={{ fontSize: 17 }}>
-                  <Camera size={27} fill="#a1a5ae" strokeWidth={1.6} /> Cliquez pour téléverser
+                  <Camera size={27} fill="#a1a5ae" strokeWidth={1.6} /> Click to upload
                 </span>
               )}
             </button>
@@ -435,12 +435,12 @@ export default function DepositPage() {
           style={{ background: "#00b80f", fontSize: 16 }}
           data-testid="button-submit-deposit-issue"
         >
-          {createDeposit.isPending ? "Envoi en cours…" : "Soumettre"}
+          {createDeposit.isPending ? "Submitting…" : "Submit"}
         </button>
 
         <section className="mx-5 mt-7">
           <h2 className="mb-1 font-bold" style={{ fontSize: 19, lineHeight: 1.55 }}>
-            Veuillez soumettre une preuve de dépôt similaire :
+            Please submit a similar deposit proof:
           </h2>
           <div className="h-[3px] w-full bg-[#d5d5d5]" />
           <div className="bg-[#f8f9fa] px-4 pb-5 pt-4">
@@ -451,10 +451,10 @@ export default function DepositPage() {
             />
           </div>
           <div className="mt-8 rounded-[10px] bg-white px-5 py-5 text-[14px] leading-6 text-[#686868]">
-            <p>Si vous avez un ordre de rechargement non reçu, veuillez soumettre les informations du rechargement.</p>
-            <p className="mt-2">1. Votre numéro de portefeuille</p>
-            <p>2. Justificatif de rechargement</p>
-            <p>3. Le délai de traitement du dernier ordre de rechargement dépasse 20 minutes</p>
+            <p>If you have a recharge order that was not received, please submit the recharge information.</p>
+            <p className="mt-2">1. Your wallet number</p>
+            <p>2. Recharge proof</p>
+            <p>3. The latest recharge order has been processing for more than 20 minutes</p>
           </div>
         </section>
       </main>
@@ -464,23 +464,23 @@ export default function DepositPage() {
   return (
     <main className="min-h-screen bg-[#f4f4f4] pb-9" style={{ color: "#171717" }}>
       <section className="relative h-[282px] overflow-hidden bg-[#dceef7]">
-        <img src={depositHero} alt="Borne de recharge électrique TGOOD" className="h-full w-full object-cover" />
+        <img src={depositHero} alt="TGOOD electric charging station" className="h-full w-full object-cover" />
         <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/30 to-transparent" />
         <div className="absolute inset-x-0 top-5 flex items-center justify-between px-5">
           <Link href="/">
             <button
               className="flex h-11 w-11 items-center justify-center rounded-full bg-white/35 backdrop-blur-[1px] active:scale-95"
-              aria-label="Retour à l'accueil"
+              aria-label="Back to home"
               data-testid="button-deposit-back"
             >
               <ArrowLeft size={30} strokeWidth={1.6} />
             </button>
           </Link>
-          <h1 className="absolute left-1/2 -translate-x-1/2 font-normal" style={{ fontSize: 18 }}>RECHARGEMENT</h1>
+          <h1 className="absolute left-1/2 -translate-x-1/2 font-normal" style={{ fontSize: 18 }}>RECHARGE</h1>
           <Link href="/deposit-history">
             <button
               className="flex h-11 w-11 items-center justify-center active:scale-95"
-              aria-label="Historique des dépôts"
+              aria-label="Deposit history"
               data-testid="button-deposit-history"
             >
               <History size={31} strokeWidth={1.45} />
@@ -490,7 +490,7 @@ export default function DepositPage() {
       </section>
 
       <section className="mx-1.5 -mt-0 rounded-[5px] bg-white px-[14px] pb-[14px] pt-[15px]">
-        <SectionTitle>Montant du rechargement</SectionTitle>
+        <SectionTitle>Recharge amount</SectionTitle>
         <div className="flex h-[52px] items-center border px-5" style={{ borderColor: "#72cf91", background: "#fafafa", fontSize: 20 }}>
           <span className="mr-3 text-[#555]">{CURRENCY}</span>
           <input
@@ -499,7 +499,7 @@ export default function DepositPage() {
             min={minDeposit}
             onChange={(event) => setAmount(Number(event.target.value) || 0)}
             className="min-w-0 flex-1 bg-transparent font-medium outline-none"
-            aria-label="Montant du rechargement"
+            aria-label="Recharge amount"
             data-testid="input-deposit-amount"
           />
         </div>
@@ -520,7 +520,7 @@ export default function DepositPage() {
                 }}
                 data-testid={`button-preset-amount-${preset}`}
               >
-                {preset.toLocaleString("fr-FR")}
+                {preset.toLocaleString(localeForLang(lang))}
               </button>
             );
           })}
@@ -528,7 +528,7 @@ export default function DepositPage() {
       </section>
 
       <section className="mx-1.5 mt-[18px] min-h-[233px] rounded-[5px] bg-white px-[14px] pt-[14px]">
-        <SectionTitle>Méthode de rechargement</SectionTitle>
+        <SectionTitle>Recharge method</SectionTitle>
         <button
           className="flex h-[56px] w-full items-center rounded-[10px] px-5 text-left text-white shadow-[0_3px_7px_rgba(44,185,86,.2)] transition active:scale-[.985]"
           style={{ background: TGOOD_GREEN }}
@@ -537,7 +537,7 @@ export default function DepositPage() {
           <span className="mr-4 flex h-7 w-7 items-center justify-center rounded bg-white/20">
             <CreditCard size={25} fill="white" strokeWidth={1.6} />
           </span>
-          <span className="flex-1" style={{ fontSize: 20 }}>Banque de dépôt</span>
+          <span className="flex-1" style={{ fontSize: 20 }}>Deposit bank</span>
           <Check size={24} strokeWidth={2.7} />
         </button>
       </section>
@@ -549,7 +549,7 @@ export default function DepositPage() {
         style={{ background: "#00b80f", fontSize: 19 }}
         data-testid="button-confirm-deposit"
       >
-          {createDeposit.isPending ? "Envoi en cours…" : "Paiement"}
+          {createDeposit.isPending ? "Submitting…" : "Pay"}
       </button>
       <button
         onClick={() => setView("issue")}
@@ -557,15 +557,15 @@ export default function DepositPage() {
         style={{ color: "#0c9b2e", fontSize: 17 }}
         data-testid="button-deposit-issue"
       >
-        Paiement en retard ? Cliquez ici
+        Payment delayed? Click here
       </button>
 
       <section className="mx-[14px] mt-9 text-[15px] leading-[1.55] text-[#555]">
-        <p>1. Le dépôt minimum est de {minDeposit.toLocaleString("fr-FR")} {CURRENCY}. Les dépôts inférieurs à ce montant ne seront pas crédités.</p>
-        <p>2. Le compte de portefeuille que vous saisissez sur la page de dépôt doit être le même que celui utilisé pour le paiement.</p>
-        <p>3. Veuillez toujours utiliser le numéro de compte le plus récent pour effectuer vos paiements et éviter d&apos;utiliser des informations de compte expirées.</p>
-        <p>4. Veuillez lire attentivement les instructions de la plateforme de paiement et les suivre scrupuleusement.</p>
-        <p>5. Si votre dépôt n&apos;est pas crédité immédiatement après le transfert, veuillez télécharger vos informations de paiement sur la page de dépôt ou contacter le service client.</p>
+        <p>1. The minimum deposit is {minDeposit.toLocaleString(localeForLang(lang))} {CURRENCY}. Deposits below this amount will not be credited.</p>
+        <p>2. The wallet number entered on the deposit page must be the same one used for payment.</p>
+        <p>3. Always use the most recent account number for payments and avoid using expired account information.</p>
+        <p>4. Read the payment platform instructions carefully and follow them exactly.</p>
+        <p>5. If your deposit is not credited immediately after the transfer, upload your payment information on the deposit page or contact customer service.</p>
       </section>
     </main>
   );

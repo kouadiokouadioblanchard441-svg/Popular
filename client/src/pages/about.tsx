@@ -8,16 +8,16 @@ export default function AboutPage() {
     queryKey: ["/api/settings"],
   });
 
-  const pageTitle = "À propos de TGOOD";
+  const pageTitle = "About TGOOD";
   const s1Title   = getContent(settings, "content_about_s1Title",   "Qui sommes-nous ?");
-  const s1Text1   = "TGOOD développe des solutions de mobilité électrique et d'énergie intelligente pour accompagner les usages modernes.";
-  const s1Text2   = "Notre plateforme rassemble des produits et des services simples, accessibles et transparents autour du vélo électrique, de la trottinette, du cyclomoteur et de la recharge.";
+  const s1Text1   = "TGOOD develops electric mobility and smart energy solutions for modern lifestyles.";
+  const s1Text2   = "Our platform brings together simple, accessible, and transparent products and services for electric bikes, scooters, mopeds, and charging.";
   const s2Title   = "Nos produits & solutions";
-  const s2Text    = "TGOOD met en avant une gamme de produits de mobilité électrique et d'équipements de recharge conçus pour être pratiques, fiables et adaptés aux besoins de chaque membre.";
+  const s2Text    = "TGOOD offers a range of electric mobility products and charging equipment designed to be practical, reliable, and suited to every member's needs.";
   const s3Title   = "Notre fonctionnement";
-  const s3Text    = "Les membres peuvent découvrir les produits disponibles, gérer leur solde en USDT, suivre leurs revenus liés à leur activité et demander un retrait selon les conditions affichées sur la plateforme.";
+  const s3Text    = "Members can explore available products, manage their USDT balance, track activity earnings, and request withdrawals according to the conditions shown on the platform.";
   const s4Title   = "Notre engagement";
-  const s4Text    = "Nous privilégions la clarté des informations, la sécurité des comptes et la qualité du service. Notre équipe accompagne les membres et améliore continuellement l'expérience TGOOD.";
+  const s4Text    = "We prioritize clear information, account security, and service quality. Our team supports members and continuously improves the TGOOD experience.";
 
   return (
     <div className="flex min-h-screen flex-col text-[#26352d]" style={{ background: "#f8f9fa", color: "#26352d" }}>

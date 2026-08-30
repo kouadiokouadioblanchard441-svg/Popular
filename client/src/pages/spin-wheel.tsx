@@ -349,10 +349,10 @@ export default function SpinWheelPage() {
     queryKey: ["/api/settings"],
   });
   const inviteText = platformSettings?.spinWheelInviteText
-    ?? "Invitez vos amis à s'inscrire et vous aurez plus de chances de gagner des prix, jusqu'à 50 fois par jour.";
+    ?? "Invite your friends to sign up for more chances to win prizes, up to 50 times per day.";
   const inviteHighlight = platformSettings?.spinWheelInviteHighlight ?? "50";
   const rulesText = platformSettings?.spinWheelRulesText
-    ?? "Achetez un produit pour obtenir des tours gratuits. Chaque tour vous donne une chance de remporter un gain en USDT crédité directement sur votre solde.";
+    ?? "Buy a product to get free spins. Each spin gives you a chance to win USDT credited directly to your balance.";
   const rulesHighlight = platformSettings?.spinWheelRulesHighlight ?? "";
   const [segments, setSegments] = useState<SpinWheelSegment[]>(DEFAULT_SPIN_WHEEL_SEGMENTS);
   const rotDrawRef   = useRef(rotation);
@@ -538,7 +538,7 @@ export default function SpinWheelPage() {
               </div>
             </div>
            <p className="text-center text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.78)" }}>
-             Tournez la roue et tentez de gagner des récompenses en USDT.
+             Spin the wheel for a chance to win USDT rewards.
            </p>
            <div className="grid grid-cols-2 gap-3 mt-3">
              <button
@@ -567,7 +567,7 @@ export default function SpinWheelPage() {
                <span className="w-7 h-7 rounded-full flex items-center justify-center text-base font-black" style={{ background: "#E8192C" }}>
                  ?
                </span>
-               Règles
+               Rules
              </button>
            </div>
          </div>

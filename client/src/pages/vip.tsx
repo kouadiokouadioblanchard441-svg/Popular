@@ -65,7 +65,7 @@ export default function VipPage() {
           <div className="flex items-center gap-1.5 mt-4">
             <ShoppingBag className="w-3.5 h-3.5 text-white/60" />
             <span className="text-white/60 text-xs">
-              {vipLevel === 0 ? "Aucun produit acheté" : `Produit ${currentCfg.label} actif`}
+              {vipLevel === 0 ? "No product purchased" : `Active ${currentCfg.label} product`}
             </span>
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function VipPage() {
                         <div className="flex items-center gap-1.5">
                           <Gift className={`w-3.5 h-3.5 ${isActive || isDone ? "text-yellow-300" : "text-white/30"}`} />
                           <span className={`text-[11px] font-bold ${isActive || isDone ? "text-yellow-300" : "text-white/30"}`}>
-                            Récompense : {cfg.reward.toLocaleString()} USDT
+                            Reward: {cfg.reward.toLocaleString()} USDT
                           </span>
                         </div>
                         {isDone && (

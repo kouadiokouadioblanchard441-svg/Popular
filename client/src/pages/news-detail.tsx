@@ -5,47 +5,47 @@ import { useI18n } from "@/lib/i18n";
 export const NEWS_ARTICLES = [
   {
     id: "1",
-    title: "XPENG : une expertise technologique innovante",
-    summary: "XPENG développe des solutions technologiques innovantes, reconnues pour leur design, leur performance et leur qualité.",
-    body: `XPENG développe des solutions technologiques pensées pour accompagner les usages modernes.
+    title: "TGOOD: innovative technology expertise",
+    summary: "TGOOD develops innovative technology solutions recognized for their design, performance, and quality.",
+    body: `TGOOD develops technology solutions designed for modern lifestyles.
 
-La marque s'appuie sur l'innovation, le design et la fiabilité pour proposer une expérience simple et performante.
+The brand relies on innovation, design, and reliability to deliver a simple, high-performance experience.
 
-Notre plateforme s'appuie sur l'identité XPENG pour offrir une expérience d'investissement claire et accessible.`,
+Our platform builds on TGOOD's identity to offer a clear and accessible investment experience.`,
     image: "",
-    date: "Source officielle",
+    date: "Official source",
   },
   {
     id: "2",
-    title: "Les produits d'investissement XPENG",
-    summary: "La plateforme propose une gamme complète de produits d'investissement avec des rendements journaliers attractifs.",
-    body: `La plateforme XPENG propose plusieurs niveaux de produits adaptés à chaque investisseur :
+    title: "TGOOD investment products",
+    summary: "The platform offers a complete range of investment products with attractive daily returns.",
+    body: `The TGOOD platform offers several product levels suited to every investor:
 
-- VIP 1 à VIP 3 : produits d'entrée de gamme, accessibles dès 600 USDT
-- VIP 4 à VIP 6 : produits intermédiaires avec des rendements élevés
-- VIP 7 à VIP 9 : produits premium pour les investisseurs confirmés
+- VIP 1 to VIP 3: entry-level products available from 600 USDT
+- VIP 4 to VIP 6: intermediate products with high returns
+- VIP 7 to VIP 9: premium products for experienced investors
 
-Chaque produit génère des revenus journaliers versés directement sur votre solde.
+Each product generates daily earnings credited directly to your balance.
 
-Les gains peuvent être retirés via Mobile Money après validation par notre équipe.`,
+Earnings can be withdrawn through Mobile Money after approval by our team.`,
     image: "",
-    date: "Produits officiels",
+    date: "Official products",
   },
   {
     id: "3",
-    title: "Qualité, transparence et service",
-    summary: "XPENG s'engage pour la transparence, la sécurité et la satisfaction de chaque membre de la plateforme.",
-    body: `La plateforme XPENG repose sur trois piliers fondamentaux :
+    title: "Quality, transparency, and service",
+    summary: "TGOOD is committed to transparency, security, and the satisfaction of every platform member.",
+    body: `The TGOOD platform is built on three fundamental pillars:
 
-1. **Transparence** — Tous les montants, frais et conditions sont clairement affichés avant toute transaction.
+1. **Transparency** — All amounts, fees, and terms are clearly shown before every transaction.
 
-2. **Sécurité** — Vos données personnelles et financières sont protégées par des systèmes de sécurité avancés.
+2. **Security** — Your personal and financial data is protected by advanced security systems.
 
-3. **Support** — Notre équipe est disponible 7j/7 pour répondre à toutes vos questions et vous accompagner.
+3. **Support** — Our team is available 7 days a week to answer your questions and support you.
 
-Rejoignez les membres qui font confiance à XPENG pour faire fructifier leur capital.`,
+Join the members who trust TGOOD to grow their capital.`,
     image: "",
-    date: "Qualité & service",
+    date: "Quality & service",
   },
 ];
 
@@ -59,7 +59,7 @@ export default function NewsDetailPage() {
   if (!article) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#000000" }}>
-        <p className="text-white/60">Article introuvable</p>
+        <p className="text-white/60">Article not found</p>
       </div>
     );
   }
