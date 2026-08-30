@@ -4,13 +4,9 @@ import { Link, useLocation } from "wouter";
 import { ChevronLeft, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import productBike from "@assets/generated_images/tgood-product-bike-card.jpg";
-import productScooter from "@assets/generated_images/tgood-scooter.jpg";
-import productMoped from "@assets/generated_images/tgood-moped.jpg";
+import { getProductVisual } from "@/lib/product-visuals";
 
 const TGOOD_GREEN = "#00c83c";
-const PRODUCT_VISUALS = [productBike, productScooter, productMoped];
-
 function EmptyProductsIllustration() {
   return (
     <svg width="210" height="170" viewBox="0 0 210 170" fill="none" aria-hidden="true">
@@ -116,9 +112,7 @@ export default function MyProductsPage() {
               const progress = cycleDays > 0 ? Math.min(100, Math.round((completedDays / cycleDays) * 100)) : 0;
               const earned = Number(userProduct.totalEarned || 0);
               const canCollect = product.collectAtEnd && daysRemaining <= 0 && earned > 0;
-              const image = product.imageUrl?.toLowerCase().includes("tgood")
-                ? product.imageUrl
-                : PRODUCT_VISUALS[index % PRODUCT_VISUALS.length];
+              const image = getProductVisual(product.imageUrl, index);
 
               return (
                 <article key={userProduct.id} className="overflow-hidden rounded-xl border border-white/10 bg-[#151515]" data-testid={`product-card-${userProduct.id}`}>

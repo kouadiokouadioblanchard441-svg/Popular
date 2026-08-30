@@ -10,14 +10,10 @@ import { useI18n } from "@/lib/i18n";
 import { formatCurrency } from "@/lib/countries";
 import type { Product } from "@shared/schema";
 
-import productBike from "@assets/generated_images/tgood-product-bike-card.jpg";
-import productScooter from "@assets/generated_images/tgood-scooter.jpg";
-import productMoped from "@assets/generated_images/tgood-moped.jpg";
+import { getProductVisual } from "@/lib/product-visuals";
 
 const TGOOD_GREEN = "#00ef24";
 const CURRENCY = "USDT";
-const TGOOD_PRODUCT_VISUALS = [productBike, productScooter, productMoped];
-
 interface ProductWithOwnership extends Product {
   isOwned: boolean;
   ownedCount?: number;
@@ -89,9 +85,7 @@ export default function ProductsPage() {
         : product.name || `TGOOD GreenRide ${index + 1}`;
   };
   const getProductImage = (product: ProductWithOwnership, index: number) => {
-    return product.imageUrl?.toLowerCase().includes("tgood")
-      ? product.imageUrl
-      : TGOOD_PRODUCT_VISUALS[index % TGOOD_PRODUCT_VISUALS.length];
+    return getProductVisual(product.imageUrl, index);
   };
   const confirmProductIndex = confirmProduct
     ? Math.max(0, filtered.findIndex((product) => product.id === confirmProduct.id))

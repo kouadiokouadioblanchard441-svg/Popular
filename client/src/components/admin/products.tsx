@@ -13,9 +13,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Edit, Loader2, TrendingUp, Plus, Trash2, Users, ShoppingBag, Lock } from "lucide-react";
+import { Edit, Loader2, Plus, Trash2, Users, ShoppingBag, Lock } from "lucide-react";
 import type { Product } from "@shared/schema";
 import ImageUploader from "@/components/admin/image-uploader";
+import { getProductVisual } from "@/lib/product-visuals";
 
 const productSchema = z.object({
   name: z.string().min(2, "Nom requis"),
@@ -349,18 +350,12 @@ export default function AdminProducts() {
       {isLoading ? (
         Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-32" />)
       ) : products && products.length > 0 ? (
-        products.map((product) => (
+        products.map((product, index) => (
           <Card key={product.id}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  {product.imageUrl ? (
-                    <img src={product.imageUrl} alt={product.name} className="w-12 h-12 rounded-lg object-contain border border-border" />
-                  ) : (
-                    <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                      <TrendingUp className="w-6 h-6 text-primary" />
-                    </div>
-                  )}
+                  <img src={getProductVisual(product.imageUrl, index)} alt={product.name} className="w-12 h-12 rounded-lg object-cover border border-border" />
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-medium text-foreground">{product.name}</p>
