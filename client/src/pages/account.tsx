@@ -45,18 +45,18 @@ const PROFILE_ACTIONS: {
 ];
 
 const MORE_ACTIONS: {
-  label: string;
+  labelKey: "about" | "security" | "history" | "customerService" | "wallet" | "changePassword" | "redeem";
   href: string;
   Icon: LucideIcon;
 }[] = [
-  { label: "À propos de nous", href: "/about", Icon: Info },
-  { label: "Règlement", href: "/rules", Icon: Bookmark },
-  { label: "Historique", href: "/history", Icon: FileText },
-  { label: "Service client", href: "/service", Icon: Headphones },
-  { label: "Partage de rapport", href: "/share-information", Icon: Download },
-  { label: "Lier une carte bancaire", href: "/wallet", Icon: CreditCard },
-  { label: "Modifier le MDP", href: "/change-password", Icon: KeyRound },
-  { label: "Échanger un cadeau", href: "/gift-code", Icon: Gift },
+  { labelKey: "about", href: "/about", Icon: Info },
+  { labelKey: "security", href: "/rules", Icon: Bookmark },
+  { labelKey: "history", href: "/history", Icon: FileText },
+  { labelKey: "customerService", href: "/service", Icon: Headphones },
+  { labelKey: "customerService", href: "/share-information", Icon: Download },
+  { labelKey: "wallet", href: "/wallet", Icon: CreditCard },
+  { labelKey: "changePassword", href: "/change-password", Icon: KeyRound },
+  { labelKey: "redeem", href: "/gift-code", Icon: Gift },
 ];
 
 export default function AccountPage() {
@@ -252,9 +252,9 @@ export default function AccountPage() {
         <section className="mx-3 mt-3 bg-white px-3 pt-5 pb-3" style={{ borderRadius: 11, boxShadow: "0 1px 5px rgba(0,0,0,.035)" }}>
           <h2 className="ml-3 font-normal" style={{ color: "#1e1e1e", fontSize: 22 }}>Plus</h2>
           <div className="mt-5 grid grid-cols-4">
-            {MORE_ACTIONS.map(({ label, href, Icon }) => (
+          {MORE_ACTIONS.map(({ labelKey, href, Icon }) => (
               <button
-                key={label}
+              key={href}
                 onClick={() => navigate(href)}
                 className="flex min-w-0 flex-col items-center gap-2 px-0.5 py-3 active:scale-95"
                 style={{ color: "#111", transition: "transform 120ms ease" }}
@@ -262,7 +262,7 @@ export default function AccountPage() {
               >
                 <Icon size={43} strokeWidth={2.5} />
                 <span className="min-h-[36px] text-center leading-snug" style={{ fontSize: 15 }}>
-                  {label}
+                {t[labelKey]}
                 </span>
               </button>
             ))}
