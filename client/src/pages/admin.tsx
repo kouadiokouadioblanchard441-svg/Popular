@@ -10,17 +10,7 @@ import AdminDeposits from "@/components/admin/deposits";
 import AdminWithdrawals from "@/components/admin/withdrawals";
 import AdminUsers from "@/components/admin/users";
 import AdminProducts from "@/components/admin/products";
-import AdminPaymentNumbers from "@/components/admin/payment-numbers";
 import AdminSettings from "@/components/admin/settings";
-import AdminGiftCodes from "@/components/admin/gift-codes";
-import AdminCountries from "@/components/admin/countries";
-import AdminContent from "@/components/admin/content";
-import AdminWheel from "@/components/admin/wheel";
-import AdminVipSettings from "@/components/admin/vip-settings";
-import AdminDepositChannels from "@/components/admin/deposit-channels";
-import AdminSpinWheelConfig from "@/components/admin/spin-wheel-config";
-import AdminBannerConfig from "@/components/admin/banner-config";
-import AdminShareReports from "@/components/admin/share-reports";
 
 export default function AdminPage() {
   const { user } = useAuth();
@@ -45,21 +35,10 @@ export default function AdminPage() {
             <TabsList className="w-max">
               <TabsTrigger value="dashboard" data-testid="tab-dashboard">{t.adminTabDashboard}</TabsTrigger>
               <TabsTrigger value="deposits" data-testid="tab-deposits">{t.adminTabDeposits}</TabsTrigger>
-               <TabsTrigger value="share-reports" data-testid="tab-share-reports">Rapports partagés</TabsTrigger>
               <TabsTrigger value="withdrawals" data-testid="tab-withdrawals">{t.adminTabWithdrawals}</TabsTrigger>
               <TabsTrigger value="users" data-testid="tab-users">{t.adminTabUsers}</TabsTrigger>
               <TabsTrigger value="products" data-testid="tab-products">{t.adminTabProducts}</TabsTrigger>
-
-              <TabsTrigger value="spin-wheel" data-testid="tab-spin-wheel">🎡 Roue</TabsTrigger>
-              <TabsTrigger value="deposit-channels" data-testid="tab-deposit-channels">Canaux dépôt</TabsTrigger>
-              <TabsTrigger value="payment-numbers" data-testid="tab-payment-numbers">{t.adminTabNumbers}</TabsTrigger>
-              <TabsTrigger value="countries" data-testid="tab-countries">{t.adminTabCountries}</TabsTrigger>
-              <TabsTrigger value="giftcodes" data-testid="tab-giftcodes">{t.adminTabGiftCodes}</TabsTrigger>
               <TabsTrigger value="settings" data-testid="tab-settings">{t.adminTabSettings}</TabsTrigger>
-              <TabsTrigger value="wheel" data-testid="tab-wheel">{t.adminTabWheel}</TabsTrigger>
-              <TabsTrigger value="content" data-testid="tab-content">{t.adminTabContent}</TabsTrigger>
-              <TabsTrigger value="banners" data-testid="tab-banners">🖼 Bannières</TabsTrigger>
-              <TabsTrigger value="vip" data-testid="tab-vip">⭐ VIP</TabsTrigger>
             </TabsList>
           </div>
 
@@ -70,10 +49,6 @@ export default function AdminPage() {
           <TabsContent value="deposits" className="mt-4">
             <AdminDeposits />
           </TabsContent>
-          <TabsContent value="share-reports" className="mt-4">
-            <AdminShareReports />
-          </TabsContent>
-
           <TabsContent value="withdrawals" className="mt-4">
             <AdminWithdrawals />
           </TabsContent>
@@ -87,45 +62,8 @@ export default function AdminPage() {
           </TabsContent>
 
 
-          <TabsContent value="spin-wheel" className="mt-4">
-            <AdminSpinWheelConfig />
-          </TabsContent>
-
-          <TabsContent value="deposit-channels" className="mt-4">
-            <AdminDepositChannels />
-          </TabsContent>
-
-          <TabsContent value="payment-numbers" className="mt-4">
-            <AdminPaymentNumbers />
-          </TabsContent>
-
-          <TabsContent value="countries" className="mt-4">
-            <AdminCountries />
-          </TabsContent>
-
-          <TabsContent value="giftcodes" className="mt-4">
-            <AdminGiftCodes />
-          </TabsContent>
-
           <TabsContent value="settings" className="mt-4">
             <AdminSettings isSuperAdmin={user.isSuperAdmin} />
-          </TabsContent>
-
-          <TabsContent value="wheel" className="mt-4">
-            <AdminWheel />
-          </TabsContent>
-
-          <TabsContent value="content" className="mt-4">
-            <AdminContent />
-          </TabsContent>
-
-
-          <TabsContent value="banners" className="mt-4">
-            <AdminBannerConfig />
-          </TabsContent>
-
-          <TabsContent value="vip" className="mt-4">
-            <AdminVipSettings />
           </TabsContent>
         </Tabs>
       </div>
