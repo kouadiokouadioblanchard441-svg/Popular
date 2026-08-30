@@ -1,0 +1,10 @@
+- [PowerAdd brand color migration](spolarpv-branding.md) — green (#00A651 family) brand replaced by orange + sky-blue (#87CEEB); semantic green-* Tailwind classes left untouched.
+- [PowerAdd user deletion / FK cascade](spolarpv-user-deletion.md) — no ON DELETE CASCADE anywhere on users.id FKs; hard-deleting a user needs manual multi-table cleanup in a transaction.
+- [PowerAdd Plesk bundle](spolarpv-plesk-bundle.md) — Plesk pulls prebuilt dist artifacts; production bundling must include SDKs without usable CommonJS exports.
+- [PowerAdd Plesk Git work tree](spolarpv-plesk-git-worktree.md) — Plesk remote-Git deployment must checkout into the website root, never its internal bare repository or .git directory.
+- [PowerAdd Supabase pooler](spolarpv-supabase-pooler.md) — the app needs Supabase's exact PostgreSQL pooler URI; public API URLs and malformed/old pooler tenants fail before login.
+- [PowerAdd GitHub remote recovery](spolarpv-github-remote-recovery.md) — when a remote has no visible branch and rejects packs with missing objects, preserve local history before recreating the remote root.
+- [TGOOD brand identity](tgood-branding.md) — use the TGOOD green wordmark and green palette; do not reintroduce XPENG visual branding.
+- [Global country selection](rdc-only-market.md) — use worldwide country codes in auth; default new forms to US/+1 and keep all monetary labels in USDT.
+- [NOWPayments payout integrity](nowpayments-payout-integrity.md) — ambiguous provider responses require reconciliation, never automatic refund; payout states must be monotonic.
+- [TGOOD static interface translations](tgood-i18n-static-text.md) — English mode must cover legacy JSX labels as well as typed catalog entries.

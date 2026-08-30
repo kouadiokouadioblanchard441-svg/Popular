@@ -1,0 +1,30 @@
+{
+  "name": "TGOOD",
+  "short_name": "TGOOD",
+  "description": "TGOOD — Clean energy and smart mobility platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/tgood-logo.gif",
+      "sizes": "138x60",
+      "type": "image/gif",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/tgood-logo.gif",
+      "sizes": "138x60",
+      "type": "image/gif",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

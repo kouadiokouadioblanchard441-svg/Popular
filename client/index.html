@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#078438" />
+    <meta name="description" content="TGOOD — Clean energy and smart mobility platform" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TGOOD" />
+    <meta property="og:description" content="TGOOD — Clean energy and smart mobility platform" />
+    <meta property="og:site_name" content="TGOOD" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TGOOD" />
+    <meta name="twitter:description" content="TGOOD — Clean energy and smart mobility platform" />
+    
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/gif" href="/tgood-logo.gif" />
+    <link rel="apple-touch-icon" href="/tgood-logo.gif" />
+    <link rel="manifest" href="/manifest.json" />
+    <script>
+      window._installPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window._installPrompt = e;
+      });
+      window.addEventListener('appinstalled', function() {
+        window._appInstalled = true;
+      });
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">
+    <style>
+      html, body {
+        margin: 0;
+        background: #f4f7f5;
+        overscroll-behavior-y: none;
+        overscroll-behavior-x: none;
+      }
+    </style>
+    <title>TGOOD</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

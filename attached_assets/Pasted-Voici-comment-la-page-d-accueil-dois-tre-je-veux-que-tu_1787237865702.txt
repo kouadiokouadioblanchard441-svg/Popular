@@ -1,0 +1,87 @@
+Voici comment la page d'accueil dois être je veux que tu me reproduit la même page les mêmes icônes n'active pour la couleur je veux que tu utilise la couleur la même chose puisque notre entreprise à la même couleur alors Je veux que la page d'accueil soit le même que sur la capture d'écran
+
+Je souhaite que Acceuil" de mon application soit strictement identique à celui présenté sur la capture d'écran de référence. Respectez à 100 % les éléments suivants : les images tout tu peux généré ces images La disposition (layout) de tous les éléments. Les dimensions (largeur et hauteur) des cartes, boutons et conteneurs. Les marges (margin) et les espacements (padding). Les coins arrondis (border-radius). Les couleurs, dégradés et effets d'ombre (box-shadow). Les tailles, épaisseurs et couleurs des textes. Les icônes et leur position. La largeur de chaque bouton afin qu'elle corresponde exactement à celle de la capture d'écran. Les alignements horizontaux et verticaux. Les séparateurs, bordures et effets visuels. Les animations et effets au clic (hover, active, ripple) s'ils sont présents. L'interface doit être 100 % responsive tout en conservant exactement le même rendu sur mobile. ⚠️ N'apportez aucune modification au design. Reproduisez fidèlement la capture d'écran pixel par pixel, en conservant les mêmes proportions, les mêmes espacements et la même hiérarchie visuelle. L'objectif est que l'utilisateur ne puisse voir aucune différence entre la capture d'écran de référence et acceuil de l'application.
+
+Je vais refaire l’accueil sur le même principe que la page Équipe : bannière immersive, quatre actions noires, notification, deux cartes de solde, section des emplacements et grille de villes, avec le vert TGOOD et le CDF. Je commence par reprendre la logique actuelle pour conserver les données et les clics existants.
+
+Les visuels nécessaires sont prêts : une bannière mobilité durable, les deux véhicules verts pour les cartes de solde et une grille de villes. Je remplace l’ancien accueil noir par la composition blanche de votre référence, en gardant les actions recharge, retrait, aide et pointage opérationnelles.
+
+L’accueil a été remplacé par le nouveau design. Je lance maintenant le contrôle de compilation et redémarre le serveur, puis je vérifierai la page en vue mobile connectée pour confirmer les proportions et les états actifs.
+
+La vérification mobile confirme que la structure correspond bien à la référence : bannière, carte d’actions, notification, cartes de montants, section Emplacements et navigation active. Je fais un dernier contrôle du code de l’accueil pour m’assurer qu’aucune interaction existante importante n’a été cassée.
+
+La page Accueil est maintenant reconstruite sur le modèle de votre capture :
+
+Grande bannière TGOOD avec mobilité électrique et stations de recharge.
+Carte blanche superposée avec les quatre actions : Recharge, Retrait, Aide et Pointage.
+Icônes noires réelles et actions cliquables.
+Bande de notification blanche avec cloche verte.
+Deux cartes avec véhicules électriques verts :
+Solde du compte en CDF
+Revenus cumulés en CDF
+Section Emplacements / Notre ville avec une grille responsive de 12 visuels de villes.
+Navigation du bas blanche avec Accueil actif en vert TGOOD.
+Animations tactiles sur les boutons et animation du ticker, désactivée automatiquement pour les utilisateurs qui réduisent les animations.
+J’ai vérifié le rendu mobile, les clics des actions, la navigation et la compilation TypeScript. Le serveur est redémarré et fonctionne correctement.
+
+La partie emplacement et Ville il faut mettre expérience et durabilité
+
+Je remplace les deux intitulés de cette section : Emplacements devient Expérience et Notre ville devient Durabilité, en conservant la même disposition et les mêmes images.
+
+C’est fait :
+
+Emplacements → Expérience
+Notre ville → Durabilité
+La disposition, les images et la couleur verte TGOOD restent inchangées. La compilation passe et le serveur fonctionne correctement.
+
+En Bas de la section il faut ajouter les produits spéciaux
+
+Je vais ajouter une section Produits spéciaux tout en bas de l’accueil, après la grille Durabilité, avec les produits disponibles, leurs images, leur prix en CDF et un accès vers la page Produit.
+
+La section Produits spéciaux est ajoutée sous Durabilité, avec jusqu’à quatre produits réels chargés depuis l’application, leurs images, prix en CDF et un lien vers la page Produit. Je vérifie la compilation et le rendu après redémarrage.
+
+La section Produits spéciaux est maintenant ajoutée en bas de la page d’accueil, juste après Durabilité.
+
+Elle contient :
+
+Les produits disponibles chargés depuis l’application.
+Les images des produits.
+Les prix en CDF.
+Le lien Voir tout >.
+La navigation vers la page Produit lorsqu’on clique sur un produit ou sur « Voir tout ».
+La section a été vérifiée sur mobile et la compilation passe correctement.
+
+Lors de l'actualisation sa affiches le logo pour d'actualiser je veux que tu supprimes ça il faut que sa soit le toast d'actualisation qui tourne
+
+Je vais supprimer le logo affiché pendant le rechargement initial et conserver uniquement l’indicateur circulaire animé, afin que l’actualisation affiche seulement le chargement en rotation.
+
+Le logo a été retiré des deux états de chargement : le splash initial et le chargement d’authentification. Il ne reste plus que l’indicateur circulaire animé. Je vérifie la compilation et redémarre l’application.
+
+C’est fait. Lors de l’actualisation :
+
+Le logo TGOOD n’apparaît plus.
+Le splash screen affiche uniquement l’indicateur circulaire qui tourne.
+Le chargement d’authentification affiche également uniquement le spinner.
+La compilation passe et l’application a été redémarrée correctement.
+Je veux que la page d'accueil soit le même que sur la capture d'écran mais avec les produits de TGOOG des images professionnel comme ça les mêmes icônes n'active
+
+Je souhaite que Profil" de mon application soit strictement identique à celui présenté sur la capture d'écran de référence. Respectez à 100 % les éléments suivants : les images tout tu peux généré ces images La disposition (layout) de tous les éléments. Les dimensions (largeur et hauteur) des cartes, boutons et conteneurs. Les marges (margin) et les espacements (padding). Les coins arrondis (border-radius). Les couleurs, dégradés et effets d'ombre (box-shadow). Les tailles, épaisseurs et couleurs des textes. Les icônes et leur position. La largeur de chaque bouton afin qu'elle corresponde exactement à celle de la capture d'écran. Les alignements horizontaux et verticaux. Les séparateurs, bordures et effets visuels. Les animations et effets au clic (hover, active, ripple) s'ils sont présents. L'interface doit être 100 % responsive tout en conservant exactement le même rendu sur mobile. ⚠️ N'apportez aucune modification au design. Reproduisez fidèlement la capture d'écran pixel par pixel, en conservant les mêmes proportions, les mêmes espacements et la même hiérarchie visuelle. L'objectif est que l'utilisateur ne puisse voir aucune différence entre la capture d'écran de référence et Profil de l'application.
+
+Je vais refaire la page Profil / Moi en reprenant la capture : bannière TGOOD, grille de 8 actions, bande de notification, carte Centre de missions, soldes, partenaires et navigation basse avec Moi actif. Je conserve les actions existantes et remplace les visuels de l’ancienne marque par des éléments TGOOD professionnels.
+
+Je reprends la page Profil sur la capture en supprimant l’ancien header rouge et les anciennes icônes XPENG. Je prépare aussi une bannière TGOOD dédiée au Centre de missions, puis je reconstruis la grille d’actions, les soldes, la zone partenaires et les icônes inactives dans le même style mobile.
+
+La bannière du Centre de missions est prête. Je remplace maintenant l’ancien écran Compte par l’interface de la capture : 8 raccourcis, notification, mission, deux comptes et partenaires, avec le vert TGOOD et une navigation active sur Moi.
+
+La page Profil est maintenant reconstruite avec le style de la capture et des visuels TGOOD. Je vérifie la compilation puis je redémarre le serveur avant de contrôler le rendu mobile et les huit raccourcis.
+
+La compilation est correcte. Le serveur a seulement perdu le fichier pendant le remplacement à chaud de la page, ce qui est un effet transitoire lors de l’écrasement complet d’un composant ; je le redémarre maintenant pour charger la nouvelle page Profil proprement.
+
+Le rendu mobile est vérifié : la page Profil suit bien la structure de votre référence et les raccourcis ainsi que le bouton Centre de missions fonctionnent. Je fais un dernier contrôle technique de cette nouvelle page avant de terminer.
+
+Le contrôle final a identifié deux points à corriger avant de livrer : l’ancien écran contenait les actions essentielles de compte (notamment déconnexion et accès administration) et le texte du Centre de missions pouvait être trop serré sur les petits écrans. Je les restaure dans un menu discret en haut à droite, sans modifier la structure principale de la capture, et je rends la bannière de missions adaptative.
+
+Je finalise la restauration du menu de compte : le bouton discret donne accès à la déconnexion, au mot de passe, au portefeuille, au cadeau, à l’installation et à l’administration protégée par PIN. Je corrige également l’action d’installation pour qu’elle reste fonctionnelle au lieu de conduire vers une page inexistante.
+
+Les actions essentielles sont de nouveau disponibles dans le menu de compte, sans alourdir la page principale. Je vérifie maintenant la compilation et le comportement après redémarrage.
+
