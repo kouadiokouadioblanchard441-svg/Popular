@@ -18,7 +18,7 @@ import teslaLogo from "@/assets/partners/tesla.svg";
 import bydLogo from "@/assets/partners/byd.svg";
 import binanceLogo from "@/assets/partners/binance.svg";
 import netflixLogo from "@/assets/partners/netflix.svg";
-import xpengLogo from "@/assets/partners/xpeng.svg";
+import xpengLogo from "@assets/image_search/xpeng-official.svg";
 
 const TGOOD_GREEN = "#08b83a";
 
@@ -389,12 +389,23 @@ export default function HomePage() {
                 key={partner.name}
                 className="flex h-[76px] flex-col items-center justify-center gap-2 rounded-[10px] bg-white px-2 shadow-sm"
               >
-                <img
-                  src={partner.logo}
-                  alt={`Logo ${partner.name}`}
-                  className="h-8 w-full object-contain"
-                  loading="lazy"
-                />
+                {partner.name === "XPENG" ? (
+                  <span className="flex h-8 w-full items-center justify-center rounded-[4px] bg-[#111827] px-3">
+                    <img
+                      src={partner.logo}
+                      alt={`Logo ${partner.name}`}
+                      className="h-7 w-auto object-contain"
+                      loading="lazy"
+                    />
+                  </span>
+                ) : (
+                  <img
+                    src={partner.logo}
+                    alt={`Logo ${partner.name}`}
+                    className="h-8 w-full object-contain"
+                    loading="lazy"
+                  />
+                )}
                 <span className="truncate text-center text-[10px] font-medium text-[#65756c]">{partner.name}</span>
               </div>
             ))}
