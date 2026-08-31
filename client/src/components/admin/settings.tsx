@@ -58,8 +58,6 @@ const settingsSchema = z.object({
   taskLevel1Commission: z.string().min(1, "Commission requise"),
   taskLevel2Commission: z.string().min(1, "Commission requise"),
   taskLevel3Commission: z.string().min(1, "Commission requise"),
-  dailyBonusEnabled: z.boolean(),
-  dailyBonusAmount: z.string().min(1, "Montant requis"),
   signupBonusEnabled: z.boolean(),
   signupBonusAmount: z.string().min(1, "Montant requis"),
   // WestPay
@@ -231,8 +229,6 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
       taskLevel1Commission: "3",
       taskLevel2Commission: "2",
       taskLevel3Commission: "1",
-      dailyBonusEnabled: true,
-      dailyBonusAmount: "25",
       signupBonusEnabled: true,
       signupBonusAmount: "2",
       westpayMerchantSlug: "",
@@ -285,8 +281,6 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
       taskLevel1Commission:   settings.taskLevel1Commission   ?? "3",
       taskLevel2Commission:   settings.taskLevel2Commission   ?? "2",
       taskLevel3Commission:   settings.taskLevel3Commission   ?? "1",
-      dailyBonusEnabled:      settings.dailyBonusEnabled      !== "false",
-      dailyBonusAmount:       settings.dailyBonusAmount       ?? "25",
       signupBonusEnabled:     settings.signupBonusEnabled     !== "false",
       signupBonusAmount:      settings.signupBonusAmount      ?? "2",
       popupTitle:             settings.popupTitle             ?? "",
@@ -321,7 +315,6 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
         channelEnabled: String(data.channelEnabled),
         groupEnabled: String(data.groupEnabled),
         withdrawalEnabled: String(data.withdrawalEnabled),
-        dailyBonusEnabled: String(data.dailyBonusEnabled),
         signupBonusEnabled: String(data.signupBonusEnabled),
       };
       const response = await apiRequest("POST", "/api/admin/settings", serialized);
@@ -878,34 +871,6 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                   <FormMessage />
                 </FormItem>
               )} />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* ── Bonus quotidien ── */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              🎁 Bonus quotidien
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <FormField control={form.control} name="dailyBonusEnabled" render={({ field }) => (
-              <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                <div>
-                  <FormLabel className="text-sm font-medium">Activer le bonus quotidien</FormLabel>
-                  <FormDescription className="text-xs">Les utilisateurs peuvent réclamer un bonus chaque 24h</FormDescription>
-                </div>
-                <FormControl>
-                  <Switch checked={field.value} onCheckedChange={field.onChange} />
-                </FormControl>
-              </FormItem>
-            )} />
-            <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-3">
-              <p className="text-sm font-medium text-emerald-900">Récompense aléatoire</p>
-              <p className="mt-1 text-xs text-emerald-800">
-                Chaque pointage attribue automatiquement entre 0,10 et 0,40 USDT.
-              </p>
             </div>
           </CardContent>
         </Card>
