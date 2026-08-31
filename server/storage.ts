@@ -126,7 +126,7 @@ export interface IStorage {
   getTasks(): Promise<Task[]>;
   getAllTasksAdmin(): Promise<Task[]>;
   getTasksWithStatus(userId: number): Promise<(Task & { isCompleted: boolean; canClaim: boolean; currentInvites: number })[]>;
-  claimTask(userId: number, taskId: number): Promise<void>;
+  claimTask(userId: number, taskId: number): Promise<number>;
   createTask(data: Partial<Task>): Promise<Task>;
   updateTask(id: number, data: Partial<Task>): Promise<Task>;
   deleteTask(id: number): Promise<void>;
@@ -1470,7 +1470,7 @@ export class DatabaseStorage implements IStorage {
     }));
   }
 
-  async claimTask(userId: number, taskId: number): Promise<void> {
+  async claimTask(userId: number, taskId: number): Promise<number> {
     const tasksStatus = await this.getTasksWithStatus(userId);
     const taskStatus = tasksStatus.find(t => t.id === taskId);
 
@@ -1483,34 +1483,43 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) throw new Error("Utilisateur non trouvé");
 
-    await db.transaction(async (tx) => {
-      const existingClaim = await tx.select({ id: userTasks.id })
-        .from(userTasks)
-        .where(and(eq(userTasks.userId, userId), eq(userTasks.taskId, taskId)))
-        .limit(1);
+    try {
+      await db.transaction(async (tx) => {
+        const existingClaim = await tx.select({ id: userTasks.id })
+          .from(userTasks)
+          .where(and(eq(userTasks.userId, userId), eq(userTasks.taskId, taskId)))
+          .limit(1);
 
-      if (existingClaim.length > 0) {
+        if (existingClaim.length > 0) {
+          throw new Error("Tâche déjà réclamée");
+        }
+
+        await tx.insert(userTasks).values({
+          userId,
+          taskId,
+          rewardClaimed: true,
+        });
+
+        const newBalance = parseFloat(user.balance) + taskStatus.reward;
+        await tx.update(users)
+          .set({ balance: newBalance.toFixed(2) })
+          .where(eq(users.id, userId));
+
+        await tx.insert(transactions).values({
+          userId,
+          type: "task_reward",
+          amount: taskStatus.reward.toString(),
+          description: `Récompense: ${taskStatus.name}`,
+        });
+      });
+    } catch (error: any) {
+      if (error?.code === "23505") {
         throw new Error("Tâche déjà réclamée");
       }
+      throw error;
+    }
 
-      await tx.insert(userTasks).values({
-        userId,
-        taskId,
-        rewardClaimed: true,
-      });
-
-      const newBalance = parseFloat(user.balance) + taskStatus.reward;
-      await tx.update(users)
-        .set({ balance: newBalance.toFixed(2) })
-        .where(eq(users.id, userId));
-
-      await tx.insert(transactions).values({
-        userId,
-        type: "task_reward",
-        amount: taskStatus.reward.toString(),
-        description: `Récompense: ${taskStatus.name}`,
-      });
-    });
+    return taskStatus.reward;
   }
 
   // Transactions

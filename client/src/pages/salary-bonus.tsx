@@ -36,10 +36,13 @@ export default function SalaryBonusPage() {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      toast({ title: t.tasksRewardClaimed, description: t.tasksRewardClaimedDesc });
+      toast({
+        title: t.tasksRewardClaimed,
+        description: data.message || t.tasksRewardClaimedDesc,
+      });
       setClaimingId(null);
     },
     onError: (err: any) => {

@@ -40,10 +40,13 @@ export default function TasksPage() {
       }
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
       refreshUser();
-      toast({ title: t.tasksRewardClaimed, description: t.tasksRewardClaimedDesc });
+      toast({
+        title: t.tasksRewardClaimed,
+        description: data.message || t.tasksRewardClaimedDesc,
+      });
     },
     onError: (error: any) => {
       toast({ title: error.message || t.errorOccurred, variant: "destructive" });

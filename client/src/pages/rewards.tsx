@@ -29,12 +29,12 @@ export default function RewardsPage() {
       }
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       toast({
         title: t.rewardsSuccessTitle,
-        description: t.rewardsSuccessDesc,
+        description: data.message || t.rewardsSuccessDesc,
       });
     },
     onError: (error: Error) => {
