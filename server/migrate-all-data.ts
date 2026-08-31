@@ -37,7 +37,6 @@ interface UserData {
   has_active_product: boolean;
   created_at: string;
   last_free_product_claim: string | null;
-  last_daily_bonus_claim: string | null;
   promoter_set_by: number | null;
   admin_set_by: number | null;
   admin_set_at: string | null;
@@ -58,9 +57,9 @@ async function insertUsers(users: UserData[]) {
           balance, today_earnings, total_earnings, is_admin, is_super_admin,
           is_banned, is_withdrawal_blocked, is_promoter, must_invite_to_withdraw,
           has_deposited, has_active_product, created_at, last_free_product_claim,
-          last_daily_bonus_claim, promoter_set_by, admin_set_by, admin_set_at,
+          promoter_set_by, admin_set_by, admin_set_at,
           admin_pin, is_admin_password_required
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
         ON CONFLICT (id) DO NOTHING
         RETURNING id
       `, [
@@ -69,8 +68,8 @@ async function insertUsers(users: UserData[]) {
         user.total_earnings, user.is_admin, user.is_super_admin, user.is_banned,
         user.is_withdrawal_blocked, user.is_promoter, user.must_invite_to_withdraw,
         user.has_deposited, user.has_active_product, user.created_at,
-        user.last_free_product_claim || null, user.last_daily_bonus_claim || null,
-        user.promoter_set_by || null, user.admin_set_by || null, user.admin_set_at || null,
+        user.last_free_product_claim || null, user.promoter_set_by || null,
+        user.admin_set_by || null, user.admin_set_at || null,
         user.admin_pin || null, user.is_admin_password_required
       ]);
       if (result.rowCount && result.rowCount > 0) {

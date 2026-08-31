@@ -361,9 +361,6 @@ export type Translations = {
   withdrawalNetAmountLabel: string;
   withdrawalMinimumNote: string;
   withdrawalSubmitting: string;
-  // checkin
-  checkinBtn: string;
-  checkinComeBack: string;
   // account
   pinMinLength: string;
   // about modal
@@ -424,8 +421,6 @@ export type Translations = {
   registeredOn: string;
   amountLabel: string;
   methodLabel: string;
-  checkinBonusTitle: string;
-  checkinBonusDesc: string;
   // banker page
   bankerTitle: string;
   bankerPendingDepositsLabel: string;
@@ -967,8 +962,6 @@ const fr: Translations = {
     withdrawalNetAmountLabel: "Montant reçu :",
     withdrawalMinimumNote: "(Min. {0} {1})",
     withdrawalSubmitting: "Envoi en cours...",
-    checkinBtn:         "Pointer",
-    checkinComeBack:    "Revenez dans {0} heures",
     pinMinLength:       "Entrez au moins 4 caractères pour le PIN",
     aboutTitle:         "À propos de TGOOD",
     aboutDesc1:         "TGOOD est une entreprise technologique engagée dans les solutions énergétiques et les infrastructures électriques intelligentes.",
@@ -1020,8 +1013,6 @@ const fr: Translations = {
     registeredOn:       "Inscrit le",
     amountLabel:        "Montant",
     methodLabel:        "Méthode",
-    checkinBonusTitle:  "Bonus reçu !",
-    checkinBonusDesc:   "Bonus quotidien ajouté à votre solde",
     bankerTitle:            "Espace Bankier",
     bankerPendingDepositsLabel: "Dépôts en attente",
     bankerPendingWithdrawalsLabel: "Retraits en attente",
@@ -1293,14 +1284,10 @@ const TRANSLATION_OVERRIDES: Record<Exclude<Lang, "fr">, Partial<Translations>> 
     depositOrders: "Deposit orders",
     depositHistory: "Deposit history",
     depositLabel: "Deposit",
-    checkinBtn: "Check in",
-    checkinComeBack: "Come back in {0} hours",
     withdrawalCreated: "Withdrawal created",
     withdrawalSubmitted: "Request submitted",
     withdrawalCreatedDesc: "Your withdrawal request has been submitted and is being processed.",
     withdrawalSubmittedDesc: "Your withdrawal request has been submitted.",
-    checkinBonusTitle: "Bonus received!",
-    checkinBonusDesc: "Your daily bonus was added to your balance",
   },
   ar: {
     languageLabel: "اللغة",
@@ -1362,14 +1349,10 @@ const TRANSLATION_OVERRIDES: Record<Exclude<Lang, "fr">, Partial<Translations>> 
     depositOrders: "طلبات الإيداع",
     depositHistory: "سجل الإيداعات",
     depositLabel: "إيداع",
-    checkinBtn: "تسجيل الحضور",
-    checkinComeBack: "ارجع بعد {0} ساعة",
     withdrawalCreated: "تم إنشاء السحب",
     withdrawalSubmitted: "تم إرسال الطلب",
     withdrawalCreatedDesc: "تم إرسال طلب السحب الخاص بك وهو قيد المعالجة.",
     withdrawalSubmittedDesc: "تم إرسال طلب السحب الخاص بك.",
-    checkinBonusTitle: "تم استلام المكافأة!",
-    checkinBonusDesc: "تمت إضافة مكافأتك اليومية إلى رصيدك",
     serviceTitle: "خدمة العملاء",
     serviceOnlineConsult: "استشارة عبر الإنترنت",
     serviceHoursLabel: "ساعات خدمة العملاء",
@@ -1438,14 +1421,10 @@ const TRANSLATION_OVERRIDES: Record<Exclude<Lang, "fr">, Partial<Translations>> 
     depositOrders: "充值订单",
     depositHistory: "充值记录",
     depositLabel: "充值",
-    checkinBtn: "签到",
-    checkinComeBack: "{0} 小时后再来",
     withdrawalCreated: "提现已创建",
     withdrawalSubmitted: "申请已提交",
     withdrawalCreatedDesc: "您的提现申请已提交，正在处理中。",
     withdrawalSubmittedDesc: "您的提现申请已提交。",
-    checkinBonusTitle: "奖励已到账！",
-    checkinBonusDesc: "每日奖励已添加到您的余额",
     serviceTitle: "客服",
     serviceOnlineConsult: "在线咨询",
     serviceHoursLabel: "客服服务时间",

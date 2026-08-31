@@ -74,7 +74,6 @@ import TeamDetailsPage from "@/pages/team-details";
 import MembersPage from "@/pages/members";
 import MyProductsPage from "@/pages/my-products";
 import EarningsPage from "@/pages/earnings";
-import RewardsPage from "@/pages/rewards";
 import WithdrawalHistoryPage from "@/pages/withdrawal-history";
 import DepositOrdersPage from "@/pages/deposit-orders";
 import DepositCallbackPage from "@/pages/deposit-callback";

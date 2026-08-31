@@ -22,7 +22,6 @@ export default function HomeAnnouncementModal() {
   const { data: settings = {} } = useQuery<Record<string, string>>({ queryKey: ["/api/settings"] });
 
   const lines = Array.from({ length: 7 }, (_, index) => settings[`popupLine${index + 1}`] || DEFAULT_LINES[index]).filter(Boolean);
-  lines.push(DEFAULT_LINES[7]);
   const configuredSupportUrl = settings.supportLink || "";
   const telegramUrl = /^(https?:\/\/)?(t\.me|telegram\.me|telegram\.dog)\//i.test(configuredSupportUrl)
     ? configuredSupportUrl

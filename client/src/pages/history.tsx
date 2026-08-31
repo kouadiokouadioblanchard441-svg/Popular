@@ -102,7 +102,7 @@ function ActivityCard({ item }: { item: HistoryItem }) {
     day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
   }).format(new Date(item.createdAt));
   const description = lang === "en"
-    ? item.description
+    ? (item.description ?? "")
       .replace(/crédité directement sur votre solde/gi, "credited directly to your balance")
     : item.description;
 

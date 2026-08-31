@@ -66,7 +66,6 @@ async function run() {
         "has_active_product" boolean NOT NULL DEFAULT false,
         "created_at" timestamp NOT NULL DEFAULT now(),
         "last_free_product_claim" timestamp,
-        "last_daily_bonus_claim" timestamp,
         "promoter_set_by" integer,
         "admin_set_by" integer,
         "admin_set_at" timestamp,
