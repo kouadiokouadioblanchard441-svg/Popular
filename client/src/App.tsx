@@ -74,6 +74,7 @@ import TeamDetailsPage from "@/pages/team-details";
 import MembersPage from "@/pages/members";
 import MyProductsPage from "@/pages/my-products";
 import EarningsPage from "@/pages/earnings";
+import CheckinPage from "@/pages/checkin";
 import WithdrawalHistoryPage from "@/pages/withdrawal-history";
 import DepositOrdersPage from "@/pages/deposit-orders";
 import DepositCallbackPage from "@/pages/deposit-callback";
@@ -271,6 +272,11 @@ function RouterComponent() {
           <AppLayout>
             <EarningsPage />
           </AppLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/checkin">
+        <ProtectedRoute>
+          <CheckinPage />
         </ProtectedRoute>
       </Route>
       <Route path="/account">

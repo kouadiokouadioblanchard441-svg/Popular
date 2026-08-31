@@ -1815,6 +1815,78 @@ export async function registerRoutes(
     }
   });
 
+  // Daily check-in reward
+  app.post("/api/claim-daily-bonus", requireAuth, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+
+      const now = new Date();
+      const lastClaim = user.lastDailyBonusClaim ? new Date(user.lastDailyBonusClaim) : null;
+      if (lastClaim) {
+        const hoursSinceClaim = (now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60);
+        if (hoursSinceClaim < 24) {
+          const hoursRemaining = Math.ceil(24 - hoursSinceClaim);
+          return res.status(400).json({
+            message: `Vous pourrez pointer dans ${hoursRemaining}h`,
+            canClaim: false,
+            nextClaimIn: hoursRemaining,
+          });
+        }
+      }
+
+      const bonusAmount = crypto.randomInt(10, 41) / 100;
+      const newTotalEarnings = parseFloat(user.totalEarnings || "0") + bonusAmount;
+      await storage.updateUser(user.id, {
+        totalEarnings: newTotalEarnings.toFixed(2),
+        lastDailyBonusClaim: now,
+      });
+      await storage.createTransaction({
+        userId: user.id,
+        type: "bonus",
+        amount: bonusAmount.toFixed(2),
+        description: `Pointage quotidien : +${bonusAmount.toFixed(2)} USDT`,
+      });
+
+      return res.json({
+        success: true,
+        amount: bonusAmount.toFixed(2),
+        message: `Pointage validé : +${bonusAmount.toFixed(2)} USDT ajouté à votre solde des gains`,
+      });
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/daily-bonus-status", requireAuth, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+
+      const lastClaim = user.lastDailyBonusClaim ? new Date(user.lastDailyBonusClaim) : null;
+      const hoursSinceClaim = lastClaim
+        ? (Date.now() - lastClaim.getTime()) / (1000 * 60 * 60)
+        : 24;
+      const canClaim = hoursSinceClaim >= 24;
+      const hoursRemaining = canClaim ? 0 : Math.ceil(24 - hoursSinceClaim);
+      const transactions = await storage.getUserTransactions(user.id);
+      const bonusTransactions = transactions.filter((transaction) => transaction.type === "bonus");
+      const totalBonusClaimed = bonusTransactions.reduce(
+        (total, transaction) => total + (parseFloat(transaction.amount) || 0),
+        0,
+      );
+
+      return res.json({
+        canClaim,
+        hoursRemaining,
+        totalBonusClaimed: Number(totalBonusClaimed.toFixed(2)),
+        daysPointed: bonusTransactions.length,
+      });
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
   // Transactions
   app.get("/api/transactions", requireAuth, async (req, res) => {
     try {

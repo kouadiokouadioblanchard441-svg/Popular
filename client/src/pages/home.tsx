@@ -2,7 +2,7 @@ import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { localeForLang, useI18n } from "@/lib/i18n";
-import { Bell, CircleDollarSign, HandCoins, MessagesSquare } from "lucide-react";
+import { Bell, CalendarDays, CircleDollarSign, HandCoins, MessagesSquare } from "lucide-react";
 import type { Product } from "@shared/schema";
 import homeHero from "@assets/generated_images/tgood-home-products-hero.jpg";
 import electricScooter from "@assets/generated_images/tgood-scooter.jpg";
@@ -34,6 +34,7 @@ const ACTIONS = [
   { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign },
   { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins },
   { labelKey: "customerService", href: "/service", Icon: MessagesSquare },
+  { labelKey: "checkin", href: "/checkin", Icon: CalendarDays },
 ];
 
 const EXPERIENCE_PRODUCTS = [
@@ -89,6 +90,7 @@ export default function HomePage() {
     return [item.description || item.type || "TGOOD activity", amountLabel].filter(Boolean).join(" · ");
   });
   const activityLabel = getContent(settings, "content_home_activityLabel", "Votre activité récente");
+  const checkinLabel = lang === "en" ? "Check in" : lang === "ar" ? "تسجيل الحضور" : lang === "zh" ? "签到" : "Pointage";
 
   return (
     <main className="home-page pb-4" style={{ background: "#f8f9fa", minHeight: "100vh" }}>
@@ -121,7 +123,9 @@ export default function HomePage() {
               data-testid={`button-action-${index}`}
             >
               <Icon size={43} strokeWidth={2.7} aria-hidden="true" />
-              <span className="font-normal" style={{ fontSize: 16, lineHeight: 1 }}>{t[labelKey as keyof typeof t]}</span>
+                <span className="font-normal" style={{ fontSize: 16, lineHeight: 1 }}>
+                  {labelKey === "checkin" ? checkinLabel : t[labelKey as keyof typeof t]}
+                </span>
             </button>
           ))}
         </section>
