@@ -46,22 +46,32 @@ export default function NavigationLoader() {
         visibility: active ? "visible" : "hidden",
       }}
     >
-      <svg
-        width="42"
-        height="42"
-        viewBox="0 0 42 42"
-        fill="none"
-        aria-label="Chargement"
-        style={{ animation: "nav-spin 0.7s linear infinite" }}
+      <div
+        className="flex items-center justify-center rounded-[9px]"
+        style={{
+          width: 136,
+          height: 136,
+          background: "#000000",
+          boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
+        }}
       >
-        <circle cx="21" cy="21" r="17" stroke="rgba(0,0,0,0.14)" strokeWidth="4" />
-        <path
-          d="M21 4 A17 17 0 0 1 38 21"
-          stroke="#000000"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
-      </svg>
+        <svg
+          width="38"
+          height="38"
+          viewBox="0 0 38 38"
+          fill="none"
+          aria-label="Chargement"
+          style={{ animation: "nav-spin 0.7s linear infinite" }}
+        >
+          <circle cx="19" cy="19" r="15" stroke="rgba(255,255,255,0.3)" strokeWidth="2.5" />
+          <path
+            d="M19 4 A15 15 0 0 1 34 19"
+            stroke="#ffffff"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+        </svg>
+      </div>
       <style>{`
         @keyframes nav-spin {
           from { transform: rotate(0deg); }

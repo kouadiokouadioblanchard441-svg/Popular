@@ -107,11 +107,18 @@ function AuthLoadingScreen() {
       display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center", zIndex: 9999,
     }}>
-      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"
-        style={{ animation: "tgood-spin 0.8s linear infinite" }}>
-        <circle cx="22" cy="22" r="18" stroke="rgba(0,0,0,0.14)" strokeWidth="4"/>
-        <path d="M22 4 A18 18 0 0 1 40 22" stroke="#000000" strokeWidth="4" strokeLinecap="round"/>
-      </svg>
+      <div style={{
+        width: 136, height: 136, borderRadius: 9,
+        background: "#000000",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
+      }}>
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none"
+          style={{ animation: "tgood-spin 0.8s linear infinite" }}>
+          <circle cx="19" cy="19" r="15" stroke="rgba(255,255,255,0.3)" strokeWidth="2.5"/>
+          <path d="M19 4 A15 15 0 0 1 34 19" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+      </div>
       <style>{`@keyframes tgood-spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
