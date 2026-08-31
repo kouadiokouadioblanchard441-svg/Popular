@@ -166,6 +166,8 @@
     overscroll-behavior-y: none;
     /* Le fond initial doit rester cohérent avec le thème clair TGOOD. */
     background-color: hsl(var(--background));
+    min-width: 320px;
+    min-height: 100%;
   }
 
   body {
@@ -173,6 +175,14 @@
     /* Idem sur body pour couvrir tous les cas */
     overscroll-behavior-y: none;
     overscroll-behavior-x: none;
+    min-width: 320px;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100dvh;
+    overflow-x: clip;
   }
 }
 
@@ -293,7 +303,20 @@
 
 /* Mobile bottom navigation */
 .bottom-nav {
+  box-sizing: border-box;
+  height: calc(76px + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.app-shell {
+  min-height: 100dvh;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav__inner {
+  min-height: 76px;
 }
 
 /* Marquee animation for scrolling text */
@@ -358,6 +381,36 @@ button:disabled:active {
   transform: none;
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Mobile interaction baseline: avoids delayed taps and accidental sideways
+   scrolling while preserving the intentionally compact icon controls. */
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 640px) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+
+  input:not([type="hidden"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 3px solid rgba(8, 184, 58, 0.35);
+    outline-offset: 2px;
+  }
 }
 
 /* Tab / navigation bar items — subtle scale only */
