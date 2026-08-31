@@ -10,6 +10,7 @@ import AdminDeposits from "@/components/admin/deposits";
 import AdminWithdrawals from "@/components/admin/withdrawals";
 import AdminUsers from "@/components/admin/users";
 import AdminProducts from "@/components/admin/products";
+import AdminTasks from "@/components/admin/tasks";
 import AdminSettings from "@/components/admin/settings";
 import AdminPaymentNumbers from "@/components/admin/payment-numbers";
 import AdminGiftCodes from "@/components/admin/gift-codes";
@@ -49,6 +50,7 @@ export default function AdminPage() {
               <TabsTrigger value="withdrawals" data-testid="tab-withdrawals">{t.adminTabWithdrawals}</TabsTrigger>
               <TabsTrigger value="users" data-testid="tab-users">{t.adminTabUsers}</TabsTrigger>
               <TabsTrigger value="products" data-testid="tab-products">{t.adminTabProducts}</TabsTrigger>
+              <TabsTrigger value="tasks" data-testid="tab-tasks">{t.adminTabTasks}</TabsTrigger>
               <TabsTrigger value="spin-wheel" data-testid="tab-spin-wheel">🎡 Roue</TabsTrigger>
               <TabsTrigger value="deposit-channels" data-testid="tab-deposit-channels">Canaux dépôt</TabsTrigger>
               <TabsTrigger value="payment-numbers" data-testid="tab-payment-numbers">{t.adminTabNumbers}</TabsTrigger>
@@ -83,6 +85,10 @@ export default function AdminPage() {
 
           <TabsContent value="products" className="mt-4">
             <AdminProducts />
+          </TabsContent>
+
+          <TabsContent value="tasks" className="mt-4">
+            <AdminTasks />
           </TabsContent>
 
           <TabsContent value="spin-wheel" className="mt-4">
