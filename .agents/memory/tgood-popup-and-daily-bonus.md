@@ -1,12 +1,12 @@
 ---
-name: TGOOD popup and daily bonus removal
-description: Current homepage announcement content and the retired daily login bonus feature.
+name: TGOOD popup and daily check-in
+description: Current homepage announcement content and the daily check-in reward feature.
 ---
 
 The homepage announcement uses the launch date 03/09/2026, an 18 USDT minimum deposit, a 1 USDT minimum withdrawal via USDT BEP20 with no fee, a 2 USDT registration bonus, referral commissions, and 09:00–17:00 withdrawal/support hours.
 
-The daily login/check-in bonus is retired. Its admin controls, user route, API endpoints, settings, claim timestamp field, and translation/content entries must stay removed. Existing financial transaction history is retained.
+The daily check-in is available once every 24 hours. Its reward is credited to the earnings balance, and existing financial transaction history is retained.
 
-**Why:** The owner explicitly requested removal of the 24-hour login bonus while keeping other rewards and updating the public announcement to the current operating rules.
+**Why:** The owner later explicitly requested that the check-in icon and its daily reward flow be restored.
 
-**How to apply:** Do not re-add daily-bonus controls or routes when editing rewards. Update popup copy in both the component fallback and seeded platform settings when operating rules change.
+**How to apply:** Keep the home-page check-in entry connected to the check-in route and enforce the 24-hour interval on the server. Keep the reward in the earnings balance so it remains withdrawable under the earnings-only withdrawal rule.

@@ -8,5 +8,5 @@
 - [TGOOD static interface translations](tgood-i18n-static-text.md) — English mode must cover legacy JSX labels as well as typed catalog entries.
 - [TGOOD customer service hours](tgood-service-hours.md) — support availability and link activation follow the configured start/end hour window.
 - [TGOOD task rewards](tgood-task-rewards.md) — task rewards support decimal USDT amounts; startup adds missing levels without overwriting admin-configured values.
-- [TGOOD popup and daily bonus removal](tgood-popup-and-daily-bonus.md) — popup defaults use the 03/09/2026 launch date and current USDT rules; daily login bonus is retired.
+- [TGOOD popup and daily check-in](tgood-popup-and-daily-bonus.md) — popup defaults use the 03/09/2026 launch date and current USDT rules; check-in rewards run every 24 hours.
 - [TGOOD random gift codes](tgood-random-gift-codes.md) — gift codes can draw a cent-precise USDT reward independently for each claim within admin-defined minimum and maximum.
