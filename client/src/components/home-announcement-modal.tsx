@@ -8,12 +8,12 @@ const TGOOD_GREEN = "#08b83a";
 
 const DEFAULT_LINES = [
   "🚀 TGOOD RDC: official launch!",
-  "📅 A brand-new experience begins on August 20, 2026!",
-  "✅ Invest 3,000 USDT and request a 1,500 USDT withdrawal",
+  "📅 TGOOD officially launches on 03/09/2026!",
+  "✅ Minimum deposit: 18 USDT",
+  "✅ Minimum withdrawal: 1 USDT via USDT BEP20, with no fee",
   "✅ Registration bonus: 2 USDT",
-  "✅ Daily check-in: 50 USDT",
-  "👥 Invite your friends and earn a 39% commission",
-  "🔥 Daily return rate: 25% to 40%",
+  "👥 Invite your friends and earn commissions",
+  "🕘 Withdrawals and support: 09:00–17:00",
   "🔥 Your earnings are credited to your account every day 📈 Buy multiple devices to increase your earnings",
 ];
 

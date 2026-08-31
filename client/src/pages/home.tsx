@@ -2,7 +2,7 @@ import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { localeForLang, useI18n } from "@/lib/i18n";
-import { Bell, CircleDollarSign, HandCoins, MessagesSquare, CalendarDays } from "lucide-react";
+import { Bell, CircleDollarSign, HandCoins, MessagesSquare } from "lucide-react";
 import type { Product } from "@shared/schema";
 import homeHero from "@assets/generated_images/tgood-home-products-hero.jpg";
 import electricScooter from "@assets/generated_images/tgood-scooter.jpg";
@@ -27,7 +27,6 @@ const ACTIVITY_MESSAGES = [
   "****2468 made a 190 USDT withdrawal",
   "****7315 received a 10 USDT welcome bonus",
   "****5639 recharged 1250 USDT",
-  "****8093 earned a 75 USDT daily bonus",
   "****4217 withdrew 320 USDT",
   "****6754 recharged 45 USDT",
   "****1382 received a 210 USDT commission",
@@ -38,7 +37,6 @@ const ACTIONS = [
   { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign },
   { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins },
   { labelKey: "customerService", href: "/service", Icon: MessagesSquare },
-  { labelKey: "checkinBtn", href: "/checkin", Icon: CalendarDays },
 ];
 
 const PARTNERS = [

@@ -309,8 +309,6 @@ export async function seed() {
     { key: "taskLevel1Commission", value: "3" },
     { key: "taskLevel2Commission", value: "2" },
     { key: "taskLevel3Commission", value: "1" },
-    { key: "dailyBonusEnabled", value: "true" },
-    { key: "dailyBonusAmount", value: "25" },
     { key: "signupBonusEnabled", value: "true" },
     { key: "signupBonusAmount", value: "2" },
     { key: "soleaspayEnabled", value: "false" },

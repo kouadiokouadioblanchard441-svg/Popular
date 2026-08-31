@@ -933,7 +933,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
             {([
               { name: "popupLine1" as const, label: "Ligne 1 — Lancement officiel", placeholder: "✨✨ Lancement officiel de la plateforme TGOOD ✨✨" },
               { name: "popupLine2" as const, label: "Ligne 2 — Invitation parrainage", placeholder: "🔻 Invitez vos amis à investir et gagnez jusqu'à 25% de commissions..." },
-              { name: "popupLine3" as const, label: "Ligne 3 — Bonus connexion", placeholder: "🎁 Bonus de connexion quotidienne disponible chaque jour" },
+              { name: "popupLine3" as const, label: "Ligne 3 — Informations importantes", placeholder: "ℹ️ Informations importantes pour les membres" },
               { name: "popupLine4" as const, label: "Ligne 4 — Dépôt minimum", placeholder: "🤝 Dépôt minimum : 18 USDT" },
               { name: "popupLine5" as const, label: "Ligne 5 — Retrait minimum", placeholder: "💚 Retrait minimum : 1 USDT" },
               { name: "popupLine7" as const, label: "Ligne 7 — Horaires retraits", placeholder: "🍀 Retraits disponibles du Lundi au Vendredi de 10h à 16h" },
