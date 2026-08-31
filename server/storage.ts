@@ -387,9 +387,20 @@ export class DatabaseStorage implements IStorage {
     if (!user) throw new Error("Utilisateur non trouvé");
 
     if (!product.isFree && !assignedByAdmin) {
-      const balance = parseFloat(user.balance);
-      const productPrice = parseFloat(product.price as string);
-      if (balance < productPrice) throw new Error("Solde insuffisant");
+      const parsedDepositBalance = Number.parseFloat(user.balance || "0");
+      const parsedEarningsBalance = Number.parseFloat(user.totalEarnings || "0");
+      const depositBalance = Number.isFinite(parsedDepositBalance) ? Math.max(0, parsedDepositBalance) : 0;
+      const earningsBalance = Number.isFinite(parsedEarningsBalance) ? Math.max(0, parsedEarningsBalance) : 0;
+      const productPrice = Number.parseFloat(product.price as string);
+      const availableBalance = depositBalance + earningsBalance;
+      if (!Number.isFinite(productPrice) || availableBalance < productPrice) {
+        throw new Error("Solde insuffisant");
+      }
+
+      // Product purchases use the deposit balance first, then the earnings
+      // balance for any remaining amount.
+      const depositDebit = Math.min(depositBalance, productPrice);
+      const earningsDebit = productPrice - depositDebit;
       
       // Check if this is user's first paid investment
       const existingPaidProducts = await db.select()
@@ -404,7 +415,8 @@ export class DatabaseStorage implements IStorage {
       const isFirstInvestment = existingPaidProducts.length === 0;
       
       await this.updateUser(userId, { 
-        balance: (balance - productPrice).toFixed(2),
+        balance: (depositBalance - depositDebit).toFixed(2),
+        totalEarnings: (earningsBalance - earningsDebit).toFixed(2),
         hasActiveProduct: true,
       });
 

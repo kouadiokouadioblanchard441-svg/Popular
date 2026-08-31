@@ -161,7 +161,6 @@ export default function WithdrawalPage() {
   if (walletsLoading) return null;
   if (!user) return null;
 
-  const balance = parseFloat(user?.balance || "0");
   const earningsBalance = parseFloat(user?.totalEarnings || "0");
 
   // Use admin instructions when configured, otherwise generate the defaults.

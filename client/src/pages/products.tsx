@@ -71,7 +71,13 @@ export default function ProductsPage() {
 
   if (!user) return null;
 
-  const balance  = parseFloat(user.balance || "0");
+  const depositBalance = Number.isFinite(parseFloat(user.balance || "0"))
+    ? parseFloat(user.balance || "0")
+    : 0;
+  const earningsBalance = Number.isFinite(parseFloat(user.totalEarnings || "0"))
+    ? parseFloat(user.totalEarnings || "0")
+    : 0;
+  const availableBalance = depositBalance + earningsBalance;
   const currency = CURRENCY;
   const locale = lang === "en" ? "en-US" : lang === "ar" ? "ar" : lang === "zh" ? "zh-CN" : "fr-FR";
 
@@ -211,17 +217,46 @@ export default function ProductsPage() {
             </div>
 
             {/* Alerte solde insuffisant */}
-            {balance < parseFloat(String(confirmProduct.price)) && (
+            {availableBalance < parseFloat(String(confirmProduct.price)) && (
               <div className="mx-5 mb-2 flex items-center gap-2 p-2.5 rounded-xl"
                 style={{ background: "#fff2f2", border: "1px solid #fca5a5" }}>
                 <AlertTriangle className="w-4 h-4 shrink-0" style={{ color: TGOOD_GREEN }} />
                 <p className="text-xs" style={{ color: "#149a39" }}>
                   {t.investInsufficient.replace("{0}", formatCurrency(
-                    parseFloat(String(confirmProduct.price)) - balance, user.country
+                    parseFloat(String(confirmProduct.price)) - availableBalance, user.country
                   ))}
                 </p>
               </div>
             )}
+
+            {/* Le solde des dépôts est débité en priorité, puis le solde des gains. */}
+            {(() => {
+              const price = parseFloat(String(confirmProduct.price));
+              const depositDebit = Math.min(Math.max(0, depositBalance), price);
+              const earningsDebit = Math.max(0, price - depositDebit);
+              const labels = lang === "en"
+                ? { title: "Payment breakdown", deposit: "Deposit balance", earnings: "Earnings balance" }
+                : lang === "ar"
+                  ? { title: "تفاصيل الدفع", deposit: "رصيد الإيداعات", earnings: "رصيد الأرباح" }
+                  : lang === "zh"
+                    ? { title: "支付明细", deposit: "存款余额", earnings: "收益余额" }
+                    : { title: "Répartition du paiement", deposit: "Solde des dépôts", earnings: "Solde des gains" };
+              return (
+                <div className="mx-5 mb-4 rounded-xl border border-[#e8e8e8] bg-[#fafafa] px-4 py-3">
+                  <p className="mb-2 text-xs font-bold text-[#444]">{labels.title}</p>
+                  <div className="flex justify-between text-xs text-[#666]">
+                    <span>{labels.deposit}</span>
+                    <span className="font-semibold text-[#222]">-{currency} {depositDebit.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                  </div>
+                  {earningsDebit > 0 && (
+                    <div className="mt-1 flex justify-between text-xs text-[#666]">
+                      <span>{labels.earnings}</span>
+                      <span className="font-semibold text-[#222]">-{currency} {earningsDebit.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Stats 3 colonnes */}
             <div className="flex" style={{ margin: "0 20px 16px", border: "1px solid #eee", borderRadius: 12, overflow: "hidden" }}>
@@ -250,7 +285,7 @@ export default function ProductsPage() {
               </button>
               <button
                 onClick={() => purchaseMutation.mutate(confirmProduct.id)}
-                disabled={purchaseMutation.isPending || balance < parseFloat(String(confirmProduct.price))}
+                disabled={purchaseMutation.isPending || availableBalance < parseFloat(String(confirmProduct.price))}
                 className="flex-1 font-bold text-white flex items-center justify-center gap-2 active:opacity-80 disabled:opacity-50"
                 style={{ padding: "17px 0", fontSize: 16, background: "#12bc3e", border: "none", borderBottomRightRadius: 24 }}
                 data-testid="button-confirm-purchase"

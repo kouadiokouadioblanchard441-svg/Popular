@@ -1563,8 +1563,8 @@ export async function registerRoutes(
         }
       }
 
-      const balance = parseFloat(user.totalEarnings || "0");
-      if (amount > balance) {
+      const earningsBalance = parseFloat(user.totalEarnings || "0");
+      if (amount > earningsBalance) {
         return res.status(400).json({ message: "Solde insuffisant" });
       }
 
@@ -1591,9 +1591,9 @@ export async function registerRoutes(
         return res.status(400).json({ message: `Maximum ${maxPerDay} retrait${maxPerDay > 1 ? 's' : ''} par jour` });
       }
 
-      // Deduct from totalEarnings (solde des revenus)
+      // Withdrawals can only use the earnings balance, never the deposit balance.
       await storage.updateUser(user.id, {
-        totalEarnings: (balance - amount).toFixed(2),
+        totalEarnings: (earningsBalance - amount).toFixed(2),
       });
 
       // Both modes create an auditable pending request. In semi-automatic
