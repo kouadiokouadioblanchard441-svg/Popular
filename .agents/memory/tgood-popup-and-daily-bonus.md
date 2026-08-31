@@ -9,4 +9,4 @@ The daily check-in is available once every 24 hours. Its reward is credited to t
 
 **Why:** The owner later explicitly requested that the check-in icon and its daily reward flow be restored.
 
-**How to apply:** Keep the home-page check-in entry connected to the check-in route and enforce the 24-hour interval on the server. Keep the reward in the earnings balance so it remains withdrawable under the earnings-only withdrawal rule.
+**How to apply:** Keep the home-page and account entries connected to the full historical check-in page, preserve its reference-art asset layout, and enforce the 24-hour interval on the server. Keep the reward in the earnings balance so it remains withdrawable under the earnings-only withdrawal rule.

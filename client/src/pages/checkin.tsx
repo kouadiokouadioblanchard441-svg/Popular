@@ -1,103 +1,271 @@
-import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
-import { ArrowLeft, CalendarCheck, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { getContent } from "@/lib/content";
+import { useI18n } from "@/lib/i18n";
+import { ChevronLeft, Loader2 } from "lucide-react";
+import { Link } from "wouter";
+import checkinHero from "@/assets/images/checkin-hero-reference.png";
+import bonusIcon from "@/assets/images/checkin-bonus-icon-reference.png";
+import bonusChat from "@/assets/images/checkin-bonus-chat-reference.png";
+import rewardBike from "@/assets/images/checkin-reward-bike-reference.png";
+import streakBike from "@/assets/images/checkin-streak-bike-reference.png";
 
-interface CheckinStatus {
+interface BonusStatus {
   canClaim: boolean;
   hoursRemaining: number;
   totalBonusClaimed: number;
   daysPointed: number;
 }
 
-const GREEN = "#08b83a";
+const DAILY_REWARD_MIN = 0.1;
+const DAILY_REWARD_MAX = 0.4;
+
+function formatReward(value: number) {
+  return value.toFixed(2).replace(".", ",");
+}
 
 export default function CheckinPage() {
-  const { user, refreshUser } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
-  const [message, setMessage] = useState("");
-  const { data: status, isLoading } = useQuery<CheckinStatus>({
+  const { t } = useI18n();
+  const [claimedRewardMessage, setClaimedRewardMessage] = useState<string | null>(null);
+
+  const { data: bonusStatus } = useQuery<BonusStatus>({
     queryKey: ["/api/daily-bonus-status"],
     refetchInterval: 60000,
   });
 
-  const claimMutation = useMutation({
+  const { data: settings } = useQuery<Record<string, string>>({
+    queryKey: ["/api/settings"],
+  });
+
+  const claimMutation = useMutation<{ message?: string }>({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/claim-daily-bonus", {});
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Pointage impossible");
-      return data as { message: string };
+      const res = await apiRequest("POST", "/api/claim-daily-bonus", {});
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || t.errorOccurred);
+      }
+      return res.json();
     },
-    onSuccess: async (data) => {
-      setMessage(data.message);
-      await refreshUser();
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/daily-bonus-status"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/transactions"] });
-      toast({ title: "Pointage validé", description: data.message });
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      const message = data.message || t.checkinBonusDesc;
+      setClaimedRewardMessage(message);
+      toast({ title: t.checkinBonusTitle, description: message });
     },
-    onError: (error: Error) => toast({ title: error.message, variant: "destructive" }),
+    onError: (error: Error) => {
+      toast({ title: error.message || t.errorOccurred, variant: "destructive" });
+    },
   });
 
   if (!user) return null;
 
+  const currency = "USDT";
+  const totalBonusClaimed = bonusStatus?.totalBonusClaimed || 0;
+  const daysPointed = bonusStatus?.daysPointed || 0;
+  // The page title follows the selected UI language. Admin content settings are
+  // language-neutral and may contain the legacy French title.
+  const headerTitle = t.checkinBtn;
+  const rewardTitle = getContent(settings, "content_checkin_cardTitle", "Récompense de\npointage quotidien");
+  const rewardDescription = getContent(
+    settings,
+    "content_checkin_cardSubtitle",
+    "Recevez une récompense aléatoire\nchaque jour",
+  );
+  const streakLabel = getContent(settings, "content_checkin_streakLabel", "Jours de pointage");
+  const totalLabel = getContent(settings, "content_checkin_totalLabel", "Bonus cumulé");
+  const configuredRule1 = getContent(
+    settings,
+    "content_checkin_rule1",
+    `1. À chaque pointage, vous recevez aléatoirement entre ${formatReward(DAILY_REWARD_MIN)} et ${formatReward(DAILY_REWARD_MAX)} ${currency}.`,
+  );
+  const rule1 = configuredRule1
+    .replace(/0[,.]20/g, formatReward(DAILY_REWARD_MIN))
+    .replace(/0[,.]90/g, formatReward(DAILY_REWARD_MAX));
+  const rule2 = getContent(settings, "content_checkin_rule2", "2. Connectez-vous une fois par jour.");
+
   return (
-    <main className="min-h-screen w-full bg-[#f2f7f3]" style={{ maxWidth: 480, margin: "0 auto" }}>
-      <header className="flex h-[72px] items-center bg-white px-5 shadow-sm">
-        <Link href="/">
-          <button className="flex h-10 w-10 items-center justify-center rounded-full active:bg-[#edf8ef]" aria-label="Retour">
-            <ArrowLeft className="h-6 w-6" />
+    <main
+      className="min-h-screen w-full overflow-hidden"
+      style={{ maxWidth: 480, margin: "0 auto", background: "#f2f2f2", color: "#151515" }}
+    >
+      <header className="relative w-full bg-white" style={{ height: 82 }}>
+        <Link href="/account">
+          <button
+            className="absolute flex items-center justify-center"
+            style={{ left: 22, top: 20, width: 42, height: 42 }}
+            data-testid="button-back"
+            aria-label="Retour"
+          >
+            <ChevronLeft size={35} strokeWidth={1.8} color="#0e0e0e" />
           </button>
         </Link>
-        <h1 className="ml-3 text-xl font-bold text-[#151515]">Pointage</h1>
+        <img
+          src="/tgood-logo.gif"
+          alt="TGOOD"
+          className="absolute object-contain"
+          style={{ left: "25.5%", top: 24, width: 62, height: 28 }}
+        />
+        <h1
+          className="absolute font-normal"
+          style={{ left: "49.5%", top: 32, color: "#00a92d", fontSize: 20, lineHeight: 1 }}
+        >
+          {headerTitle}
+        </h1>
       </header>
 
-      <section className="mx-4 mt-5 overflow-hidden rounded-2xl bg-[#08b83a] p-5 text-white shadow-md">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm opacity-90">Récompense de pointage quotidien</p>
-            <p className="mt-2 text-4xl font-black">0,10 – 0,40 USDT</p>
-            <p className="mt-2 text-sm opacity-90">Une récompense aléatoire chaque 24 heures</p>
+      <section className="w-full" style={{ aspectRatio: "720 / 318" }}>
+        <img src={checkinHero} alt="Vélo électrique" className="block h-full w-full object-cover" />
+      </section>
+
+      <section className="px-[11px] pt-[18px]">
+        <div
+          className="relative w-full bg-white"
+          style={{ height: 120, border: "1px solid #0cad32", borderRadius: 6 }}
+        >
+          <img
+            src={bonusIcon}
+            alt=""
+            aria-hidden="true"
+            className="absolute object-contain"
+            style={{ left: 10, top: 8, width: 84, height: 94 }}
+          />
+          <div className="absolute text-center" style={{ left: "23%", right: "19%", top: 24 }}>
+            <p className="font-normal whitespace-nowrap" style={{ color: "#00b52a", fontSize: 39, lineHeight: 1 }}>
+              {currency} {totalBonusClaimed.toLocaleString()}
+            </p>
+            <p className="mt-3 font-normal" style={{ color: "#151515", fontSize: 16, lineHeight: 1 }}>
+              {totalLabel}
+            </p>
           </div>
-          <CalendarCheck className="h-14 w-14 shrink-0 opacity-90" strokeWidth={1.5} />
+          <img
+            src={bonusChat}
+            alt=""
+            aria-hidden="true"
+            className="absolute object-contain"
+            style={{ right: 9, top: 12, width: 82, height: 84 }}
+          />
         </div>
       </section>
 
-      <section className="mx-4 mt-4 rounded-2xl bg-white p-5 shadow-sm">
-        <div className="grid grid-cols-2 gap-3 text-center">
-          <div className="rounded-xl bg-[#f2faf4] p-3">
-            <p className="text-2xl font-bold text-[#151515]">{status?.daysPointed || 0}</p>
-            <p className="mt-1 text-xs text-[#65736e]">Jours pointés</p>
-          </div>
-          <div className="rounded-xl bg-[#f2faf4] p-3">
-            <p className="text-2xl font-bold text-[#151515]">{(status?.totalBonusClaimed || 0).toFixed(2)}</p>
-            <p className="mt-1 text-xs text-[#65736e]">Bonus cumulés USDT</p>
-          </div>
+      <section
+        className="relative mt-[10px] w-full overflow-hidden"
+        style={{ height: 372, background: "#00b90a", color: "#ffffff" }}
+      >
+        <img
+          src={rewardBike}
+          alt=""
+          aria-hidden="true"
+          className="absolute object-cover"
+          style={{ left: 10, top: 72, width: "37.3%", aspectRatio: "270 / 139" }}
+        />
+        <div className="absolute" style={{ left: "42%", top: 13 }}>
+          <p className="font-normal whitespace-pre-line" style={{ fontSize: 25, lineHeight: 1.58 }}>
+            {rewardTitle}
+          </p>
+          <p className="mt-1 font-normal whitespace-pre-line" style={{ fontSize: 20, lineHeight: 1.52 }}>
+            {rewardDescription}
+          </p>
+          <p className="mt-3 font-normal whitespace-nowrap" style={{ fontSize: 50, lineHeight: 1 }}>
+            {currency} {formatReward(DAILY_REWARD_MIN)} – {formatReward(DAILY_REWARD_MAX)}
+          </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => claimMutation.mutate()}
-          disabled={isLoading || claimMutation.isPending || !status?.canClaim}
-          className="mt-5 flex h-12 w-full items-center justify-center rounded-full font-bold text-white disabled:bg-[#cfd6d1]"
-          style={{ background: status?.canClaim ? GREEN : undefined }}
-          data-testid="button-checkin"
-        >
-          {claimMutation.isPending ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : status?.canClaim ? (
-            "Pointer maintenant"
-          ) : (
-            `Revenez dans ${status?.hoursRemaining || 0}h`
-          )}
-        </button>
+        <div className="absolute text-center" style={{ left: 0, top: 235, width: "61%" }}>
+          <p className="font-normal" style={{ fontSize: 25, lineHeight: 1.25 }}>
+            {streakLabel}
+          </p>
+          <p className="mt-2 whitespace-nowrap font-normal" style={{ fontSize: 19, lineHeight: 1.15 }}>
+            Nombre total de jours pointés
+          </p>
+          <p className="mt-3 font-normal whitespace-nowrap" style={{ fontSize: 43, lineHeight: 1 }}>
+            {daysPointed} jours
+          </p>
+        </div>
+        <img
+          src={streakBike}
+          alt=""
+          aria-hidden="true"
+          className="absolute object-cover"
+          style={{ left: "60.5%", top: 254, width: "37.3%", aspectRatio: "270 / 139" }}
+        />
+      </section>
 
-        {message && <p className="mt-3 text-center text-sm font-medium text-[#149a39]" role="status">{message}</p>}
-        <p className="mt-5 text-sm leading-6 text-[#65736e]">
-          Le pointage ajoute directement la récompense à votre solde des gains. Vous pouvez pointer une fois toutes les 24 heures.
-        </p>
+      <section className="px-[10px] pt-5 pb-7">
+        {bonusStatus?.canClaim ? (
+          <button
+            onClick={() => claimMutation.mutate()}
+            disabled={claimMutation.isPending}
+            className="mx-auto block font-normal text-white disabled:opacity-60"
+            style={{
+              width: "66.7%",
+              height: 51,
+              borderRadius: 999,
+              background: "#00bd08",
+              boxShadow: "0 2px 4px rgba(0, 134, 29, 0.12)",
+              fontSize: 32,
+              lineHeight: 1,
+            }}
+            data-testid="button-pointer"
+          >
+            {claimMutation.isPending ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="h-6 w-6 animate-spin" />
+                {t.loading}
+              </span>
+            ) : t.checkinBtn}
+          </button>
+        ) : (
+          <button
+            disabled
+            className="mx-auto block font-normal"
+            style={{
+              width: "66.7%",
+              height: 51,
+              borderRadius: 999,
+              background: "#d2d2d2",
+              color: "#767676",
+              fontSize: 17,
+            }}
+            data-testid="button-pointer-disabled"
+          >
+            {t.checkinComeBack.replace("{0}", String(bonusStatus?.hoursRemaining || 0))}
+          </button>
+        )}
+
+        {claimedRewardMessage && (
+          <p
+            className="mx-auto mt-3 max-w-[320px] rounded-lg bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-800"
+            role="status"
+            data-testid="checkin-claim-success"
+          >
+            {claimedRewardMessage}
+          </p>
+        )}
+
+        <div className="mt-[22px] space-y-0">
+          <p className="font-normal" style={{ color: "#5e646b", fontSize: 15, lineHeight: 1.55 }}>
+            {rule1}
+          </p>
+          <p className="font-normal" style={{ color: "#5e646b", fontSize: 15, lineHeight: 1.55 }}>
+            {rule2}
+          </p>
+          <p
+            className="font-normal"
+            style={{ color: "#5e646b", fontSize: 15, lineHeight: 1.55 }}
+            data-testid="text-random-reward-description"
+          >
+            Récompense aléatoire : entre {formatReward(DAILY_REWARD_MIN)} et {formatReward(DAILY_REWARD_MAX)} {currency} par pointage.
+          </p>
+          <p className="font-normal" style={{ color: "#5e646b", fontSize: 15, lineHeight: 1.55 }}>
+            3. Connectez-vous à nouveau après minuit chaque jour.
+          </p>
+        </div>
       </section>
     </main>
   );

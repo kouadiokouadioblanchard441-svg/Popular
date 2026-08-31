@@ -33,7 +33,7 @@ import missionBanner from "@assets/generated_images/tgood-tasks-bike-banner.jpg"
 const TGOOD_GREEN = "#08b83a";
 
 const PROFILE_ACTIONS: {
-  labelKey: "deposit" | "withdraw" | "history" | "checkin";
+  labelKey: "deposit" | "withdraw" | "history" | "checkinBtn";
   href: string;
   Icon: LucideIcon;
   color: string;
@@ -41,7 +41,7 @@ const PROFILE_ACTIONS: {
   { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign, color: "#050505" },
   { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins, color: "#050505" },
   { labelKey: "history", href: "/history", Icon: ReceiptText, color: "#050505" },
-  { labelKey: "checkin", href: "/checkin", Icon: CalendarDays, color: "#050505" },
+  { labelKey: "checkinBtn", href: "/checkin", Icon: CalendarDays, color: "#050505" },
 ];
 
 const MORE_ACTIONS: {
@@ -138,7 +138,6 @@ export default function AccountPage() {
   const earnings = Number.isFinite(rawEarnings) ? rawEarnings : 0;
   const country = getCountryByCode(user.country);
   const phonePrefix = country?.phonePrefix ? `+${country.phonePrefix} ` : "";
-  const checkinLabel = lang === "en" ? "Check in" : lang === "ar" ? "تسجيل الحضور" : lang === "zh" ? "签到" : "Pointage";
   const formatAmount = (value: number) => value.toLocaleString(localeForLang(lang), {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
@@ -220,7 +219,7 @@ export default function AccountPage() {
             >
               <Icon size={42} strokeWidth={2.35} color={color} aria-hidden="true" />
               <span className="px-0.5 text-center leading-tight" style={{ fontSize: 15 }}>
-                {labelKey === "checkin" ? checkinLabel : t[labelKey]}
+                {t[labelKey]}
               </span>
             </button>
           ))}
