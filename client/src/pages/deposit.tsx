@@ -407,7 +407,7 @@ export default function DepositPage() {
 
   if (view === "currency") {
     return (
-      <main className="flex h-[100dvh] flex-col overflow-hidden bg-[#f3f8f4]" style={{ color: "#173f26" }}>
+      <main className="flex h-[calc(100dvh-0.5rem)] max-h-[calc(100dvh-0.5rem)] flex-col overflow-hidden bg-[#f3f8f4]" style={{ color: "#173f26" }}>
         <header className="flex h-[76px] shrink-0 items-center gap-3 bg-[#087a38] px-4 text-white shadow-[0_2px_8px_rgba(0,75,35,.2)]">
           <button
             type="button"
