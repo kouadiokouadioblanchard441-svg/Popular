@@ -159,13 +159,17 @@ export async function seed() {
     console.log(`Products skipped — ${existingProducts.length} existing products preserved`);
   }
 
-  // Seed tasks — migrate to new 4-reward parrainage structure if needed
+  // Seed tasks — keep existing admin values and add missing reward levels up to 8.
   const existingTasks = await db.select().from(tasks);
   const newRewardTasks = [
     { name: "🎁 Récompense 1", description: "3 membres actifs requis",  requiredInvites: 3,  reward: 1000,  sortOrder: 1 },
     { name: "🎁 Récompense 2", description: "10 membres actifs requis", requiredInvites: 10, reward: 3000,  sortOrder: 2 },
     { name: "🎁 Récompense 3", description: "30 membres actifs requis", requiredInvites: 30, reward: 5000,  sortOrder: 3 },
     { name: "🎁 Récompense 4", description: "50 membres actifs requis", requiredInvites: 50, reward: 10000, sortOrder: 4 },
+    { name: "🎁 Récompense 5", description: "100 membres actifs requis", requiredInvites: 100, reward: 30, sortOrder: 5 },
+    { name: "🎁 Récompense 6", description: "150 membres actifs requis", requiredInvites: 150, reward: 70, sortOrder: 6 },
+    { name: "🎁 Récompense 7", description: "300 membres actifs requis", requiredInvites: 300, reward: 240, sortOrder: 7 },
+    { name: "🎁 Récompense 8", description: "500 membres actifs requis", requiredInvites: 500, reward: 500, sortOrder: 8 },
   ];
   // Detect old structure (legacy task names like "Parrain Bronze")
   const hasLegacyTasks = existingTasks.some(t => t.name.startsWith("Parrain "));
@@ -175,9 +179,16 @@ export async function seed() {
       await db.delete(tasks);
     }
     await db.insert(tasks).values(newRewardTasks);
-    console.log("Reward tasks seeded (new 4-reward structure)");
+    console.log("Reward tasks seeded (8-reward structure)");
   } else {
-    console.log(`Tasks skipped — ${existingTasks.length} existing tasks preserved`);
+    const existingSortOrders = new Set(existingTasks.map((task) => task.sortOrder));
+    const missingTasks = newRewardTasks.filter((task) => !existingSortOrders.has(task.sortOrder));
+    if (missingTasks.length > 0) {
+      await db.insert(tasks).values(missingTasks);
+      console.log(`Added ${missingTasks.length} missing reward tasks — existing task values preserved`);
+    } else {
+      console.log(`Tasks skipped — ${existingTasks.length} existing tasks preserved`);
+    }
   }
 
   // ── Seed deposit channels CI (Canal 1 & Wave) ─────────────────────────────

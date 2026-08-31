@@ -21,7 +21,10 @@ const taskSchema = z.object({
   name: z.string().min(2),
   description: z.string().min(2),
   requiredInvites: z.string().min(1),
-  reward: z.string().min(1),
+  reward: z.string().min(1).refine(
+    (value) => Number.isFinite(Number(value)) && Number(value) >= 0,
+    "Montant invalide",
+  ),
   sortOrder: z.string().min(1),
 });
 
@@ -59,7 +62,7 @@ export default function AdminTasks() {
         name: data.name,
         description: data.description,
         requiredInvites: parseInt(data.requiredInvites),
-        reward: parseInt(data.reward),
+        reward: parseFloat(data.reward),
         sortOrder: parseInt(data.sortOrder),
       });
       if (!res.ok) { const r = await res.json(); throw new Error(r.message || t.errorOccurred); }
@@ -118,7 +121,7 @@ export default function AdminTasks() {
         name: data.name,
         description: data.description,
         requiredInvites: parseInt(data.requiredInvites),
-        reward: parseInt(data.reward),
+        reward: parseFloat(data.reward),
         sortOrder: parseInt(data.sortOrder),
       },
     });
@@ -151,7 +154,7 @@ export default function AdminTasks() {
         <FormField control={form.control} name="reward" render={({ field }) => (
           <FormItem>
             <FormLabel>{t.adminTaskReward}</FormLabel>
-            <FormControl><Input type="number" min="0" {...field} /></FormControl>
+            <FormControl><Input type="number" min="0" step="0.01" {...field} /></FormControl>
             <FormMessage />
           </FormItem>
         )} />

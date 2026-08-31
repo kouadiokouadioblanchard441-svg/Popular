@@ -12,3 +12,4 @@
 - [TGOOD admin password seeding](tgood-admin-password-seeding.md) — seed defaults may create the first admin but must never overwrite an existing admin password at startup.
 - [TGOOD static interface translations](tgood-i18n-static-text.md) — English mode must cover legacy JSX labels as well as typed catalog entries.
 - [TGOOD customer service hours](tgood-service-hours.md) — support availability and link activation follow the configured start/end hour window.
+- [TGOOD task rewards](tgood-task-rewards.md) — task rewards support decimal USDT amounts; startup adds missing levels without overwriting admin-configured values.
