@@ -2667,7 +2667,7 @@ export async function registerRoutes(
         name,
         description,
         requiredInvites: parseInt(requiredInvites),
-        reward: parseInt(reward),
+        reward: parseFloat(reward),
         sortOrder: parseInt(sortOrder ?? 0),
         isActive: true,
       });
@@ -2683,7 +2683,7 @@ export async function registerRoutes(
       const id = parseInt(req.params.id as string);
       const data = req.body;
       if (data.requiredInvites != null) data.requiredInvites = parseInt(data.requiredInvites);
-      if (data.reward != null) data.reward = parseInt(data.reward);
+      if (data.reward != null) data.reward = parseFloat(data.reward);
       if (data.sortOrder != null) data.sortOrder = parseInt(data.sortOrder);
       const task = await storage.updateTask(id, data);
       await storage.logAdminAction(req.session.userId!, "update_task", null, `Tâche ${id} modifiée`);

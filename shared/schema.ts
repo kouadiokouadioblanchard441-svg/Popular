@@ -1,5 +1,5 @@
 import { sql, relations } from "drizzle-orm";
-import { pgTable, text, varchar, integer, boolean, timestamp, decimal, serial, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, boolean, timestamp, decimal, numeric, serial, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -277,7 +277,7 @@ export const tasks = pgTable("tasks", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   requiredInvites: integer("required_invites").notNull(),
-  reward: integer("reward").notNull(),
+  reward: numeric("reward", { precision: 15, scale: 2, mode: "number" }).notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
   isActive: boolean("is_active").notNull().default(true),
 });
