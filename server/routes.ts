@@ -1803,9 +1803,13 @@ export async function registerRoutes(
       const taskId = parseInt(req.params.id as string);
       const userId = req.session.userId!;
 
-      await storage.claimTask(userId, taskId);
+      const reward = await storage.claimTask(userId, taskId);
 
-      res.json({ success: true });
+      res.json({
+        success: true,
+        amount: reward,
+        message: `Félicitations ! Vous avez reçu ${reward.toLocaleString()} USDT`,
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

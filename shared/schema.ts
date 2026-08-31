@@ -288,7 +288,9 @@ export const userTasks = pgTable("user_tasks", {
   taskId: integer("task_id").notNull().references(() => tasks.id),
   completedAt: timestamp("completed_at").notNull().defaultNow(),
   rewardClaimed: boolean("reward_claimed").notNull().default(true),
-});
+}, (table) => ({
+  userTaskUnique: uniqueIndex("user_tasks_user_task_unique").on(table.userId, table.taskId),
+}));
 
 // Transaction history
 export const transactions = pgTable("transactions", {
