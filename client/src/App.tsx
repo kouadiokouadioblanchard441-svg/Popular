@@ -234,6 +234,11 @@ function RouterComponent() {
           </AppLayout>
         </ProtectedRoute>
       </Route>
+      <Route path="/checkin">
+        <ProtectedRoute>
+          <CheckinPage />
+        </ProtectedRoute>
+      </Route>
       <Route path="/invest">
         <ProtectedRoute>
           <AppLayout>
@@ -272,11 +277,6 @@ function RouterComponent() {
           <AppLayout>
             <EarningsPage />
           </AppLayout>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/checkin">
-        <ProtectedRoute>
-          <CheckinPage />
         </ProtectedRoute>
       </Route>
       <Route path="/account">
