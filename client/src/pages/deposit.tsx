@@ -349,7 +349,7 @@ export default function DepositPage() {
                 <button
                   type="button"
                   onClick={copyPaymentAddress}
-                  className={`mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white shadow-[0_4px_10px_rgba(8,122,56,.18)] transition hover:brightness-105 active:scale-[.98] ${copiedField === "address" ? "bg-[#159447]" : "bg-[#087a38]"}`}
+                   className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#ff0000] text-[15px] font-semibold text-white shadow-[0_4px_10px_rgba(255,0,0,.18)] transition hover:brightness-105 active:scale-[.98]"
                   data-testid="button-copy-crypto-address"
                 >
                   {copiedField === "address" ? <Check size={18} /> : <Copy size={18} />}
@@ -388,8 +388,8 @@ export default function DepositPage() {
             </div>
           </section>
 
-          <div className="mt-4 flex gap-3 rounded-[16px] border border-[#f0d6a8] bg-[#fffaf0] px-4 py-3.5 text-[#8b5e18]">
-            <AlertTriangle size={19} className="mt-0.5 shrink-0" />
+          <div className="mt-4 flex gap-3 rounded-[16px] border border-[#ff0000] bg-[#fff5f5] px-4 py-3.5 text-[#ff0000]">
+            <AlertTriangle size={19} className="mt-0.5 shrink-0 text-[#ff0000]" />
             <div className="text-[13px] leading-5">
               <p className="font-semibold">Double-check before sending</p>
               <p className="mt-0.5">Only send <strong>{selectedCurrencyLabel}</strong> through the matching network. Another network can permanently lose your funds.</p>
