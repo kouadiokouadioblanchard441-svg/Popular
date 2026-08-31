@@ -139,8 +139,8 @@ export default function AccountPage() {
   const country = getCountryByCode(user.country);
   const phonePrefix = country?.phonePrefix ? `+${country.phonePrefix} ` : "";
   const formatAmount = (value: number) => value.toLocaleString(localeForLang(lang), {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
 
   return (

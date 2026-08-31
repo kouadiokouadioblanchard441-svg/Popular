@@ -165,8 +165,8 @@ export default function HomePage() {
   const balance = Number.isFinite(rawBalance) ? rawBalance : 0;
   const totalEarnings = Number.isFinite(rawTotalEarnings) ? rawTotalEarnings : 0;
   const formatAmount = (value: number) => value.toLocaleString(localeForLang(lang), {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   });
   const defaultBanners = [homeHero, chargingStation, electricScooter];
   let bannerImages = defaultBanners;

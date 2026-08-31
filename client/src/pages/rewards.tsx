@@ -11,7 +11,7 @@ import globeImg from "@assets/generated_images/tgood-city-grid.jpg";
 import landscapeImg from "@assets/generated_images/tgood-charging-station-hero.jpg";
 
 export default function RewardsPage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const { t } = useI18n();
   const { toast } = useToast();
   const [, navigate] = useLocation();
@@ -31,7 +31,7 @@ export default function RewardsPage() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      refreshUser();
       toast({
         title: t.rewardsSuccessTitle,
         description: data.message || t.rewardsSuccessDesc,

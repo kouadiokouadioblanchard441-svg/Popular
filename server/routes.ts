@@ -324,19 +324,19 @@ export async function registerRoutes(
         telegram: data.telegram || undefined,
       });
 
-      // Bonus d'inscription → crédité sur le solde de dépôt (balance), pas sur les gains
+      // Tous les bonus et récompenses alimentent le solde revenu.
       const settings = await storage.getSettings();
       if (settings.signupBonusEnabled !== "false") {
         const signupBonus = parseFloat(settings.signupBonusAmount || "2");
         if (signupBonus > 0) {
           const freshUser = await storage.getUser(user.id);
-          const currentBalance = parseFloat(freshUser?.balance || "0");
+          const currentEarnings = Number(freshUser?.totalEarnings || "0");
           await storage.updateUser(user.id, {
-            balance: (currentBalance + signupBonus).toFixed(2),
+            totalEarnings: ((Number.isFinite(currentEarnings) ? currentEarnings : 0) + signupBonus).toFixed(2),
           });
           await storage.createTransaction({
             userId: user.id,
-            type: "deposit",
+            type: "bonus",
             amount: signupBonus.toFixed(2),
             description: "Bonus d'inscription",
           });
@@ -344,7 +344,8 @@ export async function registerRoutes(
       }
 
       req.session.userId = user.id;
-      res.json({ user: { ...user, password: undefined, transactionPassword: undefined } });
+      const currentUser = await storage.getUser(user.id);
+      res.json({ user: { ...(currentUser || user), password: undefined, transactionPassword: undefined } });
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.errors[0].message });
@@ -1836,7 +1837,8 @@ export async function registerRoutes(
       }
 
       const bonusAmount = crypto.randomInt(10, 41) / 100;
-      const newTotalEarnings = parseFloat(user.totalEarnings || "0") + bonusAmount;
+      const currentEarnings = Number(user.totalEarnings || "0");
+      const newTotalEarnings = (Number.isFinite(currentEarnings) ? currentEarnings : 0) + bonusAmount;
       await storage.updateUser(user.id, {
         totalEarnings: newTotalEarnings.toFixed(2),
         lastDailyBonusClaim: now,

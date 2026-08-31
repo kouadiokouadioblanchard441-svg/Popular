@@ -1517,9 +1517,10 @@ export class DatabaseStorage implements IStorage {
           rewardClaimed: true,
         });
 
-        const newBalance = parseFloat(user.balance) + taskStatus.reward;
+        const currentEarnings = Number(user.totalEarnings || "0");
+        const newTotalEarnings = (Number.isFinite(currentEarnings) ? currentEarnings : 0) + taskStatus.reward;
         await tx.update(users)
-          .set({ balance: newBalance.toFixed(2) })
+          .set({ totalEarnings: newTotalEarnings.toFixed(2) })
           .where(eq(users.id, userId));
 
         await tx.insert(transactions).values({
@@ -1719,7 +1720,7 @@ export class DatabaseStorage implements IStorage {
         currentUses: sql`${giftCodes.currentUses} + 1`
       }).where(eq(giftCodes.id, giftCodeId));
       await tx.update(users).set({
-        balance: sql`${users.balance} + ${amount}`
+        totalEarnings: sql`${users.totalEarnings} + ${amount}`
       }).where(eq(users.id, userId));
       await tx.insert(transactions).values({
         userId,

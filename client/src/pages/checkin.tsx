@@ -28,7 +28,7 @@ function formatReward(value: number) {
 }
 
 export default function CheckinPage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const { toast } = useToast();
   const { t } = useI18n();
   const [claimedRewardMessage, setClaimedRewardMessage] = useState<string | null>(null);
@@ -51,9 +51,9 @@ export default function CheckinPage() {
       }
       return res.json();
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/daily-bonus-status"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      await refreshUser();
       const message = data.message || t.checkinBonusDesc;
       setClaimedRewardMessage(message);
       toast({ title: t.checkinBonusTitle, description: message });

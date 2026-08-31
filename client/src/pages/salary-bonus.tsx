@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SalaryBonusPage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const { t } = useI18n();
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
@@ -38,7 +38,7 @@ export default function SalaryBonusPage() {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      refreshUser();
       toast({
         title: t.tasksRewardClaimed,
         description: data.message || t.tasksRewardClaimedDesc,
