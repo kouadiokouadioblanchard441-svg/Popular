@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="TGOOD" />
     <meta name="description" content="TGOOD — Clean energy and smart mobility platform" />
     
     <!-- Open Graph / Facebook -->
@@ -17,11 +21,20 @@
     <meta name="twitter:title" content="TGOOD" />
     <meta name="twitter:description" content="TGOOD — Clean energy and smart mobility platform" />
     
-    <link rel="icon" type="image/svg+xml" href="/tgood-icon.svg" />
-    <link rel="alternate icon" type="image/svg+xml" href="/tgood-icon.svg" />
-    <link rel="apple-touch-icon" href="/tgood-icon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/gif" href="/tgood-logo.gif" />
+    <link rel="apple-touch-icon" href="/tgood-logo.gif" />
     <link rel="manifest" href="/manifest.json" />
     <script>
+      (function() {
+        var isStandalone =
+          (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+          window.navigator.standalone === true;
+        if (isStandalone) {
+          document.documentElement.classList.add('pwa-standalone');
+        }
+      })();
+
       window._installPrompt = null;
       window.addEventListener('beforeinstallprompt', function(e) {
         e.preventDefault();
@@ -48,8 +61,8 @@
       }
     </style>
     <title>TGOOD</title>
-    <script type="module" crossorigin src="/assets/index-Bl8dtrHd.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BluOHdAV.css">
+    <script type="module" crossorigin src="/assets/index-DJpFpfg9.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C84-S5MQ.css">
   </head>
   <body>
     <div id="root"></div>

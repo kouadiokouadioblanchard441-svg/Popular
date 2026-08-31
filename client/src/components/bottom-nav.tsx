@@ -23,15 +23,14 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white"
+      className="bottom-nav fixed bottom-0 left-0 right-0 z-50 bg-white"
       style={{
-        height: 76,
         borderTop: "1px solid #eeeeee",
         boxShadow: "0 -2px 8px rgba(0, 0, 0, 0.04)",
       }}
       aria-label="Navigation principale"
     >
-      <div className="mx-auto flex h-full w-full max-w-[480px] items-stretch justify-around">
+      <div className="bottom-nav__inner mx-auto flex h-full w-full max-w-[480px] items-stretch justify-around">
         {NAV_ITEMS.map(({ path, labelKey, testId, Icon }) => {
           const isActive = location === path;
           const color = isActive ? TGOOD_GREEN : INACTIVE;
