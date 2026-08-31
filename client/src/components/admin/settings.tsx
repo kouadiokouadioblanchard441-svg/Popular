@@ -24,18 +24,18 @@ const NETWORKS = [
 ];
 
 const settingsSchema = z.object({
-  supportLink: z.string().min(5, "Lien requis"),
-  supportType: z.string().min(1, "Réseau social requis"),
-  supportLabel: z.string().min(1, "Label requis"),
-  support2Link: z.string().min(5, "Lien requis"),
-  support2Type: z.string().min(1, "Réseau social requis"),
-  support2Label: z.string().min(1, "Label requis"),
-  channelLink: z.string().min(5, "Lien requis"),
-  channelType: z.string().min(1, "Réseau social requis"),
-  channelLabel: z.string().min(1, "Label requis"),
-  groupLink: z.string().min(5, "Lien requis"),
-  groupType: z.string().min(1, "Réseau social requis"),
-  groupLabel: z.string().min(1, "Label requis"),
+  supportLink: z.string().trim(),
+  supportType: z.string().trim(),
+  supportLabel: z.string().trim(),
+  support2Link: z.string().trim(),
+  support2Type: z.string().trim(),
+  support2Label: z.string().trim(),
+  channelLink: z.string().trim(),
+  channelType: z.string().trim(),
+  channelLabel: z.string().trim(),
+  groupLink: z.string().trim(),
+  groupType: z.string().trim(),
+  groupLabel: z.string().trim(),
   popupButtonLabel: z.string().min(1, "Label requis"),
   floatingSupportTarget: z.string().min(1, "Requis"),
   supportEnabled: z.boolean(),
@@ -77,6 +77,26 @@ const settingsSchema = z.object({
   popupLine5: z.string().optional(),
   popupLine6: z.string().optional(),
   popupLine7: z.string().optional(),
+}).superRefine((data, ctx) => {
+  const links = [
+    { enabled: data.supportEnabled, link: data.supportLink, type: data.supportType, label: data.supportLabel, prefix: "support" },
+    { enabled: data.support2Enabled, link: data.support2Link, type: data.support2Type, label: data.support2Label, prefix: "support2" },
+    { enabled: data.channelEnabled, link: data.channelLink, type: data.channelType, label: data.channelLabel, prefix: "channel" },
+    { enabled: data.groupEnabled, link: data.groupLink, type: data.groupType, label: data.groupLabel, prefix: "group" },
+  ];
+
+  for (const item of links) {
+    if (!item.enabled) continue;
+    if (item.link.length < 5) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [`${item.prefix}Link`], message: "Lien requis pour un lien actif" });
+    }
+    if (!item.type) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [`${item.prefix}Type`], message: "Réseau social requis pour un lien actif" });
+    }
+    if (!item.label) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: [`${item.prefix}Label`], message: "Label requis pour un lien actif" });
+    }
+  }
 });
 
 type SettingsForm = z.infer<typeof settingsSchema>;
@@ -208,9 +228,9 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
       popupConfirmLabel: "thankyou",
       floatingSupportTarget: "support1",
       supportEnabled: true,
-      support2Enabled: true,
+      support2Enabled: false,
       channelEnabled: true,
-      groupEnabled: true,
+      groupEnabled: false,
       minDeposit: "18",
       depositPresetAmounts: "3500,5000,7000,10000,15000,20000,50000,70000",
       minWithdrawal: "1",
@@ -333,6 +353,10 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
   }
 
   const isMaintenance = settings?.maintenanceMode === "true";
+  const supportEnabled = form.watch("supportEnabled");
+  const support2Enabled = form.watch("support2Enabled");
+  const channelEnabled = form.watch("channelEnabled");
+  const groupEnabled = form.watch("groupEnabled");
 
   return (
     <Form {...form}>
@@ -403,14 +427,23 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
           <CardContent className="space-y-5">
 
             {/* Support 1 */}
-            <div className="space-y-2 border rounded-xl p-3">
+            <div className={`space-y-2 rounded-xl border p-3 ${supportEnabled ? "" : "bg-muted/30 opacity-70"}`}>
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Lien 1 — Support</p>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Lien 1 — Service client 1</p>
+                  {!supportEnabled && <p className="mt-1 text-xs text-muted-foreground">Désactivé : aucune configuration requise</p>}
+                </div>
                 <FormField control={form.control} name="supportEnabled" render={({ field }) => (
                   <FormItem className="flex items-center gap-2 space-y-0">
                     <FormLabel className="text-xs text-gray-500">{field.value ? "Actif" : "Inactif"}</FormLabel>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) form.clearErrors(["supportLink", "supportType", "supportLabel"]);
+                        }}
+                      />
                     </FormControl>
                   </FormItem>
                 )} />
@@ -426,7 +459,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                 <FormField control={form.control} name="supportType" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Réseau social</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select disabled={!supportEnabled} onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger><SelectValue placeholder="Choisir..." /></SelectTrigger>
                       </FormControl>
@@ -441,21 +474,30 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               <FormField control={form.control} name="supportLink" render={({ field }) => (
                 <FormItem>
                   <FormLabel>URL du lien</FormLabel>
-                  <FormControl><Input {...field} placeholder="https://t.me/..." /></FormControl>
+                  <FormControl><Input {...field} disabled={!supportEnabled} placeholder="https://t.me/..." /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
             </div>
 
             {/* Support 2 */}
-            <div className="space-y-2 border rounded-xl p-3">
+            <div className={`space-y-2 rounded-xl border p-3 ${support2Enabled ? "" : "bg-muted/30 opacity-70"}`}>
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Lien 2 — Support 2</p>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Lien 2 — Service client 2</p>
+                  {!support2Enabled && <p className="mt-1 text-xs text-muted-foreground">Désactivé : aucune configuration requise</p>}
+                </div>
                 <FormField control={form.control} name="support2Enabled" render={({ field }) => (
                   <FormItem className="flex items-center gap-2 space-y-0">
                     <FormLabel className="text-xs text-gray-500">{field.value ? "Actif" : "Inactif"}</FormLabel>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) form.clearErrors(["support2Link", "support2Type", "support2Label"]);
+                        }}
+                      />
                     </FormControl>
                   </FormItem>
                 )} />
@@ -471,7 +513,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                 <FormField control={form.control} name="support2Type" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Réseau social</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select disabled={!support2Enabled} onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger><SelectValue placeholder="Choisir..." /></SelectTrigger>
                       </FormControl>
@@ -486,21 +528,30 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               <FormField control={form.control} name="support2Link" render={({ field }) => (
                 <FormItem>
                   <FormLabel>URL du lien</FormLabel>
-                  <FormControl><Input {...field} placeholder="https://t.me/..." /></FormControl>
+                  <FormControl><Input {...field} disabled={!support2Enabled} placeholder="https://t.me/..." /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
             </div>
 
             {/* Channel */}
-            <div className="space-y-2 border rounded-xl p-3">
+            <div className={`space-y-2 rounded-xl border p-3 ${channelEnabled ? "" : "bg-muted/30 opacity-70"}`}>
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Lien 3 — Canal officiel</p>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Lien 3 — Chaîne officielle</p>
+                  {!channelEnabled && <p className="mt-1 text-xs text-muted-foreground">Désactivé : aucune configuration requise</p>}
+                </div>
                 <FormField control={form.control} name="channelEnabled" render={({ field }) => (
                   <FormItem className="flex items-center gap-2 space-y-0">
                     <FormLabel className="text-xs text-gray-500">{field.value ? "Actif" : "Inactif"}</FormLabel>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) form.clearErrors(["channelLink", "channelType", "channelLabel"]);
+                        }}
+                      />
                     </FormControl>
                   </FormItem>
                 )} />
@@ -516,7 +567,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                 <FormField control={form.control} name="channelType" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Réseau social</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select disabled={!channelEnabled} onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger><SelectValue placeholder="Choisir..." /></SelectTrigger>
                       </FormControl>
@@ -531,21 +582,30 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               <FormField control={form.control} name="channelLink" render={({ field }) => (
                 <FormItem>
                   <FormLabel>URL du lien</FormLabel>
-                  <FormControl><Input {...field} placeholder="https://t.me/..." /></FormControl>
+                  <FormControl><Input {...field} disabled={!channelEnabled} placeholder="https://t.me/..." /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
             </div>
 
             {/* Group */}
-            <div className="space-y-2 border rounded-xl p-3">
+            <div className={`space-y-2 rounded-xl border p-3 ${groupEnabled ? "" : "bg-muted/30 opacity-70"}`}>
               <div className="flex items-center justify-between">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Lien 4 — Groupe de discussion</p>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Lien 4 — Groupe de discussion</p>
+                  {!groupEnabled && <p className="mt-1 text-xs text-muted-foreground">Désactivé : aucune configuration requise</p>}
+                </div>
                 <FormField control={form.control} name="groupEnabled" render={({ field }) => (
                   <FormItem className="flex items-center gap-2 space-y-0">
                     <FormLabel className="text-xs text-gray-500">{field.value ? "Actif" : "Inactif"}</FormLabel>
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          if (!checked) form.clearErrors(["groupLink", "groupType", "groupLabel"]);
+                        }}
+                      />
                     </FormControl>
                   </FormItem>
                 )} />
@@ -561,7 +621,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                 <FormField control={form.control} name="groupType" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Réseau social</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select disabled={!groupEnabled} onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger><SelectValue placeholder="Choisir..." /></SelectTrigger>
                       </FormControl>
@@ -576,7 +636,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               <FormField control={form.control} name="groupLink" render={({ field }) => (
                 <FormItem>
                   <FormLabel>URL du lien</FormLabel>
-                  <FormControl><Input {...field} placeholder="https://t.me/..." /></FormControl>
+                  <FormControl><Input {...field} disabled={!groupEnabled} placeholder="https://t.me/..." /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -632,8 +692,12 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               <FormField control={form.control} name="groupLink" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Lien du bouton <span className="text-red-500">(popup accueil)</span></FormLabel>
-                  <FormControl><Input {...field} placeholder="https://t.me/..." /></FormControl>
-                  <FormDescription>Ce lien est aussi utilisé dans le popup de bienvenue.</FormDescription>
+                  <FormControl><Input {...field} disabled={!groupEnabled} placeholder="https://t.me/..." /></FormControl>
+                  <FormDescription>
+                    {groupEnabled
+                      ? "Ce lien est aussi utilisé dans le popup de bienvenue."
+                      : "Le groupe est désactivé : ce lien n'a pas besoin d'être configuré."}
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )} />
