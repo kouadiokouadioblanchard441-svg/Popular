@@ -29,11 +29,12 @@ export default function HomeAnnouncementModal() {
     settings[`popupLine${index + 1}`] || DEFAULT_LINES[index],
   )).filter(Boolean);
   const popupTitle = getContent(settings, "content_home_popupTitle", settings.popupTitle || "TGOOD Announcement");
-  // The popup link must stay usable outside service hours. Trust the URL
-  // configured by the administrator instead of disabling it based on the
-  // current online/offline status or a narrow Telegram-host filter.
-  const telegramUrl = (settings.supportLink || "").trim();
-  const telegramLabel = settings.popupTelegramLabel || "Telegram >";
+  // The homepage announcement must point to the configured official channel,
+  // not to the customer-support link.
+  const telegramUrl = settings.channelEnabled === "false"
+    ? ""
+    : (settings.channelLink || "").trim();
+  const telegramLabel = settings.channelLabel || settings.popupTelegramLabel || "Telegram >";
   const confirmLabel = settings.popupConfirmLabel || "OK";
   const announcementTitle = popupTitle;
 
