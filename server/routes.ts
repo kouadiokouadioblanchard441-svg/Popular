@@ -1803,19 +1803,7 @@ export async function registerRoutes(
       const taskId = parseInt(req.params.id as string);
       const userId = req.session.userId!;
 
-      // Récupérer la récompense avant le claim pour les commissions
-      const tasksStatus = await storage.getTasksWithStatus(userId);
-      const taskStatus = tasksStatus.find((t: any) => t.id === taskId);
-      const taskReward = taskStatus?.reward ?? 0;
-
       await storage.claimTask(userId, taskId);
-
-      // Distribuer les commissions de parrainage sur les gains de tâche
-      if (taskReward > 0) {
-        storage.processTaskReferralCommissions(userId, taskReward).catch((err: any) =>
-          console.error("Erreur commission tâche:", err)
-        );
-      }
 
       res.json({ success: true });
     } catch (error: any) {
@@ -2771,9 +2759,35 @@ export async function registerRoutes(
 
   const createGiftCodeSchema = z.object({
     code: z.string().min(1, "Le code est requis"),
-    amount: z.number().positive("Le montant doit etre positif").or(z.string().transform(Number)),
+    amount: z.preprocess(
+      (value) => value === "" || value === null || value === undefined ? undefined : Number(value),
+      z.number().positive("Le montant doit etre positif").optional(),
+    ),
+    amountMin: z.preprocess(
+      (value) => value === "" || value === null || value === undefined ? undefined : Number(value),
+      z.number().positive("Le montant minimum doit etre positif").optional(),
+    ),
+    amountMax: z.preprocess(
+      (value) => value === "" || value === null || value === undefined ? undefined : Number(value),
+      z.number().positive("Le montant maximum doit etre positif").optional(),
+    ),
+    randomAmount: z.boolean().optional().default(false),
     maxUses: z.number().int().positive("Le nombre d'utilisations doit etre positif"),
     expiresAt: z.string().refine((val) => !isNaN(Date.parse(val)), "Date d'expiration invalide"),
+  }).superRefine((data, ctx) => {
+    if (data.randomAmount) {
+      if (data.amountMin === undefined) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["amountMin"], message: "Le montant minimum est requis" });
+      }
+      if (data.amountMax === undefined) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["amountMax"], message: "Le montant maximum est requis" });
+      }
+      if (data.amountMin !== undefined && data.amountMax !== undefined && data.amountMin > data.amountMax) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["amountMax"], message: "Le maximum doit etre superieur ou egal au minimum" });
+      }
+    } else if (data.amount === undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["amount"], message: "Le montant est requis" });
+    }
   });
 
   app.post("/api/admin/gift-codes", requireAdmin, async (req, res) => {
@@ -2783,7 +2797,7 @@ export async function registerRoutes(
         return res.status(400).json({ message: parseResult.error.errors[0]?.message || "Donnees invalides" });
       }
 
-      const { code, amount, maxUses, expiresAt } = parseResult.data;
+      const { code, amount, amountMin, amountMax, randomAmount, maxUses, expiresAt } = parseResult.data;
 
       const existingCode = await storage.getGiftCodeByCode(code);
       if (existingCode) {
@@ -2792,13 +2806,18 @@ export async function registerRoutes(
 
       const giftCode = await storage.createGiftCode({
         code,
-        amount: amount.toString(),
+        amount: (randomAmount ? amountMin : amount)!.toString(),
+        amountMin: randomAmount ? amountMin!.toString() : null,
+        amountMax: randomAmount ? amountMax!.toString() : null,
         maxUses,
         expiresAt: new Date(expiresAt),
         createdBy: req.session.userId!,
       });
 
-      await storage.logAdminAction(req.session.userId!, "create_gift_code", null, `Code cadeau cree: ${code} - ${amount} USDT`);
+      const amountLabel = randomAmount
+        ? `${amountMin} à ${amountMax} USDT (aléatoire)`
+        : `${amount} USDT`;
+      await storage.logAdminAction(req.session.userId!, "create_gift_code", null, `Code cadeau cree: ${code} - ${amountLabel}`);
       res.json(giftCode);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -2852,12 +2871,19 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Vous avez déjà utilisé ce code" });
       }
 
-      await storage.claimGiftCode(userId, giftCode.id, parseFloat(giftCode.amount));
+      let rewardAmount = parseFloat(giftCode.amount);
+      if (giftCode.amountMin !== null && giftCode.amountMax !== null) {
+        const minCents = Math.round(parseFloat(giftCode.amountMin) * 100);
+        const maxCents = Math.round(parseFloat(giftCode.amountMax) * 100);
+        rewardAmount = crypto.randomInt(minCents, maxCents + 1) / 100;
+      }
+
+      await storage.claimGiftCode(userId, giftCode.id, rewardAmount);
       
       res.json({ 
         success: true, 
-        message: `Félicitations! Vous avez reçu ${parseFloat(giftCode.amount).toLocaleString()} USDT`,
-        amount: parseFloat(giftCode.amount)
+        message: `Félicitations! Vous avez reçu ${rewardAmount.toLocaleString()} USDT`,
+        amount: rewardAmount
       });
     } catch (error: any) {
       res.status(400).json({ message: error.message });

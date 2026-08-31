@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Plus, Trash2, Loader2, Gift } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +16,8 @@ interface GiftCode {
   amount: string;
   maxUses: number;
   currentUses: number;
+  amountMin?: string | null;
+  amountMax?: string | null;
   expiresAt: string;
   isActive: boolean;
   createdAt: string;
@@ -26,6 +29,9 @@ export default function AdminGiftCodes() {
   const [formData, setFormData] = useState({
     code: "",
     amount: "",
+    amountMin: "",
+    amountMax: "",
+    randomAmount: false,
     maxUses: "",
     expiresAt: "",
   });
@@ -38,7 +44,10 @@ export default function AdminGiftCodes() {
     mutationFn: async (data: typeof formData) => {
       const response = await apiRequest("POST", "/api/admin/gift-codes", {
         code: data.code,
-        amount: parseFloat(data.amount),
+        amount: data.randomAmount ? undefined : parseFloat(data.amount),
+        amountMin: data.randomAmount ? parseFloat(data.amountMin) : undefined,
+        amountMax: data.randomAmount ? parseFloat(data.amountMax) : undefined,
+        randomAmount: data.randomAmount,
         maxUses: parseInt(data.maxUses),
         expiresAt: data.expiresAt,
       });
@@ -51,7 +60,7 @@ export default function AdminGiftCodes() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/gift-codes"] });
       setIsCreateOpen(false);
-      setFormData({ code: "", amount: "", maxUses: "", expiresAt: "" });
+      setFormData({ code: "", amount: "", amountMin: "", amountMax: "", randomAmount: false, maxUses: "", expiresAt: "" });
       toast({ title: "Succes", description: "Code cadeau cree avec succes" });
     },
     onError: (error: any) => {
@@ -76,7 +85,10 @@ export default function AdminGiftCodes() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.code || !formData.amount || !formData.maxUses || !formData.expiresAt) {
+    const hasValidAmount = formData.randomAmount
+      ? Boolean(formData.amountMin && formData.amountMax)
+      : Boolean(formData.amount);
+    if (!formData.code || !hasValidAmount || !formData.maxUses || !formData.expiresAt) {
       toast({ title: "Tous les champs sont requis", variant: "destructive" });
       return;
     }
@@ -129,17 +141,61 @@ export default function AdminGiftCodes() {
                   data-testid="input-code"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="amount">Montant (USDT)</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  placeholder="Ex: 500"
-                  data-testid="input-amount"
+              <div className="flex items-center justify-between rounded-lg border p-3">
+                <Label htmlFor="random-amount" className="cursor-pointer">
+                  Montant aléatoire dans un intervalle
+                </Label>
+                <Switch
+                  id="random-amount"
+                  checked={formData.randomAmount}
+                  onCheckedChange={(checked) => setFormData({ ...formData, randomAmount: checked })}
+                  data-testid="switch-random-amount"
                 />
               </div>
+              {formData.randomAmount ? (
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="amount-min">Montant minimum (USDT)</Label>
+                    <Input
+                      id="amount-min"
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      value={formData.amountMin}
+                      onChange={(e) => setFormData({ ...formData, amountMin: e.target.value })}
+                      placeholder="Ex: 20"
+                      data-testid="input-amount-min"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="amount-max">Montant maximum (USDT)</Label>
+                    <Input
+                      id="amount-max"
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      value={formData.amountMax}
+                      onChange={(e) => setFormData({ ...formData, amountMax: e.target.value })}
+                      placeholder="Ex: 50"
+                      data-testid="input-amount-max"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="amount">Montant (USDT)</Label>
+                  <Input
+                    id="amount"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    value={formData.amount}
+                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    placeholder="Ex: 500"
+                    data-testid="input-amount"
+                  />
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="maxUses">Nombre d'utilisateurs max</Label>
                 <Input
@@ -198,7 +254,11 @@ export default function AdminGiftCodes() {
               <CardContent className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Montant</span>
-                  <span className="font-semibold" data-testid={`text-amount-${giftCode.id}`}>{parseFloat(giftCode.amount).toLocaleString()} USDT</span>
+                  <span className="font-semibold" data-testid={`text-amount-${giftCode.id}`}>
+                    {giftCode.amountMin !== null && giftCode.amountMin !== undefined && giftCode.amountMax !== null && giftCode.amountMax !== undefined
+                      ? `${parseFloat(giftCode.amountMin).toLocaleString()} – ${parseFloat(giftCode.amountMax).toLocaleString()} USDT (aléatoire)`
+                      : `${parseFloat(giftCode.amount).toLocaleString()} USDT`}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Utilisations</span>

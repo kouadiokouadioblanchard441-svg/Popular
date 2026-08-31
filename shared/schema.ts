@@ -351,6 +351,8 @@ export const giftCodes = pgTable("gift_codes", {
   id: serial("id").primaryKey(),
   code: text("code").notNull().unique(),
   amount: decimal("amount", { precision: 15, scale: 2 }).notNull(),
+  amountMin: decimal("amount_min", { precision: 15, scale: 2 }),
+  amountMax: decimal("amount_max", { precision: 15, scale: 2 }),
   maxUses: integer("max_uses").notNull(),
   currentUses: integer("current_uses").notNull().default(0),
   expiresAt: timestamp("expires_at").notNull(),
@@ -471,7 +473,10 @@ export const walletSchema = z.object({
 
 export const giftCodeSchema = z.object({
   code: z.string().min(4, "Le code doit avoir au moins 4 caracteres"),
-  amount: z.number().min(1, "Le montant doit etre positif"),
+  amount: z.number().min(1, "Le montant doit etre positif").optional(),
+  amountMin: z.number().min(0.01, "Le montant minimum doit etre positif").optional(),
+  amountMax: z.number().min(0.01, "Le montant maximum doit etre positif").optional(),
+  randomAmount: z.boolean().optional(),
   maxUses: z.number().min(1, "Le nombre d'utilisations doit etre au moins 1"),
   expiresAt: z.string(),
 });

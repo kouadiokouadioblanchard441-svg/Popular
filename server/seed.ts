@@ -275,7 +275,13 @@ export async function seed() {
 
   // Check if settings exist - apply new values for new keys or update existing
   const existingSettings = await db.select().from(platformSettings);
-  for (const obsoleteKey of ["dailyBonusEnabled", "dailyBonusAmount"]) {
+  for (const obsoleteKey of [
+    "dailyBonusEnabled",
+    "dailyBonusAmount",
+    "taskLevel1Commission",
+    "taskLevel2Commission",
+    "taskLevel3Commission",
+  ]) {
     await db.delete(platformSettings).where(eq(platformSettings.key, obsoleteKey));
   }
   const requiredSettings = [
@@ -317,9 +323,6 @@ export async function seed() {
     { key: "level1Commission", value: "10" },
     { key: "level2Commission", value: "2" },
     { key: "level3Commission", value: "1" },
-    { key: "taskLevel1Commission", value: "3" },
-    { key: "taskLevel2Commission", value: "2" },
-    { key: "taskLevel3Commission", value: "1" },
     { key: "signupBonusEnabled", value: "true" },
     { key: "signupBonusAmount", value: "2" },
     { key: "soleaspayEnabled", value: "false" },
