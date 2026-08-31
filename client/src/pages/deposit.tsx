@@ -1,6 +1,6 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, ArrowLeft, Camera, Check, ChevronRight, Copy, CreditCard, History, ImageUp } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Camera, Check, ChevronRight, Copy, CreditCard, History, Info, Loader2, ShieldCheck, WalletCards } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
@@ -117,6 +117,7 @@ export default function DepositPage() {
   const [cryptoPayment, setCryptoPayment] = useState<CryptoPayment | null>(null);
   const [selectedCryptoCurrency, setSelectedCryptoCurrency] = useState<CryptoCurrency | null>(null);
   const [pendingCurrencyCode, setPendingCurrencyCode] = useState<string | null>(null);
+  const [copiedField, setCopiedField] = useState<"address" | "memo" | null>(null);
 
   const { data: settings = {} } = useQuery<Record<string, string>>({
     queryKey: ["/api/settings"],
@@ -215,14 +216,43 @@ export default function DepositPage() {
     setView("currency");
   };
 
-  const copyPaymentAddress = async () => {
-    if (!cryptoPayment?.payAddress) return;
+  useEffect(() => {
+    if (!copiedField) return;
+    const timeout = window.setTimeout(() => setCopiedField(null), 2200);
+    return () => window.clearTimeout(timeout);
+  }, [copiedField]);
+
+  const copyText = async (value: string, field: "address" | "memo", label: string) => {
     try {
-      await navigator.clipboard.writeText(cryptoPayment.payAddress);
-      toast({ title: "Address copied" });
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = value;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+        const copied = document.execCommand("copy");
+        textArea.remove();
+        if (!copied) throw new Error("Clipboard unavailable");
+      }
+      setCopiedField(field);
+      toast({ title: `${label} copied` });
     } catch {
-      toast({ title: "Unable to copy address", variant: "destructive" });
+      toast({ title: `Unable to copy ${label.toLowerCase()}`, variant: "destructive" });
     }
+  };
+
+  const copyPaymentAddress = () => {
+    if (!cryptoPayment?.payAddress) return;
+    void copyText(cryptoPayment.payAddress, "address", "Address");
+  };
+
+  const copyPaymentMemo = () => {
+    if (!cryptoPayment?.payinExtraId) return;
+    void copyText(cryptoPayment.payinExtraId, "memo", "Memo / tag");
   };
 
   const submitIssue = () => {
@@ -251,125 +281,221 @@ export default function DepositPage() {
   if (view === "crypto-payment" && cryptoPayment) {
     const selectedCurrencyLabel = selectedCryptoCurrency?.label || cryptoPayment.payCurrency.toUpperCase();
     return (
-      <main className="min-h-screen bg-[#f4f7f5] pb-10" style={{ color: "#1b2b20" }}>
-        <header className="flex h-[76px] items-center gap-3 bg-[#087a38] px-5 text-white shadow-[0_2px_8px_rgba(0,75,35,.2)]">
+      <main className="min-h-screen bg-[#f3f8f4] pb-10" style={{ color: "#173f26" }}>
+        <header className="flex h-[78px] items-center gap-3 bg-[#087a38] px-4 text-white shadow-[0_2px_8px_rgba(0,75,35,.2)]">
           <button
             type="button"
             onClick={() => setView("currency")}
-            className="flex h-10 w-9 items-center justify-center rounded-full active:bg-white/10"
+            className="flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-white/10 active:scale-95"
             aria-label="Back to currency selection"
             data-testid="button-crypto-payment-back"
           >
-            <ArrowLeft size={27} strokeWidth={2} />
+            <ArrowLeft size={24} strokeWidth={2} />
           </button>
-          <h1 className="flex-1 text-center text-[20px] font-medium pr-9">Crypto payment</h1>
+          <div className="flex-1 pr-11 text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">TGOOD deposit</p>
+            <h1 className="mt-0.5 text-[19px] font-semibold">Send payment</h1>
+          </div>
         </header>
 
-        <section className="mx-4 mt-3 rounded-[16px] bg-white px-4 py-4 shadow-[0_6px_16px_rgba(0,70,30,.08)]">
-           <p className="text-center text-[14px] text-[#66746b]">Send exactly</p>
-          <p className="mt-0.5 text-center text-[27px] font-bold text-[#087a38]">
-            {Number(cryptoPayment.payAmount).toLocaleString(undefined, { maximumFractionDigits: 8 })} {cryptoPayment.payCurrency.toUpperCase()}
-          </p>
-           <p className="mt-0.5 text-center text-[13px] text-[#66746b]">on the {selectedCurrencyLabel} network</p>
+        <div className="mx-auto w-full max-w-xl px-4">
+          <section className="mt-4 overflow-hidden rounded-[22px] border border-[#dcebe0] bg-white shadow-[0_10px_28px_rgba(0,70,30,.08)]">
+            <div className="border-b border-[#e5efe7] bg-[#f8fcf9] px-5 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-[12px] font-medium uppercase tracking-[0.12em] text-[#698173]">Amount to send</p>
+                  <p className="mt-1 text-[26px] font-bold tracking-tight text-[#087a38]">
+                    {Number(cryptoPayment.payAmount).toLocaleString(undefined, { maximumFractionDigits: 8 })} <span className="text-[16px]">{cryptoPayment.payCurrency.toUpperCase()}</span>
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#e4f6e9] px-3 py-1.5 text-[12px] font-semibold text-[#087a38]">
+                  <ShieldCheck size={15} />
+                  Secure payment
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-2 text-[13px] text-[#53705d]">
+                <span className="h-2 w-2 rounded-full bg-[#20b957]" />
+                Send on <span className="font-semibold text-[#173f26]">{selectedCurrencyLabel}</span> network only
+              </div>
+            </div>
 
-           <img src={cryptoPayment.qrCode} alt="Payment QR code" className="mx-auto mt-3 h-[160px] w-[160px] rounded-[8px]" />
+            <div className="px-5 py-5">
+              <div className="rounded-[16px] border border-[#e1eee4] bg-white p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#698173]">Scan to pay</p>
+                    <p className="mt-1 text-[13px] text-[#66746b]">Use your wallet app to scan this QR code.</p>
+                  </div>
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#eaf7ee] text-[#087a38]">
+                    <WalletCards size={18} />
+                  </div>
+                </div>
+                <div className="mx-auto mt-4 flex h-[190px] w-[190px] items-center justify-center rounded-[18px] border border-[#e0ebe2] bg-white p-3 shadow-[0_4px_14px_rgba(0,70,30,.06)]">
+                  <img src={cryptoPayment.qrCode} alt={`QR code for ${selectedCurrencyLabel} payment`} className="h-full w-full rounded-[8px]" />
+                </div>
+              </div>
 
-          <div className="mt-3 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-2.5">
-             <p className="mb-0.5 text-[12px] font-medium text-[#53705d]">Payment address {selectedCurrencyLabel}</p>
-            <p className="break-all font-mono text-[13px] leading-4 text-[#173f26]">{cryptoPayment.payAddress}</p>
-          </div>
-          {(cryptoPayment.payinExtraId || cryptoPayment.network) && (
-            <div className="mt-2 grid gap-1 rounded-[10px] border border-[#d7e9dc] bg-[#f8fcf9] p-2.5 text-[13px]">
-              {cryptoPayment.network && (
-                <p className="text-[#53705d]">
-                   Network: <span className="font-semibold uppercase text-[#173f26]">{cryptoPayment.network}</span>
+              <div className="mt-4 rounded-[16px] border border-[#cfe5d5] bg-[#f7fcf8] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#53705d]">Payment address</p>
+                    <p className="mt-1 text-[12px] text-[#789082]">{selectedCurrencyLabel}</p>
+                  </div>
+                  <span className="rounded-full bg-[#e2f4e7] px-2.5 py-1 text-[11px] font-semibold text-[#087a38]">Required</span>
+                </div>
+                <p className="mt-3 break-all rounded-[10px] border border-[#dcebe0] bg-white px-3 py-3 font-mono text-[13px] leading-5 text-[#173f26]">
+                  {cryptoPayment.payAddress}
                 </p>
-              )}
-              {cryptoPayment.payinExtraId && (
-                <p className="text-[#53705d]">
-                   Memo / tag: <span className="break-all font-mono font-semibold text-[#173f26]">{cryptoPayment.payinExtraId}</span>
-                </p>
+                <button
+                  type="button"
+                  onClick={copyPaymentAddress}
+                  className={`mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-semibold text-white shadow-[0_4px_10px_rgba(8,122,56,.18)] transition hover:brightness-105 active:scale-[.98] ${copiedField === "address" ? "bg-[#159447]" : "bg-[#087a38]"}`}
+                  data-testid="button-copy-crypto-address"
+                >
+                  {copiedField === "address" ? <Check size={18} /> : <Copy size={18} />}
+                  {copiedField === "address" ? "Address copied" : "Copy address"}
+                </button>
+              </div>
+
+              {(cryptoPayment.payinExtraId || cryptoPayment.network) && (
+                <div className="mt-3 grid gap-3 rounded-[16px] border border-[#e1eee4] bg-[#fbfdfb] p-4 text-[13px]">
+                  {cryptoPayment.network && (
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[#698173]">Network</span>
+                      <span className="font-semibold uppercase text-[#173f26]">{cryptoPayment.network}</span>
+                    </div>
+                  )}
+                  {cryptoPayment.payinExtraId && (
+                    <div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-[#698173]">Memo / tag</span>
+                        <button
+                          type="button"
+                          onClick={copyPaymentMemo}
+                          className="flex items-center gap-1.5 rounded-lg px-2 py-1 font-semibold text-[#087a38] transition hover:bg-[#eaf7ee] active:scale-95"
+                          aria-label="Copy memo or tag"
+                          data-testid="button-copy-crypto-memo"
+                        >
+                          {copiedField === "memo" ? <Check size={15} /> : <Copy size={15} />}
+                          {copiedField === "memo" ? "Copied" : "Copy"}
+                        </button>
+                      </div>
+                      <p className="mt-1 break-all rounded-lg bg-[#f1f7f2] px-3 py-2 font-mono font-semibold text-[#173f26]">{cryptoPayment.payinExtraId}</p>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
-          )}
-          <button
-            type="button"
-            onClick={copyPaymentAddress}
-            className="mx-auto mt-3 flex h-[40px] items-center justify-center gap-2 rounded-full px-7 text-[15px] font-semibold text-white active:scale-[.98]"
-            style={{ background: "#FF0000" }}
-            data-testid="button-copy-crypto-address"
-          >
-             <Copy size={17} /> Copy address
-          </button>
-        </section>
+          </section>
 
-        <div className="mx-4 mt-3 flex gap-2.5 rounded-[11px] border border-[#ef9a9a] bg-[#fff1f1] px-3 py-2.5 text-[#b4232f]">
-          <AlertTriangle size={20} className="mt-0.5 shrink-0 text-[#c52233]" />
-          <p className="text-[13px] leading-[1.125rem]">
-             Send only <strong>{selectedCurrencyLabel}</strong> on the corresponding network. Sending from another network may result in a loss.
-          </p>
+          <div className="mt-4 flex gap-3 rounded-[16px] border border-[#f0d6a8] bg-[#fffaf0] px-4 py-3.5 text-[#8b5e18]">
+            <AlertTriangle size={19} className="mt-0.5 shrink-0" />
+            <div className="text-[13px] leading-5">
+              <p className="font-semibold">Double-check before sending</p>
+              <p className="mt-0.5">Only send <strong>{selectedCurrencyLabel}</strong> through the matching network. Another network can permanently lose your funds.</p>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-start gap-2 px-1 text-[12px] leading-5 text-[#718177]">
+            <Info size={16} className="mt-0.5 shrink-0 text-[#087a38]" />
+            <p>Your deposit will be credited automatically after the network confirms the transaction. Keep this page until the payment is complete.</p>
+          </div>
         </div>
-
-        <p className="mx-5 mt-3 text-center text-[13px] leading-[1.125rem] text-[#66746b]">
-           The deposit will be credited automatically after network confirmation.
-        </p>
       </main>
     );
   }
 
   if (view === "currency") {
     return (
-      <main className="min-h-screen bg-[linear-gradient(180deg,#087a38_0%,#00c853_38%,#eaf7ee_100%)] pb-9">
-        <header className="flex h-[86px] items-center gap-3 px-5 text-white">
+      <main className="min-h-screen bg-[#f3f8f4] pb-9" style={{ color: "#173f26" }}>
+        <header className="flex h-[92px] items-center gap-3 bg-[#087a38] px-4 text-white shadow-[0_2px_8px_rgba(0,75,35,.2)]">
           <button
             type="button"
             onClick={() => setView("main")}
-            className="flex h-10 w-9 items-center justify-center rounded-full active:bg-white/10"
+            className="flex h-11 w-11 items-center justify-center rounded-full transition hover:bg-white/10 active:scale-95"
             aria-label="Back to deposit amount"
             data-testid="button-currency-back"
           >
-            <ArrowLeft size={28} strokeWidth={2} />
+            <ArrowLeft size={24} strokeWidth={2} />
           </button>
-          <h1 className="flex-1 text-center text-[21px] font-medium pr-9">Select currency</h1>
+          <div className="flex-1 pr-11 text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">TGOOD deposit</p>
+            <h1 className="mt-0.5 text-[20px] font-semibold">Choose a currency</h1>
+          </div>
         </header>
 
-        <section className="mx-5 overflow-hidden rounded-[19px] border border-white/60 bg-white/90 shadow-[0_12px_28px_rgba(0,84,38,.22)] backdrop-blur-sm">
-          {createCryptoDeposit.isPending && selectedCryptoCurrency && (
-            <p role="status" className="border-b border-[#d6e7da] bg-[#eef9f1] px-4 py-3 text-center text-[13px] font-medium text-[#087a38]">
-              Preparing {selectedCryptoCurrency.label} payment…
-            </p>
-          )}
-          {CRYPTO_CURRENCIES.map((currency, index) => (
-            <button
-              key={currency.code}
-              type="button"
-              onClick={() => {
-                setSelectedCryptoCurrency(currency);
-                setPendingCurrencyCode(currency.code);
-                createCryptoDeposit.mutate(currency);
-              }}
-              disabled={createCryptoDeposit.isPending}
-              className="flex min-h-[73px] w-full items-center px-4 text-left transition active:bg-[#eaf8ee] disabled:opacity-60"
-              style={{ borderBottom: index < CRYPTO_CURRENCIES.length - 1 ? "1px dashed #b8cfc0" : undefined }}
-              data-testid={`button-currency-${currency.code}`}
-            >
-              <span className="relative mr-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,.1)]">
-                <img src={currency.icon} alt="" className="h-8 w-8 object-contain" aria-hidden="true" />
-                {currency.networkIcon && (
-                  <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border border-white bg-white">
-                    <img src={currency.networkIcon} alt="" className="h-[12px] w-[12px] object-contain" aria-hidden="true" />
+        <div className="mx-auto w-full max-w-xl px-4">
+          <section className="-mt-3 overflow-hidden rounded-[22px] border border-[#dcebe0] bg-white shadow-[0_10px_28px_rgba(0,70,30,.08)]">
+            <div className="flex items-center gap-3 border-b border-[#e5efe7] bg-[#f8fcf9] px-5 py-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#e4f6e9] text-[#087a38]">
+                <WalletCards size={22} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#698173]">Deposit amount</p>
+                <p className="mt-0.5 truncate text-[21px] font-bold text-[#087a38]">{Number(amount).toLocaleString(undefined, { maximumFractionDigits: 8 })} USDT</p>
+              </div>
+              <span className="shrink-0 rounded-full bg-[#e4f6e9] px-2.5 py-1 text-[11px] font-semibold text-[#087a38]">Step 2 of 2</span>
+            </div>
+            <div className="px-5 pb-4 pt-5">
+              <div className="flex items-end justify-between gap-3">
+                <div>
+                  <h2 className="text-[18px] font-semibold text-[#173f26]">Select payment network</h2>
+                  <p className="mt-1 text-[13px] text-[#6b7d70]">Choose the exact network used by your wallet.</p>
+                </div>
+                <ShieldCheck size={22} className="shrink-0 text-[#20a554]" />
+              </div>
+            </div>
+            {createCryptoDeposit.isPending && selectedCryptoCurrency && (
+              <div role="status" className="flex items-center gap-3 border-y border-[#cfe5d5] bg-[#eef9f1] px-5 py-3.5 text-[13px] font-medium text-[#087a38]">
+                <Loader2 size={17} className="animate-spin" />
+                <span>Preparing your {selectedCryptoCurrency.label} payment…</span>
+              </div>
+            )}
+            <div className="divide-y divide-[#e5eee7] border-t border-[#e5eee7]">
+              {CRYPTO_CURRENCIES.map((currency) => (
+                <button
+                  key={currency.code}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCryptoCurrency(currency);
+                    setPendingCurrencyCode(currency.code);
+                    createCryptoDeposit.mutate(currency);
+                  }}
+                  disabled={createCryptoDeposit.isPending}
+                  aria-busy={pendingCurrencyCode === currency.code}
+                  aria-label={`Pay with ${currency.label}`}
+                  className="group flex min-h-[78px] w-full items-center gap-3 px-5 text-left transition hover:bg-[#f7fcf8] active:bg-[#eaf8ee] disabled:cursor-wait disabled:opacity-60"
+                  data-testid={`button-currency-${currency.code}`}
+                >
+                  <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#e2ece4] bg-white shadow-[0_2px_7px_rgba(0,0,0,.06)]">
+                    <img src={currency.icon} alt="" className="h-8 w-8 object-contain" aria-hidden="true" />
+                    {currency.networkIcon && (
+                      <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-white shadow-sm">
+                        <img src={currency.networkIcon} alt="" className="h-[13px] w-[13px] object-contain" aria-hidden="true" />
+                      </span>
+                    )}
                   </span>
-                )}
-              </span>
-              <span className="flex-1 text-[17px] font-medium text-[#183c25]">{currency.label}</span>
-              {pendingCurrencyCode === currency.code ? (
-                <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#087a38] border-t-transparent" aria-hidden="true" />
-              ) : (
-                <ChevronRight size={28} strokeWidth={1.5} color="#699379" aria-hidden="true" />
-              )}
-            </button>
-          ))}
-        </section>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center gap-2">
+                      <span className="truncate text-[16px] font-semibold text-[#183c25]">{currency.label}</span>
+                      {currency.networkIcon && <span className="rounded-full bg-[#f0f7f1] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#6a8270]">Network</span>}
+                    </span>
+                    <span className="mt-1 block text-[12px] text-[#789082]">Compatible wallet network required</span>
+                  </span>
+                  {pendingCurrencyCode === currency.code ? (
+                    <Loader2 size={20} className="shrink-0 animate-spin text-[#087a38]" aria-hidden="true" />
+                  ) : (
+                    <ChevronRight size={22} strokeWidth={1.8} className="shrink-0 text-[#789b83] transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </section>
+          <p className="mt-4 flex items-start gap-2 px-1 text-[12px] leading-5 text-[#718177]">
+            <Info size={16} className="mt-0.5 shrink-0 text-[#087a38]" />
+            <span>Payments are credited after confirmation on the selected blockchain network.</span>
+          </p>
+        </div>
       </main>
     );
   }
