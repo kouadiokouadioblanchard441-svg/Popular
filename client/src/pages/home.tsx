@@ -16,19 +16,60 @@ import { FloatingSupport } from "@/components/floating-support";
 import { getContent } from "@/lib/content";
 import teslaLogo from "@/assets/partners/tesla.svg";
 import bydLogo from "@/assets/partners/byd.svg";
+import mercedesLogo from "@/assets/partners/mercedes.svg";
 import binanceLogo from "@/assets/partners/binance.svg";
 import netflixLogo from "@/assets/partners/netflix.svg";
 import xpengLogo from "@assets/image_search/xpeng-official.svg";
+import toyotaLogo from "@/assets/partners/toyota.svg";
+import bmwLogo from "@/assets/partners/bmw.svg";
+import audiLogo from "@/assets/partners/audi.svg";
+import volkswagenLogo from "@/assets/partners/volkswagen.svg";
+import fordLogo from "@/assets/partners/ford.svg";
+import hondaLogo from "@/assets/partners/honda.svg";
+import shellLogo from "@/assets/partners/shell.svg";
+import huaweiLogo from "@/assets/partners/huawei.svg";
+import xiaomiLogo from "@/assets/partners/xiaomi.svg";
+import samsungLogo from "@/assets/partners/samsung.svg";
+import appleLogo from "@/assets/partners/apple.svg";
+import googleLogo from "@/assets/partners/google.svg";
+import microsoftLogo from "@/assets/partners/microsoft.svg";
+import amazonLogo from "@/assets/partners/amazon.svg";
+import sonyLogo from "@/assets/partners/sony.svg";
+import intelLogo from "@/assets/partners/intel.svg";
+import visaLogo from "@/assets/partners/visa.svg";
+import mastercardLogo from "@/assets/partners/mastercard.svg";
+import paypalLogo from "@/assets/partners/paypal.svg";
+import cocaColaLogo from "@/assets/partners/cocacola.svg";
 
 const TGOOD_GREEN = "#08b83a";
 
 const PARTNERS = [
   { name: "Tesla", logo: teslaLogo },
   { name: "BYD", logo: bydLogo },
-  { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
+  { name: "Mercedes-Benz", logo: mercedesLogo },
   { name: "Binance", logo: binanceLogo },
   { name: "XPENG", logo: xpengLogo },
   { name: "Netflix", logo: netflixLogo },
+  { name: "Toyota", logo: toyotaLogo },
+  { name: "BMW", logo: bmwLogo },
+  { name: "Audi", logo: audiLogo },
+  { name: "Volkswagen", logo: volkswagenLogo },
+  { name: "Ford", logo: fordLogo },
+  { name: "Honda", logo: hondaLogo },
+  { name: "Shell", logo: shellLogo },
+  { name: "Huawei", logo: huaweiLogo },
+  { name: "Xiaomi", logo: xiaomiLogo },
+  { name: "Samsung", logo: samsungLogo },
+  { name: "Apple", logo: appleLogo },
+  { name: "Google", logo: googleLogo },
+  { name: "Microsoft", logo: microsoftLogo },
+  { name: "Amazon", logo: amazonLogo },
+  { name: "Sony", logo: sonyLogo },
+  { name: "Intel", logo: intelLogo },
+  { name: "Visa", logo: visaLogo },
+  { name: "Mastercard", logo: mastercardLogo },
+  { name: "PayPal", logo: paypalLogo },
+  { name: "Coca-Cola", logo: cocaColaLogo },
 ];
 
 const ACTIONS = [
@@ -383,32 +424,42 @@ export default function HomePage() {
           <h2 className="mb-4 text-center font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
              {getContent(settings, "content_home_partnersTitle", "Nos partenaires")}
           </h2>
-          <div className="grid grid-cols-3 gap-3">
-            {PARTNERS.map((partner) => (
-              <div
-                key={partner.name}
-                className="flex h-[76px] flex-col items-center justify-center gap-2 rounded-[10px] bg-white px-2 shadow-sm"
-              >
-                {partner.name === "XPENG" ? (
-                  <span className="flex h-8 w-full items-center justify-center rounded-[4px] bg-[#111827] px-3">
-                    <img
-                      src={partner.logo}
-                      alt={`Logo ${partner.name}`}
-                      className="h-7 w-auto object-contain"
-                      loading="lazy"
-                    />
-                  </span>
-                ) : (
-                  <img
-                    src={partner.logo}
-                    alt={`Logo ${partner.name}`}
-                    className="h-8 w-full object-contain"
-                    loading="lazy"
-                  />
-                )}
-                <span className="truncate text-center text-[10px] font-medium text-[#65756c]">{partner.name}</span>
-              </div>
-            ))}
+          <div className="partner-marquee overflow-hidden rounded-[14px]" role="region" aria-label="Liste des partenaires">
+            <div className="partner-marquee-track flex w-max gap-3 py-1">
+              {[0, 1].map((groupIndex) => (
+                <div
+                  key={`partner-group-${groupIndex}`}
+                  className="partner-marquee-group flex gap-3"
+                  aria-hidden={groupIndex === 1}
+                >
+                  {PARTNERS.map((partner) => (
+                    <div
+                      key={`${groupIndex}-${partner.name}`}
+                      className="flex h-[82px] w-[116px] shrink-0 flex-col items-center justify-center gap-2 rounded-[10px] bg-white px-2 shadow-sm sm:w-[132px]"
+                    >
+                      {partner.name === "XPENG" ? (
+                        <span className="flex h-8 w-full items-center justify-center rounded-[4px] bg-[#111827] px-3">
+                          <img
+                            src={partner.logo}
+                            alt={`Logo ${partner.name}`}
+                            className="h-7 w-auto object-contain"
+                            loading="lazy"
+                          />
+                        </span>
+                      ) : (
+                        <img
+                          src={partner.logo}
+                          alt={`Logo ${partner.name}`}
+                          className="h-8 w-full object-contain"
+                          loading="lazy"
+                        />
+                      )}
+                      <span className="w-full truncate text-center text-[10px] font-medium text-[#65756c]">{partner.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -421,8 +472,22 @@ export default function HomePage() {
           0%, 12% { transform: translateX(0); }
           88%, 100% { transform: translateX(-42%); }
         }
+        .partner-marquee-track {
+          animation: partner-scroll 72s linear infinite;
+        }
+        .partner-marquee:hover .partner-marquee-track,
+        .partner-marquee:focus-within .partner-marquee-track {
+          animation-play-state: paused;
+        }
+        @keyframes partner-scroll {
+          from { transform: translateX(0); }
+          to { transform: translateX(calc(-50% - 0.375rem)); }
+        }
         @media (prefers-reduced-motion: reduce) {
           .home-page [style*="home-ticker"] {
+            animation: none !important;
+          }
+          .partner-marquee-track {
             animation: none !important;
           }
         }
