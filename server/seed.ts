@@ -275,6 +275,9 @@ export async function seed() {
 
   // Check if settings exist - apply new values for new keys or update existing
   const existingSettings = await db.select().from(platformSettings);
+  for (const obsoleteKey of ["dailyBonusEnabled", "dailyBonusAmount"]) {
+    await db.delete(platformSettings).where(eq(platformSettings.key, obsoleteKey));
+  }
   const requiredSettings = [
     { key: "supportLink", value: "https://t.me/vestasgroup" },
     { key: "supportType", value: "telegram" },
@@ -289,6 +292,14 @@ export async function seed() {
     { key: "groupType", value: "telegram" },
     { key: "groupLabel", value: "Groupe de discussion" },
     { key: "popupButtonLabel", value: "Rejoindre le groupe Telegram" },
+    { key: "popupTitle", value: "TGOOD" },
+    { key: "popupLine1", value: "🚀 TGOOD RDC : lancement officiel le 03/09/2026 !" },
+    { key: "popupLine2", value: "🤝 Dépôt minimum : 18 USDT" },
+    { key: "popupLine3", value: "💚 Retrait minimum : 1 USDT — USDT BEP20, sans frais" },
+    { key: "popupLine4", value: "✅ Bonus d'inscription : 2 USDT" },
+    { key: "popupLine5", value: "👥 Invitez vos amis et gagnez des commissions" },
+    { key: "popupLine6", value: "🕘 Retraits et support disponibles de 09:00 à 17:00" },
+    { key: "popupLine7", value: "🔥 Les gains sont crédités chaque jour" },
     { key: "floatingSupportTarget", value: "support1" },
     { key: "supportEnabled", value: "true" },
     { key: "support2Enabled", value: "true" },
@@ -309,8 +320,6 @@ export async function seed() {
     { key: "taskLevel1Commission", value: "3" },
     { key: "taskLevel2Commission", value: "2" },
     { key: "taskLevel3Commission", value: "1" },
-    { key: "dailyBonusEnabled", value: "true" },
-    { key: "dailyBonusAmount", value: "25" },
     { key: "signupBonusEnabled", value: "true" },
     { key: "signupBonusAmount", value: "2" },
     { key: "soleaspayEnabled", value: "false" },

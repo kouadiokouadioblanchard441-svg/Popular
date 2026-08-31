@@ -102,12 +102,7 @@ function ActivityCard({ item }: { item: HistoryItem }) {
     day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
   }).format(new Date(item.createdAt));
   const description = lang === "en"
-    ? item.description
-      ?.replace(/bonus quotidien/gi, "Daily bonus")
-      .replace(/pointage aléatoire de/gi, "random check-in of")
-      .replace(/pointage de/gi, "check-in of")
-      .replace(/pointage/gi, "check-in")
-      .replace(/aléatoire/gi, "random")
+    ? (item.description ?? "")
       .replace(/crédité directement sur votre solde/gi, "credited directly to your balance")
     : item.description;
 

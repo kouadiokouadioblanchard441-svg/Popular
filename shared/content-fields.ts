@@ -80,20 +80,6 @@ export const CONTENT_GROUPS: ContentGroup[] = [
     ],
   },
   {
-    id: "checkin",
-    title: "Pointage quotidien",
-    fields: [
-      { key: "content_checkin_headerTitle", label: "Titre de la page", defaultValue: "Pointage" },
-      { key: "content_checkin_cardTitle", label: "Titre de la carte", defaultValue: "Pointage quotidien" },
-      { key: "content_checkin_cardSubtitle", label: "Sous-titre de la carte", defaultValue: "Recevez une récompense aléatoire chaque jour" },
-      { key: "content_checkin_dailyRewardLabel", label: "Libellé « Récompense du jour »", defaultValue: "Récompense du jour" },
-      { key: "content_checkin_streakLabel", label: "Libellé « Jours consécutifs »", defaultValue: "Jours consécutifs" },
-      { key: "content_checkin_totalLabel", label: "Libellé « Récompenses cumulées »", defaultValue: "Récompenses cumulées" },
-      { key: "content_checkin_rule1", label: "Règle 1", defaultValue: "1. À chaque pointage, recevez aléatoirement entre 0,10 et 0,40 USDT.", multiline: true },
-      { key: "content_checkin_rule2", label: "Règle 2", defaultValue: "2. Connectez-vous une fois par jour pour accumuler des points.", multiline: true },
-    ],
-  },
-  {
     id: "giftcode",
     title: "Code Bonus",
     fields: [

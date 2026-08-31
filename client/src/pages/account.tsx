@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { localeForLang, useI18n } from "@/lib/i18n";
 import { useMutation } from "@tanstack/react-query";
 import {
-  CalendarDays,
   CreditCard,
   CircleDollarSign,
   Download,
@@ -33,7 +32,7 @@ import missionBanner from "@assets/generated_images/tgood-tasks-bike-banner.jpg"
 const TGOOD_GREEN = "#08b83a";
 
 const PROFILE_ACTIONS: {
-  labelKey: "deposit" | "withdraw" | "history" | "checkinBtn";
+  labelKey: "deposit" | "withdraw" | "history";
   href: string;
   Icon: LucideIcon;
   color: string;
@@ -41,7 +40,6 @@ const PROFILE_ACTIONS: {
   { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign, color: "#050505" },
   { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins, color: "#050505" },
   { labelKey: "history", href: "/history", Icon: ReceiptText, color: "#050505" },
-  { labelKey: "checkinBtn", href: "/checkin", Icon: CalendarDays, color: "#050505" },
 ];
 
 const MORE_ACTIONS: {
