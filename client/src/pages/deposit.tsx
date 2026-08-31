@@ -407,8 +407,8 @@ export default function DepositPage() {
 
   if (view === "currency") {
     return (
-      <main className="min-h-screen bg-[#f3f8f4] pb-9" style={{ color: "#173f26" }}>
-        <header className="flex h-[92px] items-center gap-3 bg-[#087a38] px-4 text-white shadow-[0_2px_8px_rgba(0,75,35,.2)]">
+      <main className="flex h-[100dvh] flex-col overflow-hidden bg-[#f3f8f4]" style={{ color: "#173f26" }}>
+        <header className="flex h-[76px] shrink-0 items-center gap-3 bg-[#087a38] px-4 text-white shadow-[0_2px_8px_rgba(0,75,35,.2)]">
           <button
             type="button"
             onClick={() => setView("main")}
@@ -419,39 +419,39 @@ export default function DepositPage() {
             <ArrowLeft size={24} strokeWidth={2} />
           </button>
           <div className="flex-1 pr-11 text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">TGOOD deposit</p>
-            <h1 className="mt-0.5 text-[20px] font-semibold">Choose a currency</h1>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70">TGOOD deposit</p>
+            <h1 className="mt-0.5 text-[19px] font-semibold">Choose a currency</h1>
           </div>
         </header>
 
-        <div className="mx-auto w-full max-w-xl px-4">
-          <section className="-mt-3 overflow-hidden rounded-[22px] border border-[#dcebe0] bg-white shadow-[0_10px_28px_rgba(0,70,30,.08)]">
-            <div className="flex items-center gap-3 border-b border-[#e5efe7] bg-[#f8fcf9] px-5 py-4">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#e4f6e9] text-[#087a38]">
-                <WalletCards size={22} />
+        <div className="mx-auto flex min-h-0 w-full max-w-xl flex-1 px-3 pb-2">
+          <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-b-[22px] border border-t-0 border-[#dcebe0] bg-white shadow-[0_10px_28px_rgba(0,70,30,.08)]">
+            <div className="flex shrink-0 items-center gap-3 border-b border-[#e5efe7] bg-[#f8fcf9] px-4 py-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#e4f6e9] text-[#087a38]">
+                <WalletCards size={19} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#698173]">Deposit amount</p>
-                <p className="mt-0.5 truncate text-[21px] font-bold text-[#087a38]">{Number(amount).toLocaleString(undefined, { maximumFractionDigits: 8 })} USDT</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#698173]">Deposit amount</p>
+                <p className="mt-0.5 truncate text-[19px] font-bold text-[#087a38]">{Number(amount).toLocaleString(undefined, { maximumFractionDigits: 8 })} USDT</p>
               </div>
-              <span className="shrink-0 rounded-full bg-[#e4f6e9] px-2.5 py-1 text-[11px] font-semibold text-[#087a38]">Step 2 of 2</span>
+              <span className="shrink-0 rounded-full bg-[#e4f6e9] px-2 py-1 text-[10px] font-semibold text-[#087a38]">Step 2 of 2</span>
             </div>
-            <div className="px-5 pb-4 pt-5">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[#e5eee7] px-4 py-3">
               <div className="flex items-end justify-between gap-3">
                 <div>
-                  <h2 className="text-[18px] font-semibold text-[#173f26]">Select payment network</h2>
-                  <p className="mt-1 text-[13px] text-[#6b7d70]">Choose the exact network used by your wallet.</p>
+                  <h2 className="text-[17px] font-semibold text-[#173f26]">Select payment network</h2>
+                  <p className="mt-0.5 text-[12px] text-[#6b7d70]">Choose the exact network used by your wallet.</p>
                 </div>
-                <ShieldCheck size={22} className="shrink-0 text-[#20a554]" />
               </div>
+              <ShieldCheck size={21} className="shrink-0 text-[#20a554]" />
             </div>
             {createCryptoDeposit.isPending && selectedCryptoCurrency && (
-              <div role="status" className="flex items-center gap-3 border-y border-[#cfe5d5] bg-[#eef9f1] px-5 py-3.5 text-[13px] font-medium text-[#087a38]">
+              <div role="status" className="flex shrink-0 items-center gap-3 border-b border-[#cfe5d5] bg-[#eef9f1] px-4 py-2.5 text-[12px] font-medium text-[#087a38]">
                 <Loader2 size={17} className="animate-spin" />
                 <span>Preparing your {selectedCryptoCurrency.label} payment…</span>
               </div>
             )}
-            <div className="divide-y divide-[#e5eee7] border-t border-[#e5eee7]">
+            <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-6">
               {CRYPTO_CURRENCIES.map((currency) => (
                 <button
                   key={currency.code}
@@ -464,37 +464,33 @@ export default function DepositPage() {
                   disabled={createCryptoDeposit.isPending}
                   aria-busy={pendingCurrencyCode === currency.code}
                   aria-label={`Pay with ${currency.label}`}
-                  className="group flex min-h-[78px] w-full items-center gap-3 px-5 text-left transition hover:bg-[#f7fcf8] active:bg-[#eaf8ee] disabled:cursor-wait disabled:opacity-60"
+                  className="group flex min-h-0 w-full items-center gap-2 border-b border-r border-[#e5eee7] px-3 text-left transition hover:bg-[#f7fcf8] active:bg-[#eaf8ee] disabled:cursor-wait disabled:opacity-60"
                   data-testid={`button-currency-${currency.code}`}
                 >
-                  <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#e2ece4] bg-white shadow-[0_2px_7px_rgba(0,0,0,.06)]">
-                    <img src={currency.icon} alt="" className="h-8 w-8 object-contain" aria-hidden="true" />
+                  <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#e2ece4] bg-white shadow-[0_2px_7px_rgba(0,0,0,.06)]">
+                    <img src={currency.icon} alt="" className="h-7 w-7 object-contain" aria-hidden="true" />
                     {currency.networkIcon && (
-                      <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-white shadow-sm">
-                        <img src={currency.networkIcon} alt="" className="h-[13px] w-[13px] object-contain" aria-hidden="true" />
+                      <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-white shadow-sm">
+                        <img src={currency.networkIcon} alt="" className="h-[10px] w-[10px] object-contain" aria-hidden="true" />
                       </span>
                     )}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="flex items-center gap-2">
-                      <span className="truncate text-[16px] font-semibold text-[#183c25]">{currency.label}</span>
-                      {currency.networkIcon && <span className="rounded-full bg-[#f0f7f1] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#6a8270]">Network</span>}
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      <span className="truncate text-[13px] font-semibold text-[#183c25]">{currency.label}</span>
+                      {currency.networkIcon && <span className="shrink-0 rounded-full bg-[#f0f7f1] px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-[#6a8270]">Network</span>}
                     </span>
-                    <span className="mt-1 block text-[12px] text-[#789082]">Compatible wallet network required</span>
+                    <span className="mt-0.5 block truncate text-[10px] text-[#789082]">Compatible wallet network required</span>
                   </span>
                   {pendingCurrencyCode === currency.code ? (
-                    <Loader2 size={20} className="shrink-0 animate-spin text-[#087a38]" aria-hidden="true" />
+                    <Loader2 size={17} className="shrink-0 animate-spin text-[#087a38]" aria-hidden="true" />
                   ) : (
-                    <ChevronRight size={22} strokeWidth={1.8} className="shrink-0 text-[#789b83] transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                    <ChevronRight size={18} strokeWidth={1.8} className="shrink-0 text-[#789b83] transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
                   )}
                 </button>
               ))}
             </div>
           </section>
-          <p className="mt-4 flex items-start gap-2 px-1 text-[12px] leading-5 text-[#718177]">
-            <Info size={16} className="mt-0.5 shrink-0 text-[#087a38]" />
-            <span>Payments are credited after confirmation on the selected blockchain network.</span>
-          </p>
         </div>
       </main>
     );
