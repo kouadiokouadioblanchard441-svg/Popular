@@ -10,3 +10,4 @@
 - [TGOOD task rewards](tgood-task-rewards.md) — task rewards support decimal USDT amounts; startup adds missing levels without overwriting admin-configured values.
 - [TGOOD popup and daily check-in](tgood-popup-and-daily-bonus.md) — popup defaults use the 03/09/2026 launch date and current USDT rules; check-in rewards run every 24 hours.
 - [TGOOD random gift codes](tgood-random-gift-codes.md) — gift codes can draw a cent-precise USDT reward independently for each claim within admin-defined minimum and maximum.
+- [TGOOD web presentation](tgood-web-presentation.md) — keep the site in its classic web presentation; do not add an app-like mobile shell or PWA behavior without approval.
