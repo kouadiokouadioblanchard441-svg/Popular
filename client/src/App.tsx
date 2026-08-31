@@ -187,7 +187,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app-shell min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-2">
       {children}
       <BottomNav />
     </div>
