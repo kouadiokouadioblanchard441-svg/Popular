@@ -9,6 +9,12 @@ The typed translation catalog alone does not cover older screens that render lit
 
 **How to apply:** When adding or editing a screen, use translation keys for visible UI text; if legacy literals remain, add their complete phrase to the shared static translation map rather than relying only on word-by-word fallback.
 
+Dynamic transaction descriptions are stored in the database in the source language, so home activity tickers must localize known description patterns at render time and avoid appending a duplicate amount.
+
+**Why:** Financial history is preserved and cannot be rewritten just to change the user's selected interface language.
+
+**How to apply:** Keep financial records language-neutral in storage; translate their display labels client-side for each active locale.
+
 New browser sessions intentionally start in English after the interface cleanup, while the language picker remains available for users who explicitly choose another language.
 
 **Why:** Existing saved language preferences could reopen the refreshed site in French even after English became the reviewed default.

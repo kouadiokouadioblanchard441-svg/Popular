@@ -523,7 +523,7 @@ export default function DepositPage() {
         </div>
       </section>
 
-      <section className="mx-1.5 mt-[18px] min-h-[233px] rounded-[5px] bg-white px-[14px] pt-[14px]">
+      <section className="mx-1.5 mt-[18px] min-h-[150px] rounded-[5px] bg-white px-[14px] pt-[14px]">
         <SectionTitle>Recharge method</SectionTitle>
         <button
           className="flex h-[56px] w-full items-center rounded-[10px] px-5 text-left text-white shadow-[0_3px_7px_rgba(44,185,86,.2)] transition active:scale-[.985]"

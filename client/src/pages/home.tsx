@@ -52,6 +52,103 @@ const SPECIAL_PRODUCT_IMAGES = [
   chargingStation,
 ];
 
+const ACTIVITY_PREFIXES = {
+  fr: {
+    checkin: "Pointage quotidien",
+    dailyBonus: "Bonus quotidien",
+    signupBonus: "Bonus d'inscription",
+    deposit: "Dépôt",
+    withdrawal: "Retrait",
+    commission: "Commission",
+    earnings: "Gains",
+    finalCollection: "Collecte finale",
+    wheelReward: "Gain roue",
+    purchase: "Achat",
+    refund: "Remboursement du retrait",
+    giftBonus: "Bonus code cadeau",
+  },
+  en: {
+    checkin: "Daily check-in",
+    dailyBonus: "Daily bonus",
+    signupBonus: "Registration bonus",
+    deposit: "Deposit",
+    withdrawal: "Withdrawal",
+    commission: "Commission",
+    earnings: "Earnings",
+    finalCollection: "Final collection",
+    wheelReward: "Wheel reward",
+    purchase: "Purchase",
+    refund: "Withdrawal refund",
+    giftBonus: "Gift code bonus",
+  },
+  ar: {
+    checkin: "تسجيل الحضور اليومي",
+    dailyBonus: "المكافأة اليومية",
+    signupBonus: "مكافأة التسجيل",
+    deposit: "إيداع",
+    withdrawal: "سحب",
+    commission: "عمولة",
+    earnings: "الأرباح",
+    finalCollection: "التحصيل النهائي",
+    wheelReward: "مكافأة العجلة",
+    purchase: "شراء",
+    refund: "استرداد السحب",
+    giftBonus: "مكافأة رمز الهدية",
+  },
+  zh: {
+    checkin: "每日签到",
+    dailyBonus: "每日奖励",
+    signupBonus: "注册奖励",
+    deposit: "充值",
+    withdrawal: "提现",
+    commission: "佣金",
+    earnings: "收益",
+    finalCollection: "最终领取",
+    wheelReward: "转盘奖励",
+    purchase: "购买",
+    refund: "提现退款",
+    giftBonus: "礼品码奖励",
+  },
+} as const;
+
+function localizeActivityDescription(
+  description: string,
+  type: string,
+  amountLabel: string,
+  lang: keyof typeof ACTIVITY_PREFIXES,
+) {
+  const labels = ACTIVITY_PREFIXES[lang];
+  const source = description.trim();
+
+  if (/pointage quotidien/i.test(source)) return `${labels.checkin}: +${amountLabel}`;
+  if (/bonus quotidien/i.test(source)) return labels.dailyBonus;
+  if (/bonus d['’]inscription/i.test(source)) return labels.signupBonus;
+  if (/bonus code cadeau/i.test(source)) return labels.giftBonus;
+  if (/commission niveau\s+([123])/i.test(source)) {
+    const level = source.match(/commission niveau\s+([123])/i)?.[1];
+    return `${labels.commission} ${lang === "zh" ? `等级${level}` : lang === "ar" ? `المستوى ${level}` : `level ${level}`}${source.match(/ de (.+)$/i)?.[1] ? ` ${lang === "fr" ? "de" : lang === "ar" ? "من" : lang === "zh" ? "" : "from"} ${source.match(/ de (.+)$/i)?.[1]}` : ""}`;
+  }
+  if (/collecte finale/i.test(source)) {
+    return source.replace(/^Collecte finale/i, labels.finalCollection);
+  }
+  if (/gain roue/i.test(source)) {
+    return source.replace(/^Gain roue/i, labels.wheelReward);
+  }
+  if (/remboursement du retrait/i.test(source)) {
+    return source.replace(/^Remboursement du retrait/i, labels.refund);
+  }
+  if (/^gains?\s/i.test(source)) return source.replace(/^Gains?/i, labels.earnings);
+  if (/^achat\s/i.test(source)) return source.replace(/^Achat/i, labels.purchase);
+  if (/^retrait/i.test(source)) return source.replace(/^Retrait/i, labels.withdrawal);
+  if (/^dépôt/i.test(source)) return source.replace(/^Dépôt/i, labels.deposit);
+  if (type === "commission") return labels.commission;
+  if (type === "earning") return labels.earnings;
+  if (type === "deposit") return labels.deposit;
+  if (type === "withdrawal") return labels.withdrawal;
+  if (type === "bonus") return labels.dailyBonus;
+  return source || "TGOOD activity";
+}
+
 export default function HomePage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
@@ -87,7 +184,14 @@ export default function HomePage() {
   const activityMessages = transactions.slice(0, 8).map((item: any) => {
     const amount = Number(item.amount);
     const amountLabel = Number.isFinite(amount) ? `${amount.toLocaleString(localeForLang(lang))} USDT` : "";
-    return [item.description || item.type || "TGOOD activity", amountLabel].filter(Boolean).join(" · ");
+    const description = localizeActivityDescription(
+      String(item.description || ""),
+      String(item.type || ""),
+      amountLabel,
+      lang,
+    );
+    const descriptionAlreadyContainsAmount = /\bUSDT\b/i.test(description);
+    return [description, descriptionAlreadyContainsAmount ? "" : amountLabel].filter(Boolean).join(" · ");
   });
   const activityLabel = getContent(settings, "content_home_activityLabel", "Votre activité récente");
 
