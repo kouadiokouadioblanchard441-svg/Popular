@@ -109,7 +109,7 @@ export default function DepositPage() {
   const queryClient = useQueryClient();
   const proofInput = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<DepositView>("main");
-  const [amount, setAmount] = useState(10000);
+  const [amount, setAmount] = useState("");
   const [walletNumber, setWalletNumber] = useState(user?.phone || "");
   const [issueAmount, setIssueAmount] = useState("");
   const [proof, setProof] = useState<string | null>(null);
@@ -161,7 +161,7 @@ export default function DepositPage() {
   const createCryptoDeposit = useMutation({
     mutationFn: async (currency: CryptoCurrency) => {
       const response = await apiRequest("POST", "/api/crypto-deposits", {
-        amount,
+        amount: Number(amount),
         payCurrency: currency.code,
       });
       if (!response.ok) {
@@ -203,7 +203,8 @@ export default function DepositPage() {
   };
 
   const submitMainDeposit = () => {
-    if (!amount || amount < minDeposit) {
+    const parsedAmount = Number(amount);
+    if (!amount.trim() || !Number.isFinite(parsedAmount) || parsedAmount < minDeposit) {
       toast({
         title: "Montant invalide",
         description: `The minimum deposit is ${minDeposit.toLocaleString(localeForLang(lang))} ${CURRENCY}.`,
@@ -493,7 +494,7 @@ export default function DepositPage() {
             type="number"
             value={amount}
             min={minDeposit}
-            onChange={(event) => setAmount(Number(event.target.value) || 0)}
+            onChange={(event) => setAmount(event.target.value)}
             className="min-w-0 flex-1 bg-transparent font-medium outline-none"
             aria-label="Recharge amount"
             data-testid="input-deposit-amount"
@@ -501,11 +502,11 @@ export default function DepositPage() {
         </div>
         <div className="mt-5 grid grid-cols-4 gap-x-[10px] gap-y-[10px]">
           {depositPresetAmounts.map((preset) => {
-            const selected = amount === preset;
+            const selected = amount !== "" && Number(amount) === preset;
             return (
               <button
                 key={preset}
-                onClick={() => setAmount(preset)}
+                onClick={() => setAmount(String(preset))}
                 className="h-[55px] rounded-[7px] border font-normal transition active:scale-[.97]"
                 style={{
                   borderColor: TGOOD_GREEN,
