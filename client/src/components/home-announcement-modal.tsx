@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Send } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import popupMascot from "@assets/generated_images/tgood-popup-mascot.png";
+import { getContent } from "@/lib/content";
 
 const TGOOD_GREEN = "#08b83a";
 
@@ -15,20 +16,26 @@ const DEFAULT_LINES = [
   "👥 Invite your friends and earn commissions",
   "🕘 Withdrawals and support: 09:00–17:00",
   "🔥 Your earnings are credited to your account every day 📈 Buy multiple devices to increase your earnings",
+  "📖 Please review the TGOOD rules before operating.",
 ];
 
 export default function HomeAnnouncementModal() {
   const [open, setOpen] = useState(true);
   const { data: settings = {} } = useQuery<Record<string, string>>({ queryKey: ["/api/settings"] });
 
-  const lines = Array.from({ length: 7 }, (_, index) => settings[`popupLine${index + 1}`] || DEFAULT_LINES[index]).filter(Boolean);
+  const lines = Array.from({ length: 8 }, (_, index) => getContent(
+    settings,
+    `content_home_popupLine${index + 1}`,
+    settings[`popupLine${index + 1}`] || DEFAULT_LINES[index],
+  )).filter(Boolean);
+  const popupTitle = getContent(settings, "content_home_popupTitle", settings.popupTitle || "TGOOD Announcement");
   const configuredSupportUrl = settings.supportLink || "";
   const telegramUrl = /^(https?:\/\/)?(t\.me|telegram\.me|telegram\.dog)\//i.test(configuredSupportUrl)
     ? configuredSupportUrl
-    : "https://t.me/vestasgroup";
+    : "";
   const telegramLabel = settings.popupTelegramLabel || "Telegram >";
   const confirmLabel = settings.popupConfirmLabel || "OK";
-  const announcementTitle = settings.popupTitle || "TGOOD Announcement";
+  const announcementTitle = popupTitle;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -53,7 +60,8 @@ export default function HomeAnnouncementModal() {
         </div>
         <div className="flex h-[78px] shrink-0 border-t border-[#d9ead6] bg-white" style={{ borderRadius: "0 0 10px 10px" }}>
           <button
-            onClick={() => window.open(telegramUrl, "_blank", "noopener,noreferrer")}
+            onClick={() => telegramUrl && window.open(telegramUrl, "_blank", "noopener,noreferrer")}
+            disabled={!telegramUrl}
             className="flex min-w-0 flex-1 items-center justify-center gap-1 border-r border-[#e3e3e3] px-2 active:opacity-70"
             style={{ color: "#111", fontSize: "clamp(17px, 5.4vw, 25px)" }}
             data-testid="button-popup-telegram"
@@ -61,7 +69,7 @@ export default function HomeAnnouncementModal() {
             <span className="flex shrink-0 items-center justify-center rounded-full bg-[#2aabee]" style={{ width: "clamp(32px, 8.7vw, 40px)", height: "clamp(32px, 8.7vw, 40px)" }}>
               <Send size={20} fill="white" color="white" strokeWidth={1.8} />
             </span>
-            <span className="truncate whitespace-nowrap">{telegramLabel}</span>
+             <span className="truncate whitespace-nowrap">{telegramUrl ? telegramLabel : "Support non configuré"}</span>
           </button>
           <button
             onClick={() => setOpen(false)}

@@ -346,8 +346,8 @@ async function run() {
       ["signupBonus", "200"], ["soleaspayEnabled", "false"], ["soleaspayCountries", ""],
       ["soleaspayChannelName", "Soleaspay"], ["omnipayEnabled", "false"],
       ["omnipayChannelName", "OmniPay"], ["omnipayCallbackKey", ""],
-      ["supportLink", "https://t.me/intelappgroup"], ["supportType", "telegram"],
-      ["supportLabel", "Service client"], ["channelLink", "https://t.me/intelappgroup"],
+      ["supportLink", ""], ["supportType", "telegram"],
+      ["supportLabel", "Service client"], ["channelLink", ""],
       ["channelType", "telegram"], ["channelLabel", "Chaîne officielle"],
     ];
     for (const [key, value] of settings) {

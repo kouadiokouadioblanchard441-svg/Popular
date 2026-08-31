@@ -4,7 +4,7 @@ import { ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 import { getCountryByCode } from "@/lib/countries";
 import { Skeleton } from "@/components/ui/skeleton";
-import landscapeImg from "@assets/portable-charger-power-banks_480x480_d6b67d82-6118-4295-be02-e_1784966597898.jpg";
+import landscapeImg from "@assets/generated_images/tgood-charging-station-hero.jpg";
 import { useI18n } from "@/lib/i18n";
 
 interface Deposit {

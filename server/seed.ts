@@ -285,16 +285,16 @@ export async function seed() {
     await db.delete(platformSettings).where(eq(platformSettings.key, obsoleteKey));
   }
   const requiredSettings = [
-    { key: "supportLink", value: "https://t.me/vestasgroup" },
+    { key: "supportLink", value: "" },
     { key: "supportType", value: "telegram" },
     { key: "supportLabel", value: "Support client" },
-    { key: "support2Link", value: "https://t.me/vestasgroup" },
+    { key: "support2Link", value: "" },
     { key: "support2Type", value: "telegram" },
     { key: "support2Label", value: "Support client 2" },
-    { key: "channelLink", value: "https://t.me/vestasgroup" },
+    { key: "channelLink", value: "" },
     { key: "channelType", value: "telegram" },
     { key: "channelLabel", value: "Chaîne officielle" },
-    { key: "groupLink", value: "https://t.me/vestasgroup" },
+    { key: "groupLink", value: "" },
     { key: "groupType", value: "telegram" },
     { key: "groupLabel", value: "Groupe de discussion" },
     { key: "popupButtonLabel", value: "Rejoindre le groupe Telegram" },
@@ -306,6 +306,7 @@ export async function seed() {
     { key: "popupLine5", value: "👥 Invitez vos amis et gagnez des commissions" },
     { key: "popupLine6", value: "🕘 Retraits et support disponibles de 09:00 à 17:00" },
     { key: "popupLine7", value: "🔥 Les gains sont crédités chaque jour" },
+    { key: "popupLine8", value: "📖 Consultez les règles TGOOD avant toute opération" },
     { key: "floatingSupportTarget", value: "support1" },
     { key: "supportEnabled", value: "true" },
     { key: "support2Enabled", value: "true" },
@@ -382,8 +383,8 @@ export async function seed() {
     { key: "spinWheelInviteHighlight", value: "50" },
     { key: "spinWheelRulesText", value: "Achetez un produit pour obtenir des tours gratuits. Chaque tour vous donne une chance de remporter un gain en USDT crédité directement sur votre solde." },
     { key: "spinWheelRulesHighlight", value: "" },
-    { key: "banner1Images", value: JSON.stringify(["/banner/meeting-1.jpg", "/banner/meeting-2.jpg", "/banner/meeting-3.jpg"]) },
-    { key: "banner2Images", value: JSON.stringify(["/banner/meeting-4.jpg", "/banner/meeting-5.jpg", "/banner/meeting-6.jpg"]) },
+    { key: "banner1Images", value: "[]" },
+    { key: "banner2Images", value: "[]" },
   ];
 
   // Aucune clé n'est écrasée au redémarrage : toute valeur déjà en base est conservée

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { getCountryByCode } from "@/lib/countries";
 import { useLocation } from "wouter";
+import { getContent } from "@/lib/content";
 import teamHero from "@assets/generated_images/tgood-team-hero.jpg";
 import teamInvite from "@assets/generated_images/tgood-team-invite.jpg";
 
@@ -34,7 +35,7 @@ export default function TeamPage() {
   const referralCode = user.referralCode || "";
   const referralLink = `${window.location.origin}/#/register?invite_code=${referralCode}`;
   const levelRates = [
-    settings?.level1Commission || "36",
+    settings?.level1Commission || "10",
     settings?.level2Commission || "2",
     settings?.level3Commission || "1",
   ];
@@ -57,7 +58,7 @@ export default function TeamPage() {
       <section className="mx-auto w-full max-w-[480px] bg-white">
         <header className="flex items-center justify-between px-5 pt-6 pb-5">
           <h1 className="font-black tracking-tight" style={{ color: "#111", fontSize: 34, lineHeight: 1 }}>
-            Team
+            {getContent(settings, "content_team_headerTitle", "Mon équipe")}
           </h1>
           <button
             onClick={() => navigate("/members")}
@@ -65,7 +66,7 @@ export default function TeamPage() {
             style={{ color: "#53565a", fontSize: 19 }}
             data-testid="button-my-team"
           >
-            My team &gt;
+            {getContent(settings, "content_team_myTeamButton", "Membres >")}
           </button>
         </header>
 
@@ -87,7 +88,7 @@ export default function TeamPage() {
           />
           <div className="min-w-0 pl-0.5">
             <h2 className="mb-1 font-normal" style={{ color: "#151515", fontSize: 18, lineHeight: 1.38 }}>
-              Start inviting your friends
+              {getContent(settings, "content_team_inviteTitle", "Inviter des amis")}
             </h2>
             <p className="mb-2" style={{ color: "#353535", fontSize: 12, lineHeight: 1.25 }}>
               Partagez le code ou le lien d&apos;invitation
@@ -144,7 +145,7 @@ export default function TeamPage() {
           className="px-5 py-4 text-center font-normal uppercase"
           style={{ color: TGOOD_LIGHT_GREEN, fontSize: 23, lineHeight: 1.55 }}
         >
-          Invite your friends to join the team
+          {getContent(settings, "content_team_howItWorksTitle", "Inviter vos amis à rejoindre l'équipe")}
         </h2>
 
         <section className="pb-1">
@@ -176,10 +177,7 @@ export default function TeamPage() {
         </section>
 
         <section className="px-[10px] pt-5 pb-10" style={{ color: "#5b6068", fontSize: 15, lineHeight: 1.55 }}>
-          <p>When a referred friend signs up and invests, you immediately receive a {levelRates[0]}% commission on their investment.</p>
-          <p className="mt-1">When second-level team members invest, you receive a {levelRates[1]}% commission.</p>
-          <p className="mt-1">When third-level team members invest, you receive a {levelRates[2]}% commission.</p>
-          <p className="mt-1">Once your team members invest, the commission is credited to your account immediately and can be withdrawn instantly.</p>
+          <p>{getContent(settings, "content_team_tip", `Les trois niveaux de votre équipe déterminent les commissions prévues par le programme de parrainage.`)}</p>
         </section>
       </section>
     </main>

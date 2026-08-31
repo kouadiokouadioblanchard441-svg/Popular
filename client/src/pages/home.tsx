@@ -11,33 +11,15 @@ import productBike from "@assets/generated_images/tgood-product-bike-card.jpg";
 import chargingStation from "@assets/generated_images/tgood-charging-station-hero.jpg";
 import chargingPile from "@assets/image_search/tgood-real-charging-pile-transparent.png";
 import HomeAnnouncementModal from "@/components/home-announcement-modal";
+import BannerCarousel from "@/components/banner-carousel";
 import { FloatingSupport } from "@/components/floating-support";
+import { getContent } from "@/lib/content";
 import teslaLogo from "@/assets/partners/tesla.svg";
 import bydLogo from "@/assets/partners/byd.svg";
 import binanceLogo from "@/assets/partners/binance.svg";
 import netflixLogo from "@/assets/partners/netflix.svg";
 
 const TGOOD_GREEN = "#08b83a";
-
-const ACTIVITY_MESSAGES = [
-  "****1847 recharged 125 USDT",
-  "****6521 withdrew 480 USDT",
-  "****3074 received a 35 USDT bonus",
-  "****9186 recharged 860 USDT",
-  "****2468 made a 190 USDT withdrawal",
-  "****7315 received a 10 USDT welcome bonus",
-  "****5639 recharged 1250 USDT",
-  "****4217 withdrew 320 USDT",
-  "****6754 recharged 45 USDT",
-  "****1382 received a 210 USDT commission",
-  "****9546 made a 1000 USDT withdrawal",
-];
-
-const ACTIONS = [
-  { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign },
-  { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins },
-  { labelKey: "customerService", href: "/service", Icon: MessagesSquare },
-];
 
 const PARTNERS = [
   { name: "Tesla", logo: teslaLogo },
@@ -46,6 +28,12 @@ const PARTNERS = [
   { name: "Binance", logo: binanceLogo },
   { name: "TGOOD", logo: "/tgood-logo.gif" },
   { name: "Netflix", logo: netflixLogo },
+];
+
+const ACTIONS = [
+  { labelKey: "deposit", href: "/deposit", Icon: CircleDollarSign },
+  { labelKey: "withdraw", href: "/withdrawal", Icon: HandCoins },
+  { labelKey: "customerService", href: "/service", Icon: MessagesSquare },
 ];
 
 const EXPERIENCE_PRODUCTS = [
@@ -68,6 +56,8 @@ export default function HomePage() {
   const [, navigate] = useLocation();
   const { t, lang } = useI18n();
   const { data: products = [] } = useQuery<Product[]>({ queryKey: ["/api/products"] });
+  const { data: settings = {} } = useQuery<Record<string, string>>({ queryKey: ["/api/settings"] });
+  const { data: transactions = [] } = useQuery<any[]>({ queryKey: ["/api/transactions"] });
 
   if (!user) return null;
 
@@ -79,24 +69,40 @@ export default function HomePage() {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   });
+  const defaultBanners = [homeHero, chargingStation, electricScooter];
+  let bannerImages = defaultBanners;
+  try {
+    const configured = JSON.parse(settings.banner1Images || "[]");
+    if (Array.isArray(configured) && configured.length > 0) {
+      const usable = configured.filter((url): url is string =>
+        typeof url === "string" &&
+        (url.startsWith("/uploads/") || url.startsWith("/assets/") || url.startsWith("data:image/")),
+      );
+      if (usable.length > 0) bannerImages = usable;
+    }
+  } catch {
+    // The TGOOD assets remain the explicit, safe visual fallback.
+  }
+  const activityMessages = transactions.slice(0, 8).map((item: any) => {
+    const amount = Number(item.amount);
+    const amountLabel = Number.isFinite(amount) ? `${amount.toLocaleString(localeForLang(lang))} USDT` : "";
+    return [item.description || item.type || "TGOOD activity", amountLabel].filter(Boolean).join(" · ");
+  });
+  const activityLabel = getContent(settings, "content_home_activityLabel", "Votre activité récente");
 
   return (
     <main className="home-page pb-4" style={{ background: "#f8f9fa", minHeight: "100vh" }}>
       <section className="mx-auto min-h-screen w-full max-w-[480px] overflow-hidden bg-[#f8f9fa]">
-        <div className="relative h-[382px] overflow-hidden">
-          <img
-            src={homeHero}
-            alt="TGOOD electric mobility and charging range with bikes, scooters, and mopeds"
-            className="h-full w-full object-cover"
-            style={{ objectPosition: "center 42%" }}
-          />
-          <div
-            className="absolute left-5 top-5 flex items-center justify-center bg-white/95 shadow-sm"
-            style={{ height: 46, width: 112, borderRadius: 7 }}
-          >
-            <img src="/tgood-logo.gif" alt="TGOOD" style={{ height: 35, maxWidth: 94, objectFit: "contain" }} />
-          </div>
-        </div>
+        <BannerCarousel
+          images={bannerImages}
+          height={382}
+          rounded={false}
+          overlay={
+            <div className="absolute left-5 top-5 flex items-center justify-center bg-white/95 shadow-sm" style={{ height: 46, width: 112, borderRadius: 7 }}>
+              <img src="/tgood-logo.gif" alt="TGOOD" style={{ height: 35, maxWidth: 94, objectFit: "contain" }} />
+            </div>
+          }
+        />
 
         <section
           className="relative z-10 mx-[10px] -mt-10 grid grid-cols-4 bg-white"
@@ -120,25 +126,16 @@ export default function HomePage() {
           ))}
         </section>
 
-        <section
-          className="mx-3 mt-3 flex h-[58px] items-center overflow-hidden bg-white"
-          style={{ borderRadius: 8 }}
-            aria-label="Latest transactions"
-        >
-          <Bell className="ml-4 shrink-0" size={25} fill={TGOOD_GREEN} color={TGOOD_GREEN} strokeWidth={2.3} />
-          <div className="ml-3 overflow-hidden">
-            <p
-              className="whitespace-nowrap"
-              style={{
-                color: "#535963",
-                fontSize: 16,
-                animation: "home-ticker 14s linear infinite",
-              }}
-            >
-              {ACTIVITY_MESSAGES.join("   •   ")}
-            </p>
-          </div>
-        </section>
+        {activityMessages.length > 0 && (
+          <section className="mx-3 mt-3 flex h-[58px] items-center overflow-hidden bg-white" style={{ borderRadius: 8 }} aria-label={activityLabel}>
+            <Bell className="ml-4 shrink-0" size={25} fill={TGOOD_GREEN} color={TGOOD_GREEN} strokeWidth={2.3} />
+            <div className="ml-3 overflow-hidden">
+              <p className="whitespace-nowrap" style={{ color: "#535963", fontSize: 16, animation: "home-ticker 14s linear infinite" }}>
+                {activityMessages.join("   •   ")}
+              </p>
+            </div>
+          </section>
+        )}
 
         <section className="mt-5 grid grid-cols-2 items-stretch gap-5 px-3">
           <button
@@ -163,7 +160,7 @@ export default function HomePage() {
               </div>
             </div>
             <p className="mt-3 min-h-[24px] font-normal" style={{ color: TGOOD_GREEN, fontSize: 20, lineHeight: 1.2 }}>
-              Solde du compte
+              {getContent(settings, "content_home_balanceLabel", "Solde du compte")}
             </p>
           </button>
 
@@ -189,17 +186,17 @@ export default function HomePage() {
               </div>
             </div>
             <p className="mt-3 min-h-[24px] font-normal" style={{ color: TGOOD_GREEN, fontSize: 20, lineHeight: 1.2 }}>
-              Total earnings
+              {getContent(settings, "content_home_earningsLabel", "Total des revenus")}
             </p>
           </button>
         </section>
 
         <section className="mt-12 px-3 pb-8">
           <h2 className="text-center font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-            Experience
+            {getContent(settings, "content_home_experienceTitle", "Expérience")}
           </h2>
           <p className="mt-4 text-center font-normal" style={{ color: "#50545a", fontSize: 24 }}>
-            Sustainability
+            {getContent(settings, "content_home_sustainabilityTitle", "Durabilité")}
           </p>
 
           <div className="mt-5 grid grid-cols-4 gap-[7px]">
@@ -230,14 +227,14 @@ export default function HomePage() {
         <section className="px-3 pb-2">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-              Special products
+              {getContent(settings, "content_home_specialProductsTitle", "Produits vedettes")}
             </h2>
             <button
               onClick={() => navigate("/invest")}
               className="active:opacity-60"
               style={{ color: TGOOD_GREEN, fontSize: 14 }}
             >
-              {"View all"} &gt;
+              {getContent(settings, "content_home_viewAllLabel", "Voir tout")} &gt;
             </button>
           </div>
 
@@ -269,14 +266,14 @@ export default function HomePage() {
 
           {products.filter(product => !product.isFree).length === 0 && (
             <div className="bg-white py-8 text-center" style={{ borderRadius: 10, color: "#777", fontSize: 14 }}>
-              No special products available
+               {getContent(settings, "content_home_noProductsLabel", "Aucun produit vedette disponible")}
             </div>
           )}
         </section>
 
         <section className="px-3 pb-10">
           <h2 className="mb-4 text-center font-normal" style={{ color: TGOOD_GREEN, fontSize: 25 }}>
-            {"Our partners"}
+             {getContent(settings, "content_home_partnersTitle", "Nos partenaires")}
           </h2>
           <div className="grid grid-cols-3 gap-3">
             {PARTNERS.map((partner) => (
@@ -295,6 +292,7 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+
       </section>
 
       <FloatingSupport bottomOffset={72} />

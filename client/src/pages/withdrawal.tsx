@@ -61,8 +61,8 @@ export default function WithdrawalPage() {
   const minWithdrawal = withdrawalSettings?.minWithdrawal ?? 1;
   const maxWithdrawal = parseInt(allSettings?.maxWithdrawal || "1000000");
   const withdrawalEnabled = withdrawalSettings?.withdrawalEnabled ?? true;
-  const withdrawalStartHour = withdrawalSettings?.withdrawalStartHour ?? 10;
-  const withdrawalEndHour = withdrawalSettings?.withdrawalEndHour ?? 16;
+  const withdrawalStartHour = withdrawalSettings?.withdrawalStartHour ?? 9;
+  const withdrawalEndHour = withdrawalSettings?.withdrawalEndHour ?? 17;
   const withdrawalDaysRaw = withdrawalSettings?.withdrawalDays ?? "1,2,3,4,5";
 
   // Convert "1,2,3,4,5" into a weekday range or a list of days
@@ -165,16 +165,14 @@ export default function WithdrawalPage() {
   const earningsBalance = parseFloat(user?.totalEarnings || "0");
 
   // Use admin instructions when configured, otherwise generate the defaults.
-  const customInstructions = allSettings?.withdrawalInstructions?.trim();
-  const maxPerDay = withdrawalSettings?.maxWithdrawalsPerDay ?? 1;
-  const instructions: string[] = customInstructions
-    ? customInstructions.split("\n").map((l: string) => l.trim()).filter(Boolean)
-    : [
-        `1. Minimum withdrawal amount: ${minWithdrawal.toLocaleString()} ${currency}.`,
-          "2. You will receive the full requested amount.",
-          "3. You can make withdrawals at any time. Withdrawals are available within 4 to 24 hours.",
-          "4. To protect the platform and its members, you must have at least one device to enable withdrawals.",
-      ];
+  const instructions = [
+    getContent(allSettings, "content_withdrawal_instruction1", `1. Minimum withdrawal amount: ${minWithdrawal.toLocaleString()} ${currency}.`),
+    getContent(allSettings, "content_withdrawal_instruction2", `2. One withdrawal per day is allowed.`),
+    getContent(allSettings, "content_withdrawal_instruction3", "3. You will receive the full requested amount."),
+    getContent(allSettings, "content_withdrawal_instruction4", "4. Withdrawals are available from 09:00 to 17:00."),
+    getContent(allSettings, "content_withdrawal_instruction5", "5. Use a valid USDT BEP20 wallet address."),
+    getContent(allSettings, "content_withdrawal_instruction6", "6. Review the withdrawal conditions before submitting."),
+  ];
 
   return (
     <main

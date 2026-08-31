@@ -8,16 +8,16 @@ export default function AboutPage() {
     queryKey: ["/api/settings"],
   });
 
-  const pageTitle = "About TGOOD";
-  const s1Title   = getContent(settings, "content_about_s1Title",   "Qui sommes-nous ?");
-  const s1Text1   = "TGOOD develops electric mobility and smart energy solutions for modern lifestyles.";
-  const s1Text2   = "Our platform brings together simple, accessible, and transparent products and services for electric bikes, scooters, mopeds, and charging.";
-  const s2Title   = "Nos produits & solutions";
-  const s2Text    = "TGOOD offers a range of electric mobility products and charging equipment designed to be practical, reliable, and suited to every member's needs.";
-  const s3Title   = "Notre fonctionnement";
-  const s3Text    = "Members can explore available products, manage their USDT balance, track activity earnings, and request withdrawals according to the conditions shown on the platform.";
-  const s4Title   = "Notre engagement";
-  const s4Text    = "We prioritize clear information, account security, and service quality. Our team supports members and continuously improves the TGOOD experience.";
+  const pageTitle = getContent(settings, "content_about_pageTitle", "À propos de TGOOD");
+  const s1Title   = getContent(settings, "content_about_s1Title", "Qui sommes-nous ?");
+  const s1Text1   = getContent(settings, "content_about_s1Text1", "TGOOD développe des solutions de mobilité électrique et d'infrastructure énergétique intelligente.");
+  const s1Text2   = getContent(settings, "content_about_s1Text2", "La plateforme TGOOD rassemble des produits et services accessibles, avec des informations claires pour chaque membre.");
+  const s2Title   = getContent(settings, "content_about_s2Title", "Produits et solutions");
+  const s2Text    = getContent(settings, "content_about_s2Text", "TGOOD propose des solutions de mobilité électrique, notamment des vélos, scooters, cyclomoteurs et équipements de recharge.");
+  const s3Title   = getContent(settings, "content_about_s3Title", "Fonctionnement de la plateforme");
+  const s3Text    = getContent(settings, "content_about_s3Text", "Les membres peuvent consulter les produits disponibles, gérer leur solde USDT, suivre leurs revenus et demander un retrait selon les règles affichées.");
+  const s4Title   = getContent(settings, "content_about_s4Title", "Notre engagement");
+  const s4Text    = getContent(settings, "content_about_s4Text", "TGOOD privilégie des informations à jour, la sécurité du compte, la transparence des conditions et la qualité du support.");
 
   return (
     <div className="flex min-h-screen flex-col text-[#26352d]" style={{ background: "#f8f9fa", color: "#26352d" }}>

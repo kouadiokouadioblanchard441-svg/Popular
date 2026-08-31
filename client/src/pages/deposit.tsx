@@ -440,15 +440,11 @@ export default function DepositPage() {
 
         <section className="mx-5 mt-7">
           <h2 className="mb-1 font-bold" style={{ fontSize: 19, lineHeight: 1.55 }}>
-            Please submit a similar deposit proof:
+            Please submit a clear USDT deposit proof:
           </h2>
           <div className="h-[3px] w-full bg-[#d5d5d5]" />
-          <div className="bg-[#f8f9fa] px-4 pb-5 pt-4">
-            <img
-              src="/binance-transaction-example.svg"
-              alt="Example of a completed Binance USDT transaction"
-              className="mx-auto block w-full max-w-[290px] rounded-[18px] shadow-[0_4px_14px_rgba(0,0,0,.14)]"
-            />
+          <div className="bg-[#f8f9fa] px-4 pb-5 pt-4 text-[14px] leading-6 text-[#686868]">
+            Include the wallet address, amount, network, and transaction reference so the team can verify your payment.
           </div>
           <div className="mt-8 rounded-[10px] bg-white px-5 py-5 text-[14px] leading-6 text-[#686868]">
             <p>If you have a recharge order that was not received, please submit the recharge information.</p>

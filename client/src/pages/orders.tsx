@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
-import landscapeImg from "@assets/portable-charger-power-banks_480x480_d6b67d82-6118-4295-be02-e_1784966597898.jpg";
+import landscapeImg from "@assets/generated_images/tgood-charging-station-hero.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getContent } from "@/lib/content";
 import { useI18n } from "@/lib/i18n";
 
-import elfExpert1 from "@/assets/images/elf-expert-1.jpeg";
-import elfExpert2 from "@/assets/images/elf-expert-2.webp";
-import elfStation1 from "@/assets/images/elf-station-1.jpg";
-import elfStation2 from "@/assets/images/elf-station-2.jpeg";
+import productBike from "@assets/generated_images/tgood-product-bike-card.jpg";
+import productScooter from "@assets/generated_images/tgood-scooter.jpg";
+import productMoped from "@assets/generated_images/tgood-moped.jpg";
+import chargingStation from "@assets/generated_images/tgood-charging-station-hero.jpg";
 
-const productImages = [elfExpert1, elfExpert2, elfStation1, elfStation2];
+const productImages = [productBike, productScooter, productMoped, chargingStation];
 
 export default function OrdersPage() {
   const { user } = useAuth();

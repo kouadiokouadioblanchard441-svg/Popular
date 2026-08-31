@@ -12,7 +12,7 @@ import type { Product } from "@shared/schema";
 
 const tgoodLogo = "/tgood-logo.gif";
 import serviceIcon from "@assets/20260311_214852_1773265973964.png";
-import productImgFallback from "@assets/vestas_112v_closeup_1783210181172.jpg";
+import productImgFallback from "@assets/generated_images/tgood-product-bike-card.jpg";
 
 interface ProductWithOwnership extends Product {
   isOwned: boolean;

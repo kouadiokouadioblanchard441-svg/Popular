@@ -7,6 +7,7 @@ import { Link } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/lib/i18n";
+import { getContent } from "@/lib/content";
 import productBike from "@assets/generated_images/tgood-product-bike-card.jpg";
 import electricScooter from "@assets/generated_images/tgood-scooter.jpg";
 import electricMoped from "@assets/generated_images/tgood-moped.jpg";
@@ -33,7 +34,14 @@ export default function GiftCodePage() {
     queryKey: ["/api/settings"],
   });
 
-  const groupLink = settings?.channelLink || settings?.groupLink || "https://t.me/vestasgroup";
+  const groupLink = settings?.channelLink || settings?.groupLink || "";
+  const headerTitle = getContent(settings, "content_giftcode_headerTitle", "Code cadeau");
+  const infoLine1 = getContent(settings, "content_giftcode_infoLine1", "Entrez votre code cadeau pour recevoir votre récompense.");
+  const infoLine2 = getContent(settings, "content_giftcode_infoLine2", "Les codes sont publiés sur les canaux officiels TGOOD.");
+  const groupLabel = getContent(settings, "content_giftcode_howToTitle", "Comment obtenir des codes ?");
+  const step1 = getContent(settings, "content_giftcode_step1", "Rejoignez un canal officiel TGOOD.");
+  const step2 = getContent(settings, "content_giftcode_step2", "Suivez les annonces publiées par TGOOD.");
+  const step3 = getContent(settings, "content_giftcode_step3", "Copiez le code et utilisez-le avant son expiration.");
 
   const claimMutation = useMutation({
     mutationFn: async (giftCode: string) => {
@@ -81,13 +89,13 @@ export default function GiftCodePage() {
             style={{ color: LOGO_GREEN }}
             aria-label="any"
           >
-            any
+             TGOOD
           </span>
           <h1
             className="absolute right-[10%] top-[80px] whitespace-nowrap text-[18px] font-normal leading-none max-[380px]:right-5 max-[380px]:text-[16px]"
             style={{ color: GREEN }}
           >
-            Redeem a gift
+             {headerTitle}
           </h1>
         </header>
 
@@ -103,12 +111,15 @@ export default function GiftCodePage() {
         </div>
 
         <p className="mx-[21px] mt-[21px] max-w-[419px] text-[18px] leading-[27px] text-[#656565]">
-          Vous pouvez obtenir des codes cadeaux dans le groupe
+           {infoLine1}
+           <br />
+           {infoLine2}
         </p>
 
         <button
           type="button"
-          onClick={() => window.open(groupLink, "_blank", "noopener,noreferrer")}
+          onClick={() => groupLink && window.open(groupLink, "_blank", "noopener,noreferrer")}
+          disabled={!groupLink}
           className="mx-[21px] mt-[20px] flex h-[75px] w-[calc(100%-42px)] items-center rounded-[4px] border border-[#e1e3e6] bg-[#f8f9fa] px-[12px] text-left shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-colors active:bg-[#eef0f2] max-[380px]:h-[68px] max-[380px]:px-[10px]"
           data-testid="button-gift-telegram"
         >
@@ -116,7 +127,7 @@ export default function GiftCodePage() {
             <SiTelegram className="h-[27px] w-[27px] text-white max-[380px]:h-6 max-[380px]:w-6" />
           </span>
           <span className="ml-[19px] flex-1 whitespace-nowrap text-[24px] font-normal leading-none text-[#292929] max-[380px]:ml-[10px] max-[380px]:text-[15px]">
-            Groupe Telegram officiel
+            {groupLink ? "Canal officiel TGOOD" : "Canal officiel non configuré"}
           </span>
           <ChevronRight className="h-7 w-7 shrink-0 text-[#8e979f] max-[380px]:h-5 max-[380px]:w-5" strokeWidth={1.8} />
         </button>
@@ -137,7 +148,13 @@ export default function GiftCodePage() {
             data-testid="input-gift-code"
           />
         </div>
-      </section>
+        <div className="mx-[42px] mt-[24px] space-y-2 text-[14px] leading-[21px] text-[#656565]">
+          <p className="font-semibold text-[#333]">{groupLabel}</p>
+          <p>1. {step1}</p>
+          <p>2. {step2}</p>
+          <p>3. {step3}</p>
+        </div>
+       </section>
 
       <footer className="min-h-[310px] bg-[#f3f3f3] pt-[21px]">
         <button

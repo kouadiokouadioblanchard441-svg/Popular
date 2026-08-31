@@ -11,6 +11,7 @@ import { formatCurrency } from "@/lib/countries";
 import type { Product } from "@shared/schema";
 
 import { getProductVisual } from "@/lib/product-visuals";
+import { getContent } from "@/lib/content";
 
 const TGOOD_GREEN = "#00ef24";
 const CURRENCY = "USDT";
@@ -38,6 +39,9 @@ export default function ProductsPage() {
   const { toast } = useToast();
   const { t, lang } = useI18n();
   const [confirmProduct, setConfirmProduct] = useState<ProductWithOwnership | null>(null);
+  const { data: settings } = useQuery<Record<string, string>>({
+    queryKey: ["/api/settings"],
+  });
 
   const { data: products, isLoading: productsLoading } = useQuery<ProductWithOwnership[]>({
     queryKey: ["/api/products"],
@@ -75,15 +79,8 @@ export default function ProductsPage() {
   const filtered = paidProducts;
   const ownedProductCount = paidProducts.filter(p => p.isOwned).length;
   const totalRevenue = Number.isFinite(Number(user.totalEarnings)) ? Number(user.totalEarnings) : 0;
-  const getDisplayName = (product: ProductWithOwnership, index: number) => {
-    const vipMatch = product.name.match(/^VIP\s*(\d+)$/i);
-    const productMatch = product.name.match(/^Produit\s*(\d+)$/i);
-    return vipMatch
-      ? `VIP${vipMatch[1]} TGOOD GreenRide`
-      : lang === "en" && productMatch
-        ? `Product ${productMatch[1]}`
-        : product.name || `TGOOD GreenRide ${index + 1}`;
-  };
+  const pageTitle = getContent(settings, "content_products_headerTitle", "Nos produits TGOOD");
+  const getDisplayName = (product: ProductWithOwnership) => product.name;
   const getProductImage = (product: ProductWithOwnership, index: number) => {
     return getProductVisual(product.imageUrl, index);
   };
@@ -102,16 +99,17 @@ export default function ProductsPage() {
         <div className="grid grid-cols-2 text-center">
           <Link href="/my-products" className="active:opacity-70">
             <p className="font-semibold" style={{ fontSize: "clamp(32px, 9vw, 43px)", lineHeight: 1 }}>{ownedProductCount}</p>
-            <p className="mt-4" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{lang === "en" ? "My products" : "Mon produit"} &gt;</p>
+            <p className="mt-4" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{getContent(settings, "content_orders_headerTitle", lang === "en" ? "My products" : "Mes produits")} &gt;</p>
           </Link>
           <Link href="/earnings" className="active:opacity-70">
             <p className="truncate font-semibold" style={{ fontSize: "clamp(28px, 8vw, 43px)", lineHeight: 1 }}>{CURRENCY} {totalRevenue.toLocaleString(locale)}</p>
-            <p className="mt-4" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{lang === "en" ? "My earnings" : "Mes revenus"} &gt;</p>
+            <p className="mt-4" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{getContent(settings, "content_orders_infoLine2", lang === "en" ? "My earnings" : "Mes revenus")} &gt;</p>
           </Link>
         </div>
       </header>
 
       <div className="flex-1 overflow-y-auto pb-24">
+        <h1 className="sr-only">{pageTitle}</h1>
         {productsLoading ? (
           <div className="flex justify-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-white" />
@@ -128,7 +126,7 @@ export default function ProductsPage() {
             const isSoldOut = stock >= 100;
             const isUnavailable = !!product.isUnavailable;
             const isBlocked = isSoldOut || isUnavailable;
-            const displayName = getDisplayName(product, index);
+             const displayName = getDisplayName(product);
 
             return (
               <div
@@ -181,12 +179,12 @@ export default function ProductsPage() {
       <Dialog open={!!confirmProduct} onOpenChange={(open) => !open && setConfirmProduct(null)}>
         {confirmProduct && (
           <DialogContent className="w-[calc(100%-2rem)] max-w-[420px] overflow-hidden rounded-3xl border-0 bg-white p-0 shadow-2xl">
-            <DialogTitle className="sr-only">Confirmer l'achat de {getDisplayName(confirmProduct, confirmProductIndex)}</DialogTitle>
+            <DialogTitle className="sr-only">Confirmer l'achat de {getDisplayName(confirmProduct)}</DialogTitle>
             {/* Image produit */}
             <div className="flex items-center justify-center" style={{ background: "#f8f8f8", height: 200 }}>
               <img
                 src={getProductImage(confirmProduct, confirmProductIndex)}
-                alt={getDisplayName(confirmProduct, confirmProductIndex)}
+                alt={getDisplayName(confirmProduct)}
                 style={{ height: 180, maxWidth: "90%", objectFit: "contain" }}
               />
             </div>
@@ -196,7 +194,7 @@ export default function ProductsPage() {
               <p className="font-black" style={{ fontSize: 24, color: TGOOD_GREEN, lineHeight: 1.2 }}>
                 {currency} {Number(confirmProduct.price).toLocaleString(locale)}
               </p>
-              <p style={{ fontSize: 14, color: "#555", marginTop: 2 }}>{getDisplayName(confirmProduct, confirmProductIndex)}</p>
+              <p style={{ fontSize: 14, color: "#555", marginTop: 2 }}>{getDisplayName(confirmProduct)}</p>
             </div>
 
             {/* Séparateur */}

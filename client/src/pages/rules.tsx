@@ -1,6 +1,7 @@
 import { ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { getContent } from "@/lib/content";
 
 export default function RulesPage() {
   const { data: settings } = useQuery<Record<string, string>>({
@@ -13,23 +14,23 @@ export default function RulesPage() {
   const withdrawalStartHour = settings?.withdrawalStartHour || "9";
   const withdrawalEndHour = settings?.withdrawalEndHour || "17";
   const maxWithdrawalsPerDay = settings?.maxWithdrawalsPerDay || "1";
-  const lv1 = settings?.level1Commission || "25";
-  const lv2 = settings?.level2Commission || "3";
+  const lv1 = settings?.level1Commission || "10";
+  const lv2 = settings?.level2Commission || "2";
   const lv3 = settings?.level3Commission || "1";
 
-  const rPageTitle = "TGOOD Rules";
-  const rS1Title = "1. Utilisation des produits TGOOD";
-  const rS1b1 = "Available TGOOD products are shown with their price, duration, and terms before activation.";
-  const rS1b2 = "Earnings from an active product are calculated and credited according to the schedule shown on its details.";
-  const rS1b3 = "Each member must review the product information and make sure it meets their needs before confirming.";
-  const rS2Title = "2. Rechargement & retrait";
-  const rS3Title = "3. Programme de parrainage";
-  const rS3b4 = "Fraud, attempted manipulation, or use of multiple accounts may result in account suspension.";
-  const rS4Title = "4. Bonuses & rewards";
-  const rS5Title = "5. Security & support";
-  const rS5b1 = "Each member is responsible for the security of their password and payment methods.";
-  const rS5b2 = "Ne partagez jamais vos identifiants, codes de validation ou adresse de portefeuille avec un tiers.";
-  const rS5b3 = "Le support officiel TGOOD ne vous demandera jamais votre mot de passe ni vos codes confidentiels.";
+  const rPageTitle = getContent(settings, "content_rulespage_pageTitle", "Règles de la plateforme TGOOD");
+  const rS1Title = getContent(settings, "content_rulespage_s1Title", "1. Utilisation des produits TGOOD");
+  const rS1b1 = getContent(settings, "content_rulespage_s1b1", "Chaque produit affiche son prix, sa durée et ses conditions avant l'achat.");
+  const rS1b2 = getContent(settings, "content_rulespage_s1b2", "Les revenus suivent le cycle défini sur la fiche du produit.");
+  const rS1b3 = getContent(settings, "content_rulespage_s1b3", "Consultez les informations du produit avant de confirmer.");
+  const rS2Title = getContent(settings, "content_rulespage_s2Title", "2. Dépôts et retraits");
+  const rS3Title = getContent(settings, "content_rulespage_s3Title", "3. Programme de parrainage");
+  const rS3b4 = getContent(settings, "content_rulespage_s3b4", "Toute fraude, tentative de manipulation ou utilisation de comptes multiples peut entraîner la suspension du compte.");
+  const rS4Title = getContent(settings, "content_rulespage_s4Title", "4. Bonus et récompenses");
+  const rS5Title = getContent(settings, "content_rulespage_s5Title", "5. Sécurité");
+  const rS5b1 = getContent(settings, "content_rulespage_s5b1", "Chaque membre est responsable de la sécurité de son mot de passe et de ses moyens de paiement.");
+  const rS5b2 = getContent(settings, "content_rulespage_s5b2", "Ne partagez jamais vos identifiants, codes de validation ou adresse de portefeuille.");
+  const rS5b3 = getContent(settings, "content_rulespage_s5b3", "Le support officiel TGOOD ne vous demandera jamais votre mot de passe ni vos codes confidentiels.");
 
   return (
     <div className="flex min-h-screen flex-col text-[#26352d]" style={{ background: "#f8f9fa", color: "#26352d" }}>
@@ -56,7 +57,7 @@ export default function RulesPage() {
           <h2 className="border-l-4 border-[#00a651] pl-3 text-lg font-bold text-[#087a38]">{rS2Title}</h2>
           <ul className="list-disc space-y-2 pl-5 text-sm text-[#3f4d45]">
             <li>Montant minimum de recharge : {parseInt(minDeposit).toLocaleString()} USDT.</li>
-            <li>Montant minimum de retrait : {parseInt(minWithdrawal).toLocaleString()} USDT.</li>
+            <li>Montant minimum de retrait : {parseInt(minWithdrawal).toLocaleString()} USDT via USDT BEP20, sans frais.</li>
             <li>Horaires de retrait : {withdrawalStartHour}h00 – {withdrawalEndHour}h00.</li>
             <li>Maximum {maxWithdrawalsPerDay} retrait(s) par jour et par utilisateur.</li>
           </ul>
@@ -65,9 +66,9 @@ export default function RulesPage() {
         <section className="space-y-3 rounded-2xl bg-white p-5 shadow-sm">
           <h2 className="border-l-4 border-[#00a651] pl-3 text-lg font-bold text-[#087a38]">{rS3Title}</h2>
           <ul className="list-disc space-y-2 pl-5 text-sm text-[#3f4d45]">
-            <li>Commission niveau 1 : {lv1}% sur le premier investissement du filleul direct.</li>
-            <li>Commission niveau 2 : {lv2}% sur le premier investissement du filleul indirect.</li>
-            <li>Commission niveau 3 : {lv3}% sur le premier investissement du filleul de niveau 3.</li>
+            <li>Commission niveau 1 : {lv1}% selon les conditions du programme.</li>
+            <li>Commission niveau 2 : {lv2}% selon les conditions du programme.</li>
+            <li>Commission niveau 3 : {lv3}% selon les conditions du programme.</li>
             <li>{rS3b4}</li>
           </ul>
         </section>
@@ -75,7 +76,7 @@ export default function RulesPage() {
         <section className="space-y-3 rounded-2xl bg-white p-5 shadow-sm">
           <h2 className="border-l-4 border-[#00a651] pl-3 text-lg font-bold text-[#087a38]">{rS4Title}</h2>
           <ul className="list-disc space-y-2 pl-5 text-sm text-[#3f4d45]">
-            <li>Each new member receives a {parseInt(signupBonus).toLocaleString()} USDT bonus upon registration.</li>
+            <li>Chaque nouveau membre reçoit le bonus d'inscription configuré, actuellement de {parseInt(signupBonus).toLocaleString()} USDT.</li>
           </ul>
         </section>
 

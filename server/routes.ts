@@ -1847,18 +1847,18 @@ export async function registerRoutes(
     try {
       const settings = await storage.getSettings();
       res.json({
-        supportLink: settings.supportLink || "https://t.me/intelappgroup",
-        support2Link: settings.support2Link || "https://t.me/intelappgroup",
-        channelLink: settings.channelLink || "https://t.me/intelappgroup",
-        groupLink: settings.groupLink || "https://t.me/intelappgroup",
+        supportLink: settings.supportLink || "",
+        support2Link: settings.support2Link || "",
+        channelLink: settings.channelLink || "",
+        groupLink: settings.groupLink || "",
         supportType: settings.supportType || "telegram",
         support2Type: settings.support2Type || "telegram",
         channelType: settings.channelType || "telegram",
         groupType: settings.groupType || "telegram",
-        supportLabel: settings.supportLabel || "客服",
-        support2Label: settings.support2Label || "客服 2",
-        channelLabel: settings.channelLabel || "官方频道",
-        groupLabel: settings.groupLabel || "讨论群",
+        supportLabel: settings.supportLabel || "Support client",
+        support2Label: settings.support2Label || "Support client 2",
+        channelLabel: settings.channelLabel || "Chaîne officielle",
+        groupLabel: settings.groupLabel || "Groupe officiel",
         supportEnabled: settings.supportEnabled ?? "true",
         support2Enabled: settings.support2Enabled ?? "true",
         channelEnabled: settings.channelEnabled ?? "true",
@@ -1877,8 +1877,8 @@ export async function registerRoutes(
       const settings = await storage.getSettings();
       res.json({
         withdrawalEnabled: settings.withdrawalEnabled !== "false",
-        withdrawalStartHour: parseInt(settings.withdrawalStartHour || "10"),
-        withdrawalEndHour: parseInt(settings.withdrawalEndHour || "16"),
+        withdrawalStartHour: parseInt(settings.withdrawalStartHour || "9"),
+        withdrawalEndHour: parseInt(settings.withdrawalEndHour || "17"),
         withdrawalDays: settings.withdrawalDays || "1,2,3,4,5",
         maxWithdrawalsPerDay: parseInt(settings.maxWithdrawalsPerDay || "1"),
         minWithdrawal: parseInt(settings.minWithdrawal || "1"),

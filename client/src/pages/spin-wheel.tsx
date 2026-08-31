@@ -15,27 +15,15 @@ import {
   type SpinWheelSegment,
 } from "@shared/spin-wheel";
 
-/* ── Fake winners ticker ────────────────────────────────────── */
-const FAKE_WINNERS = [
-  { phone: "0546******846", amount: "200F" },
-  { phone: "0707******231", amount: "500F" },
-  { phone: "0102******978", amount: "1 000F" },
-  { phone: "0503******412", amount: "200F" },
-  { phone: "0749******065", amount: "2 000F" },
-  { phone: "0101******339", amount: "500F" },
-  { phone: "0564******187", amount: "200F" },
-  { phone: "0767******824", amount: "1 000F" },
-  { phone: "0505******553", amount: "200F" },
-  { phone: "0103******710", amount: "5 000F" },
-  { phone: "0748******293", amount: "500F" },
-  { phone: "0546******001", amount: "200F" },
-  { phone: "0707******668", amount: "1 000F" },
-  { phone: "0101******452", amount: "200F" },
-  { phone: "0505******317", amount: "2 000F" },
-];
+interface RecentSpin {
+  phone: string;
+  amount: string;
+  description: string;
+}
 
-function WinnersTicker() {
-  const items = [...FAKE_WINNERS, ...FAKE_WINNERS];
+function WinnersTicker({ entries }: { entries: RecentSpin[] }) {
+  if (entries.length === 0) return null;
+  const items = [...entries, ...entries];
   return (
     <div
       className="mx-4 mb-4 rounded-2xl overflow-hidden shadow-md"
@@ -59,7 +47,7 @@ function WinnersTicker() {
             100% { transform: translateY(-50%); }
           }
           .ticker-track {
-            animation: tickerScroll ${FAKE_WINNERS.length * 1.8}s linear infinite;
+             animation: tickerScroll ${entries.length * 1.8}s linear infinite;
           }
           .ticker-track:hover { animation-play-state: paused; }
         `}</style>
@@ -316,13 +304,6 @@ function drawWheel(
   ctx.shadowBlur   = 5;
   ctx.fillText("GO", cx, cy);
   ctx.shadowBlur = 0;
-}
-
-/* ── Recent spin entry type ──────────────────────────────── */
-interface RecentSpin {
-  phone: string;
-  amount: string;
-  description: string;
 }
 
 /* ── Page ───────────────────────────────────────────────────── */
@@ -613,7 +594,7 @@ export default function SpinWheelPage() {
         </div>
 
         {/* ── Winners ticker ── */}
-        <WinnersTicker />
+        <WinnersTicker entries={recentSpins || []} />
       </div>
 
       {/* ── Modals ── */}

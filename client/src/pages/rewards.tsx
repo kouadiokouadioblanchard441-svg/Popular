@@ -7,8 +7,8 @@ import { ArrowLeft, HelpCircle, Users } from "lucide-react";
 import { getCountryByCode } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
 
-import globeImg from "@/assets/images/elf-station-2.jpeg";
-import landscapeImg from "@assets/portable-charger-power-banks_480x480_d6b67d82-6118-4295-be02-e_1784966597898.jpg";
+import globeImg from "@assets/generated_images/tgood-city-grid.jpg";
+import landscapeImg from "@assets/generated_images/tgood-charging-station-hero.jpg";
 
 export default function RewardsPage() {
   const { user } = useAuth();

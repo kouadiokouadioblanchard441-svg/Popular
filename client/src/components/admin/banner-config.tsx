@@ -11,6 +11,11 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Loader2, Save, Trash2, Image as ImageIcon, Star, CheckCircle2 } from "lucide-react";
 import ImageUploader from "@/components/admin/image-uploader";
 import type { Product } from "@shared/schema";
+import homeHero from "@assets/generated_images/tgood-home-products-hero.jpg";
+import chargingStation from "@assets/generated_images/tgood-charging-station-hero.jpg";
+import electricScooter from "@assets/generated_images/tgood-scooter.jpg";
+
+const DEFAULT_TGOOD_BANNERS = [homeHero, chargingStation, electricScooter];
 
 /* ── Mini preview card ──────────────────────────────────────────────────── */
 function ThumbCard({
@@ -122,8 +127,15 @@ function BannerSlotEditor({
 
         {/* Uploaded images list */}
         {urls.length === 0 ? (
-          <div className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">
-            Aucune image — uploadez une depuis votre galerie.
+          <div className="space-y-3">
+            <div className="rounded-xl border border-dashed p-4 text-center text-sm text-muted-foreground">
+              Aucune image personnalisée — l'accueil utilise les visuels TGOOD par défaut.
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {DEFAULT_TGOOD_BANNERS.map((url, index) => (
+                <img key={url} src={url} alt={`Aperçu TGOOD ${index + 1}`} className="h-16 w-full rounded-lg object-cover" />
+              ))}
+            </div>
           </div>
         ) : (
           <div className="space-y-3">
