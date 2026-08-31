@@ -324,19 +324,20 @@ export async function registerRoutes(
         telegram: data.telegram || undefined,
       });
 
-      // Tous les bonus et récompenses alimentent le solde revenu.
+      // Le bonus d'inscription alimente le solde des dépôts pour permettre
+      // au nouvel utilisateur de commencer un achat.
       const settings = await storage.getSettings();
       if (settings.signupBonusEnabled !== "false") {
         const signupBonus = parseFloat(settings.signupBonusAmount || "2");
         if (signupBonus > 0) {
           const freshUser = await storage.getUser(user.id);
-          const currentEarnings = Number(freshUser?.totalEarnings || "0");
+          const currentBalance = Number(freshUser?.balance || "0");
           await storage.updateUser(user.id, {
-            totalEarnings: ((Number.isFinite(currentEarnings) ? currentEarnings : 0) + signupBonus).toFixed(2),
+            balance: ((Number.isFinite(currentBalance) ? currentBalance : 0) + signupBonus).toFixed(2),
           });
           await storage.createTransaction({
             userId: user.id,
-            type: "bonus",
+            type: "deposit",
             amount: signupBonus.toFixed(2),
             description: "Bonus d'inscription",
           });
