@@ -183,9 +183,9 @@ export default function ServicePage() {
           {links.map((link) => (
             <button
               key={link.testId}
-              onClick={() => isServiceOnline && window.open(link.href, "_blank", "noopener,noreferrer")}
-              disabled={!isServiceOnline}
-              className="w-full flex items-center justify-between active:opacity-80 transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+              type="button"
+              onClick={() => window.open(link.href, "_blank", "noopener,noreferrer")}
+              className="w-full flex items-center justify-between active:opacity-80 transition-opacity"
               style={{
                 background: GREEN,
                 borderRadius: 999,

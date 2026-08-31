@@ -3,8 +3,8 @@ name: TGOOD customer service hours
 description: Customer-support availability is derived from the configured service-hour window.
 ---
 
-The customer-service screen uses the configured start and end hours as its availability window: it shows the current online/offline state, refreshes it every minute, and disables support links outside the window.
+The customer-service screen uses the configured start and end hours to show the current online/offline state and refreshes it every minute. Configured support links remain clickable even when the displayed status is offline.
 
-**Why:** Showing support as available 24/7 contradicted the hours displayed to users and allowed links to be opened while the service was marked closed.
+**Why:** The owner requires the support buttons to keep working outside service hours while still showing the configured offline status.
 
-**How to apply:** Keep the displayed hours and the online/offline calculation driven by the same settings. Preserve overnight-window handling when changing the schedule logic.
+**How to apply:** Keep the displayed hours and online/offline calculation driven by the same settings. Preserve overnight-window handling, but do not gate configured support-link activation on that status.

@@ -7,7 +7,7 @@ import { getContent } from "@/lib/content";
 import { useI18n } from "@/lib/i18n";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { Link } from "wouter";
-import checkinHero from "@/assets/images/checkin-hero-reference.png";
+import checkinHero from "@/assets/images/checkin-hero-tgood.png";
 import bonusIcon from "@/assets/images/checkin-bonus-icon-reference.png";
 import bonusChat from "@/assets/images/checkin-bonus-chat-reference.png";
 import rewardBike from "@/assets/images/checkin-reward-bike-reference.png";
