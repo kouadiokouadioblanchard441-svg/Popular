@@ -51,6 +51,14 @@ function isToday(dateStr: string): boolean {
   );
 }
 
+function formatUsdt(value: number): string {
+  const amount = Number(value);
+  return `USDT ${(Number.isFinite(amount) ? amount : 0).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
 /* ── Empty state ─────────────────────────────────────── */
 function EmptyState() {
   return (
@@ -160,7 +168,7 @@ export default function MembersPage() {
             Nb. de filleuls
           </span>
           <span style={{ fontSize: 12, color: "#666", textAlign: "right", fontStyle: "italic" }}>
-            Ma Commission
+            Commission reçue
           </span>
         </div>
 
@@ -174,7 +182,7 @@ export default function MembersPage() {
             {isLoading ? "—" : `${activeCount}/${totalCount}`}
           </span>
           <span style={{ fontSize: 13, color: "#111", fontWeight: 600, textAlign: "right" }}>
-            {isLoading ? "—" : `${currency} ${totalCommission.toLocaleString()}`}
+            {isLoading ? "—" : formatUsdt(totalCommission)}
           </span>
         </div>
 
@@ -188,7 +196,7 @@ export default function MembersPage() {
             {isLoading ? "—" : `${todayActiveCount}/${todayCount}`}
           </span>
           <span style={{ fontSize: 13, color: "#111", fontWeight: 600, textAlign: "right" }}>
-            {isLoading ? "—" : `${currency} ${todayCommission.toLocaleString()}`}
+            {isLoading ? "—" : formatUsdt(todayCommission)}
           </span>
         </div>
       </div>
@@ -198,7 +206,7 @@ export default function MembersPage() {
         className="flex mx-3 mt-4"
         style={{ borderBottom: "1px solid #e8e8e8", paddingBottom: 8 }}
       >
-        {["Date", "Code", "Total deposit", "My commission"].map((col, i) => (
+        {["Date", "Code", "Total investi", "Commission reçue"].map((col, i) => (
           <div
             key={i}
             className="flex-1 text-center"
@@ -262,14 +270,14 @@ export default function MembersPage() {
                 style={{ borderRight: "1px solid #f0f0f0" }}
               >
                 <span style={{ fontSize: 11, color: "#333", fontWeight: 600, textAlign: "center" }}>
-                  {Number(member.totalInvested).toLocaleString()}
+                  {formatUsdt(member.totalInvested)}
                 </span>
               </div>
 
               {/* Ma commission */}
               <div className="flex-1 flex items-center justify-center py-3 px-1">
                 <span style={{ fontSize: 11, fontWeight: 700, color: RED, textAlign: "center" }}>
-                  {Number(member.bonusFromMember || 0).toLocaleString()}
+                  {formatUsdt(member.bonusFromMember || 0)}
                 </span>
               </div>
             </div>

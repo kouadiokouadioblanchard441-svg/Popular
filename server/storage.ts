@@ -16,6 +16,11 @@ function normalizePhoneSuffix(phone: string | null | undefined): string {
   return (phone || "").replace(/\D/g, "").slice(-8);
 }
 
+function finiteAmount(value: unknown): number {
+  const amount = Number(value);
+  return Number.isFinite(amount) ? amount : 0;
+}
+
 type ShareReportUser = Pick<User, "id" | "fullName" | "phone" | "country">;
 
 export interface IStorage {
@@ -1377,7 +1382,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(userProducts.userId, user.id));
       
       const totalInvested = userProductsList
-        .reduce((sum, p) => sum + parseFloat(String(p.productPrice)), 0);
+        .reduce((sum, p) => sum + finiteAmount(p.productPrice), 0);
 
       // Bonus earned by current user FROM this specific member
       const bonusResult = await db
@@ -1387,7 +1392,7 @@ export class DatabaseStorage implements IStorage {
           eq(referralCommissions.userId, userId),
           eq(referralCommissions.fromUserId, user.id),
         ));
-      const bonusFromMember = parseFloat(bonusResult[0]?.total || "0");
+      const bonusFromMember = finiteAmount(bonusResult[0]?.total);
 
       return {
         id: user.id,
