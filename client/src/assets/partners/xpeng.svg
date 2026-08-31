@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" role="img" aria-labelledby="title">
+  <title>XPENG</title>
+  <g fill="#1769d1">
+    <path d="M24 50c18-25 43-37 74-37-14 11-24 22-31 34 13-6 27-9 43-9-19 17-39 27-61 30-10 1-18-3-25-18z"/>
+    <path d="M24 50c18 25 43 37 74 37-14-11-24-22-31-34 13 6 27 9 43 9-19-17-39-27-61-30-10-1-18 3-25 18z" opacity=".82"/>
+  </g>
+  <text x="119" y="67" fill="#1e293b" font-family="Arial, Helvetica, sans-serif" font-size="45" font-weight="700" letter-spacing="2">XPENG</text>
+</svg>

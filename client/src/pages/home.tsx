@@ -18,6 +18,7 @@ import teslaLogo from "@/assets/partners/tesla.svg";
 import bydLogo from "@/assets/partners/byd.svg";
 import binanceLogo from "@/assets/partners/binance.svg";
 import netflixLogo from "@/assets/partners/netflix.svg";
+import xpengLogo from "@/assets/partners/xpeng.svg";
 
 const TGOOD_GREEN = "#08b83a";
 
@@ -26,7 +27,7 @@ const PARTNERS = [
   { name: "BYD", logo: bydLogo },
   { name: "Mercedes-Benz", logo: "https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg" },
   { name: "Binance", logo: binanceLogo },
-  { name: "TGOOD", logo: "/tgood-logo.gif" },
+  { name: "XPENG", logo: xpengLogo },
   { name: "Netflix", logo: netflixLogo },
 ];
 
