@@ -3,7 +3,7 @@ name: TGOOD brand identity
 description: Brand choice and consistency rule for the TGOOD redesign.
 ---
 
-Use TGOOD’s green wordmark and a deep green primary palette for platform branding. New visual work should use the TGOOD identity rather than the former XPENG assets.
+Use TGOOD’s green wordmark and a deep green primary palette for platform branding.
 
 **Why:** the platform was explicitly rebranded to reflect the Chinese energy company TGOOD and its official green wordmark.
 
