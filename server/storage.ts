@@ -461,13 +461,20 @@ export class DatabaseStorage implements IStorage {
       await this.updateUser(userId, { hasActiveProduct: true });
     }
 
-    // Set lastEarningDate to now - first earnings will be credited 24h after purchase
+    // The first daily earning is available immediately after purchase.
+    // It remains pending until the user collects it from the Revenue page;
+    // subsequent earnings are accrued once every 24 hours.
+    const firstEarning = parseFloat(product.dailyEarnings || "0");
+    const remainingDays = Math.max(0, product.cycleDays - 1);
     const [userProduct] = await db.insert(userProducts).values({
       userId,
       productId,
-      daysRemaining: product.cycleDays,
+      daysRemaining: remainingDays,
       assignedByAdmin,
       lastEarningDate: new Date(),
+      totalEarned: firstEarning.toFixed(2),
+      pendingEarnings: product.collectAtEnd ? "0" : firstEarning.toFixed(2),
+      isActive: remainingDays > 0,
     }).returning();
 
     return userProduct;
