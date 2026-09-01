@@ -1,7 +1,7 @@
 import { useAuth } from "@/lib/auth";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-import { ChevronLeft, CheckCircle2, Loader2, Lock } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { getProductVisual } from "@/lib/product-visuals";
@@ -81,12 +81,12 @@ export default function MyProductsPage() {
   const { t, lang } = useI18n();
   const { data: userProducts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/user/products"] });
 
-  const collectFinalMutation = useMutation({
+  const collectMutation = useMutation({
     mutationFn: async (userProductId: number) => {
-      const response = await apiRequest("POST", `/api/user/collect-final/${userProductId}`, {});
+      const response = await apiRequest("POST", "/api/user/collect-earnings", { userProductId });
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || "Erreur");
+        throw new Error(data.message || t.errorOccurred);
       }
       return response.json();
     },
@@ -101,6 +101,7 @@ export default function MyProductsPage() {
   if (!user) return null;
 
   const totalEarned = userProducts.reduce((sum: number, item: any) => sum + Number(item.totalEarned || 0), 0);
+  const pendingTotal = userProducts.reduce((sum: number, item: any) => sum + Number(item.pendingEarnings || 0), 0);
 
   return (
     <main className="flex min-h-screen flex-col bg-black">
@@ -109,6 +110,11 @@ export default function MyProductsPage() {
         <div className="pt-3 text-center text-white">
           <p className="font-semibold" style={{ fontSize: 42, lineHeight: 1.1 }}>USDT {totalEarned.toLocaleString(localeForLang(lang))}</p>
           <p className="mt-3" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{t.totalRevenue}</p>
+          {pendingTotal > 0 && (
+            <p className="mt-2 text-sm text-white/70">
+              {t.myProductsPending}: USDT {pendingTotal.toLocaleString(localeForLang(lang))}
+            </p>
+          )}
         </div>
 
         {isLoading ? (
@@ -129,7 +135,8 @@ export default function MyProductsPage() {
               const completedDays = Math.max(0, cycleDays - daysRemaining);
               const progress = cycleDays > 0 ? Math.min(100, Math.round((completedDays / cycleDays) * 100)) : 0;
               const earned = Number(userProduct.totalEarned || 0);
-              const canCollect = product.collectAtEnd && daysRemaining <= 0 && earned > 0;
+              const pending = Number(userProduct.pendingEarnings || 0);
+              const canCollect = pending > 0;
               const image = getProductVisual(product.imageUrl, index);
               const displayName = getDisplayName(product.name, index);
 
@@ -153,7 +160,8 @@ export default function MyProductsPage() {
                       <InfoRow label={`${t.duration}:`} value={`${cycleDays} ${t.myProductsDays}`} />
                       <InfoRow label={`${t.dailyRevenue}:`} value={`USDT ${Number(product.dailyEarnings || 0).toLocaleString(localeForLang(lang))}`} />
                       <InfoRow label={`${t.totalRevenue}:`} value={`USDT ${Number(product.totalReturn || 0).toLocaleString(localeForLang(lang))}`} />
-                      <InfoRow label={`${t.myProductsRevenueReceived}:`} value={`USDT ${earned.toLocaleString(localeForLang(lang))}`} />
+                      <InfoRow label={`${t.myProductsEarned}:`} value={`USDT ${earned.toLocaleString(localeForLang(lang))}`} />
+                      <InfoRow label={`${t.myProductsPending}:`} value={`USDT ${pending.toLocaleString(localeForLang(lang))}`} />
                     </div>
                     <div className="mt-3 h-1.5 w-[82%] max-w-[350px] overflow-hidden rounded-full bg-white/25">
                       <div className="h-full rounded-full" style={{ width: `${progress}%`, background: TGOOD_GREEN }} />
@@ -161,16 +169,17 @@ export default function MyProductsPage() {
                     <p className="mt-1 text-xs text-white/75">{completedDays}/{cycleDays} {t.myProductsProgress}</p>
                     {canCollect ? (
                       <button
-                        onClick={() => collectFinalMutation.mutate(userProduct.id)}
-                        disabled={collectFinalMutation.isPending}
+                        onClick={() => collectMutation.mutate(userProduct.id)}
+                        disabled={collectMutation.isPending}
                         className="mt-3 flex h-10 w-[82%] max-w-[350px] items-center justify-center gap-2 font-bold text-black disabled:opacity-60"
                         style={{ background: TGOOD_GREEN }}
+                        data-testid={`button-collect-product-${userProduct.id}`}
                       >
-                        {collectFinalMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
-                        {t.rewardsClaim} USDT {earned.toLocaleString(localeForLang(lang))}
+                        {collectMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                        {t.myProductsCollect} USDT {pending.toLocaleString(localeForLang(lang))}
                       </button>
-                    ) : product.collectAtEnd ? (
-                      <p className="mt-3 flex w-[82%] max-w-[350px] items-center justify-center gap-1 text-sm text-white/75"><Lock size={14} /> {t.ordersRemainingLbl}</p>
+                    ) : userProduct.isActive ? (
+                      <p className="mt-3 flex w-[82%] max-w-[350px] items-center justify-center gap-1 text-sm text-white/75">{t.myProductsNextCollection}</p>
                     ) : null}
                   </div>
                 </article>

@@ -185,6 +185,9 @@ export type Translations = {
   myProductsDays: string;
   myProductsProgress: string;
   myProductsRevenueReceived: string;
+  myProductsPending: string;
+  myProductsCollect: string;
+  myProductsNextCollection: string;
   // rewards / gains page
   rewardsTitle: string;
   rewardsSubtitle: string;
@@ -902,7 +905,7 @@ const fr: Translations = {
     myProductsTitle:    "Mes Produits",
     myProductsDevice:   "Mon appareil",
     myProductsEarnings: "Mes revenus",
-    myProductsSettledEvery24h: "⏱️ Les revenus des produits sont réglés toutes les 24 heures",
+     myProductsSettledEvery24h: "⏱️ Les gains produits sont disponibles à collecter toutes les 24 heures",
     myProductsNone:     "Aucun produit TGOOD",
     myProductsNoneDesc: "Achetez des produits pour commencer à gagner",
     myProductsDailyRevenue: "Revenu/jour",
@@ -911,6 +914,9 @@ const fr: Translations = {
     myProductsDays:     "jours",
     myProductsProgress: "Progression",
     myProductsRevenueReceived: "Revenus reçus",
+     myProductsPending: "Gains à collecter",
+     myProductsCollect: "Collecter",
+     myProductsNextCollection: "Prochaine collecte",
     rewardsTitle:       "Recevoir",
     rewardsSubtitle:    "Remplissez ces tâches pour obtenir {0} {1}",
     rewardsTaskList:    "Liste des tâches",

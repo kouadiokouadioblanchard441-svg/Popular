@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Edit, Loader2, Plus, Trash2, Users, ShoppingBag, Lock } from "lucide-react";
+import { Edit, Loader2, Plus, Trash2, Users, ShoppingBag } from "lucide-react";
 import type { Product } from "@shared/schema";
 import ImageUploader from "@/components/admin/image-uploader";
 import { getProductVisual } from "@/lib/product-visuals";
@@ -26,7 +26,6 @@ const productSchema = z.object({
   imageUrl: z.string().optional(),
   minInviteCount: z.string().optional(),
   maxOwned: z.string().optional(),
-  collectAtEnd: z.boolean().optional(),
   stockPercentage: z.number().min(0).max(100).optional(),
 });
 
@@ -143,31 +142,6 @@ function ProductFormFields({ form, isPending, submitLabel, onSubmit }: ProductFo
         </div>
       </div>
 
-      {/* Collect mode */}
-      <div className="border rounded-lg p-3 bg-amber-50 border-amber-200">
-        <FormField control={form.control} name="collectAtEnd" render={({ field }) => (
-          <FormItem>
-            <div className="flex items-start gap-3">
-              <Switch
-                checked={!!field.value}
-                onCheckedChange={field.onChange}
-                className="mt-0.5"
-              />
-              <div>
-                <FormLabel className="text-sm font-semibold flex items-center gap-1.5 cursor-pointer">
-                  <Lock className="w-3.5 h-3.5 text-amber-600" />
-                  Collecte en fin de cycle
-                </FormLabel>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  Les gains s'accumulent pendant tout le cycle. L'utilisateur ne peut collecter qu'à la fin.
-                </p>
-              </div>
-            </div>
-            <FormMessage />
-          </FormItem>
-        )} />
-      </div>
-
       {/* Stock percentage */}
       <div className="border rounded-lg p-3 space-y-2 bg-slate-50">
         <FormField control={form.control} name="stockPercentage" render={({ field }) => (
@@ -234,7 +208,7 @@ export default function AdminProducts() {
 
   const defaultValues: ProductForm = {
     name: "", price: "", dailyEarnings: "", cycleDays: "80",
-    imageUrl: "", minInviteCount: "0", maxOwned: "0", collectAtEnd: false, stockPercentage: 0,
+    imageUrl: "", minInviteCount: "0", maxOwned: "0", stockPercentage: 0,
   };
 
   const editForm = useForm<ProductForm>({ resolver: zodResolver(productSchema), defaultValues });
@@ -267,7 +241,6 @@ export default function AdminProducts() {
         imageUrl: data.imageUrl || null,
         minInviteCount: parseInt(data.minInviteCount || "0") || 0,
         maxOwned: parseInt(data.maxOwned || "0") || 0,
-        collectAtEnd: !!data.collectAtEnd,
         stockPercentage: Math.min(100, Math.max(0, data.stockPercentage ?? 0)),
       };
       const res = await apiRequest("PATCH", `/api/admin/products/${id}`, payload);
@@ -333,7 +306,6 @@ export default function AdminProducts() {
       imageUrl: product.imageUrl || "",
       minInviteCount: String(product.minInviteCount ?? 0),
       maxOwned: String(product.maxOwned ?? 0),
-      collectAtEnd: product.collectAtEnd ?? false,
       stockPercentage: product.stockPercentage ?? 0,
     });
   };
@@ -379,11 +351,6 @@ export default function AdminProducts() {
                       {Number(product.maxOwned) > 0 && (
                         <span className="text-[10px] bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">
                           🛒 Max {product.maxOwned}/utilisateur
-                        </span>
-                      )}
-                      {product.collectAtEnd && (
-                        <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">
-                          🔒 Collecte fin de cycle
                         </span>
                       )}
                     </div>

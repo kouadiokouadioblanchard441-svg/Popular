@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { useAuth } from "@/lib/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { localeForLang, useI18n } from "@/lib/i18n";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { getProductVisual } from "@/lib/product-visuals";
 
 const TGOOD_GREEN = "#00c83c";
 
@@ -32,15 +36,38 @@ function EmptyEarningsIllustration() {
 }
 
 export default function EarningsPage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [, navigate] = useLocation();
   const { t, lang } = useI18n();
+  const { toast } = useToast();
+  const [collectingId, setCollectingId] = useState<number | null>(null);
   const { data: userProducts = [], isLoading } = useQuery<any[]>({ queryKey: ["/api/user/products"] });
+
+  const collectMutation = useMutation({
+    mutationFn: async (userProductId: number) => {
+      const response = await apiRequest("POST", "/api/user/collect-earnings", { userProductId });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || t.errorOccurred);
+      return data;
+    },
+    onMutate: (userProductId) => setCollectingId(userProductId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user/products"] });
+      refreshUser();
+      toast({
+        title: t.rewardsSuccessTitle,
+        description: `${Number(data.collected).toLocaleString(localeForLang(lang))} USDT ${t.rewardsReceived.toLowerCase()}.`,
+      });
+    },
+    onError: (error: Error) => toast({ title: error.message, variant: "destructive" }),
+    onSettled: () => setCollectingId(null),
+  });
 
   if (!user) return null;
 
   const totalEarnings = Number.isFinite(Number(user.totalEarnings)) ? Number(user.totalEarnings) : 0;
   const hasProducts = userProducts.length > 0;
+  const pendingTotal = userProducts.reduce((sum: number, item: any) => sum + Number(item.pendingEarnings || 0), 0);
 
   return (
     <main className="flex min-h-screen flex-col bg-black">
@@ -66,6 +93,11 @@ export default function EarningsPage() {
         <div className="pt-3 text-center text-white">
           <p className="font-semibold" style={{ fontSize: 42, lineHeight: 1.1 }}>USDT {totalEarnings.toLocaleString(localeForLang(lang))}</p>
           <p className="mt-3" style={{ color: TGOOD_GREEN, fontSize: 16 }}>{t.totalRevenue}</p>
+          {pendingTotal > 0 && (
+            <p className="mt-2 text-sm text-white/70">
+              {t.myProductsPending}: USDT {pendingTotal.toLocaleString(localeForLang(lang))}
+            </p>
+          )}
         </div>
         {isLoading ? (
           <div className="flex flex-1 items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-white" /></div>
@@ -77,16 +109,59 @@ export default function EarningsPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3 px-5 pt-10">
-            {userProducts.map((item: any) => (
-              <div key={item.id} className="flex items-center justify-between border-b border-white/15 py-4 text-white">
-                <div>
-                  <p className="font-medium">{item.product?.name || "Produit TGOOD"}</p>
-                  <p className="mt-1 text-sm text-white/55">{t.ordersTotalEarnedLbl}</p>
-                </div>
-                <p className="font-semibold" style={{ color: TGOOD_GREEN }}>USDT {Number(item.totalEarned || 0).toLocaleString(localeForLang(lang))}</p>
-              </div>
-            ))}
+          <div className="space-y-3 px-5 pt-8">
+            {userProducts.map((item: any, index: number) => {
+              const product = item.product || {};
+              const pending = Number(item.pendingEarnings || 0);
+              const totalEarned = Number(item.totalEarned || 0);
+              const isReady = pending > 0;
+              const isCollecting = collectingId === item.id && collectMutation.isPending;
+
+              return (
+                <article key={item.id} className="overflow-hidden rounded-2xl border border-white/10 bg-[#171717] text-white">
+                  <div className="flex gap-3 p-3">
+                    <img
+                      src={getProductVisual(product.imageUrl, index)}
+                      alt={product.name || "Produit TGOOD"}
+                      className="h-16 w-16 shrink-0 rounded-xl object-cover"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-semibold">{product.name || "Produit TGOOD"}</p>
+                      <p className="mt-1 text-xs text-white/60">
+                        {t.dailyRevenue}: USDT {Number(product.dailyEarnings || 0).toLocaleString(localeForLang(lang))}
+                      </p>
+                      <p className="mt-1 text-xs text-white/60">
+                        {t.myProductsEarned}: USDT {totalEarned.toLocaleString(localeForLang(lang))}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 border-t border-white/10 px-3 py-3">
+                    <div className="min-w-0">
+                      <p className="text-xs text-white/60">{t.myProductsPending}</p>
+                      <p className="font-semibold" style={{ color: isReady ? TGOOD_GREEN : "#a5a5a5" }}>
+                        USDT {pending.toLocaleString(localeForLang(lang))}
+                      </p>
+                      {!isReady && item.isActive && item.nextCollectionAt && !Number.isNaN(new Date(item.nextCollectionAt).getTime()) && (
+                        <p className="mt-1 text-[11px] text-white/45">
+                          {t.myProductsNextCollection}: {new Date(item.nextCollectionAt).toLocaleString(localeForLang(lang), { dateStyle: "short", timeStyle: "short" })}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => collectMutation.mutate(item.id)}
+                      disabled={!isReady || collectMutation.isPending}
+                      className="flex min-w-[132px] items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-black transition-opacity disabled:cursor-not-allowed disabled:opacity-45"
+                      style={{ background: isReady ? TGOOD_GREEN : "#555" }}
+                      data-testid={`button-collect-earnings-${item.id}`}
+                    >
+                      {isCollecting && <Loader2 className="h-4 w-4 animate-spin" />}
+                      {isReady ? t.myProductsCollect : t.myProductsNextCollection}
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
       </section>

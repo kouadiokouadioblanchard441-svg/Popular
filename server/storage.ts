@@ -144,6 +144,12 @@ export interface IStorage {
   getSetting(key: string): Promise<string | null>;
   getSettings(): Promise<Record<string, string>>;
   setSetting(key: string, value: string, modifiedBy?: number): Promise<void>;
+  processEarningsForUser(userId: number): Promise<void>;
+  collectPendingEarnings(userId: number, userProductId?: number): Promise<{
+    collected: number;
+    productsCollected: number;
+    productIds: number[];
+  }>;
 
   // Admin
   getStats(): Promise<any>;
@@ -561,21 +567,13 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async processEarnings(): Promise<void> {
-    const activeProducts = await db.select({
-      userProduct: userProducts,
-      product: products,
-      user: users,
-    }).from(userProducts)
-      .innerJoin(products, eq(userProducts.productId, products.id))
-      .innerJoin(users, eq(userProducts.userId, users.id))
-      .where(and(eq(userProducts.isActive, true), sql`${userProducts.daysRemaining} > 0`));
-
+  private async accrueProductEarnings(
+    productRows: Array<{ userProduct: UserProduct; product: Product }>,
+  ): Promise<void> {
     const now = new Date();
-    
-    const userEarnings = new Map<number, number>();
-    
-    for (const { userProduct, product, user } of activeProducts) {
+    const dayInMilliseconds = 24 * 60 * 60 * 1000;
+
+    for (const { userProduct, product } of productRows) {
       try {
         const purchaseDate = userProduct.purchaseDate ? new Date(userProduct.purchaseDate) : null;
         if (!purchaseDate) continue;
@@ -583,22 +581,25 @@ export class DatabaseStorage implements IStorage {
         const lastEarning = userProduct.lastEarningDate ? new Date(userProduct.lastEarningDate) : purchaseDate;
 
         const msSincePurchase = now.getTime() - purchaseDate.getTime();
-        const daysSincePurchase = Math.floor(msSincePurchase / (24 * 60 * 60 * 1000));
+        const daysSincePurchase = Math.floor(msSincePurchase / dayInMilliseconds);
 
         const msSinceLastEarning = now.getTime() - lastEarning.getTime();
-        const cyclesSinceLastEarning = Math.floor(msSinceLastEarning / (24 * 60 * 60 * 1000));
+        const cyclesSinceLastEarning = Math.floor(msSinceLastEarning / dayInMilliseconds);
 
         if (cyclesSinceLastEarning >= 1 && daysSincePurchase >= 1) {
           const cyclesToCredit = Math.min(cyclesSinceLastEarning, userProduct.daysRemaining);
           const earningsPerCycle = parseFloat(product.dailyEarnings as string);
           const totalEarningsForProduct = parseFloat((earningsPerCycle * cyclesToCredit).toFixed(2));
 
-          const newLastEarningDate = new Date(now);
+          // Keep the 24-hour cadence so collecting late never removes part
+          // of a user's earned cycle.
+          const newLastEarningDate = new Date(lastEarning.getTime() + cyclesToCredit * dayInMilliseconds);
           const newDaysRemaining = userProduct.daysRemaining - cyclesToCredit;
           const updateData: any = {
             lastEarningDate: newLastEarningDate,
             daysRemaining: newDaysRemaining,
             totalEarned: (parseFloat(userProduct.totalEarned || "0") + totalEarningsForProduct).toFixed(2),
+            pendingEarnings: (parseFloat(userProduct.pendingEarnings || "0") + totalEarningsForProduct).toFixed(2),
           };
 
           if (newDaysRemaining <= 0) {
@@ -606,48 +607,101 @@ export class DatabaseStorage implements IStorage {
           }
 
           await db.update(userProducts).set(updateData).where(eq(userProducts.id, userProduct.id));
-
-          // collectAtEnd: gains accumulés, pas crédités avant la fin du cycle
-          // On ne met PAS à jour todayEarnings/totalEarnings de l'utilisateur ici.
-          if (!product.collectAtEnd) {
-            const currentTotal = userEarnings.get(user.id) || 0;
-            userEarnings.set(user.id, currentTotal + totalEarningsForProduct);
-
-            for (let i = 0; i < cyclesToCredit; i++) {
-              await this.createTransaction({
-                userId: user.id,
-                type: "earning",
-                amount: earningsPerCycle.toString(),
-                description: `Gains ${product.name}`,
-              });
-            }
-          }
-          // Note: for collectAtEnd, the transaction & balance update happen when user
-          // manually collects via POST /api/user/collect-final/:userProductId
         }
       } catch (productError) {
         console.error(`processEarnings error for product ${userProduct.id}:`, productError);
       }
     }
+  }
 
-    for (const [userId, totalEarnings] of Array.from(userEarnings.entries())) {
-      try {
-        const freshUser = await this.getUser(userId);
-        if (freshUser) {
-          const newBalance      = parseFloat(freshUser.balance      || "0") + totalEarnings;
-          const newTodayEarnings = parseFloat(freshUser.todayEarnings || "0") + totalEarnings;
-          const newTotalEarnings = parseFloat(freshUser.totalEarnings || "0") + totalEarnings;
+  async processEarnings(): Promise<void> {
+    const activeProducts = await db.select({
+      userProduct: userProducts,
+      product: products,
+    }).from(userProducts)
+      .innerJoin(products, eq(userProducts.productId, products.id))
+      .where(and(eq(userProducts.isActive, true), sql`${userProducts.daysRemaining} > 0`));
 
-          await this.updateUser(userId, {
-            balance:       newBalance.toFixed(2),
-            todayEarnings: newTodayEarnings.toFixed(2),
-            totalEarnings: newTotalEarnings.toFixed(2),
-          });
-        }
-      } catch (userError) {
-        console.error(`processEarnings user update error for user ${userId}:`, userError);
+    await this.accrueProductEarnings(activeProducts);
+  }
+
+  async processEarningsForUser(userId: number): Promise<void> {
+    const activeProducts = await db.select({
+      userProduct: userProducts,
+      product: products,
+    }).from(userProducts)
+      .innerJoin(products, eq(userProducts.productId, products.id))
+      .where(and(
+        eq(userProducts.userId, userId),
+        eq(userProducts.isActive, true),
+        sql`${userProducts.daysRemaining} > 0`,
+      ));
+
+    await this.accrueProductEarnings(activeProducts);
+  }
+
+  async collectPendingEarnings(userId: number, userProductId?: number): Promise<{
+    collected: number;
+    productsCollected: number;
+    productIds: number[];
+  }> {
+    await this.processEarningsForUser(userId);
+
+    return db.transaction(async (tx) => {
+      const conditions = [eq(userProducts.userId, userId)];
+      if (userProductId !== undefined) {
+        conditions.push(eq(userProducts.id, userProductId));
       }
-    }
+
+      const productRows = await tx.select({
+        userProduct: userProducts,
+        product: products,
+      }).from(userProducts)
+        .innerJoin(products, eq(userProducts.productId, products.id))
+        .where(and(...conditions))
+        .for("update");
+
+      const collectable = productRows.filter(({ userProduct }) =>
+        Number.parseFloat(userProduct.pendingEarnings || "0") > 0,
+      );
+      const totalCollected = collectable.reduce(
+        (sum, { userProduct }) => sum + Number.parseFloat(userProduct.pendingEarnings || "0"),
+        0,
+      );
+
+      if (totalCollected <= 0) {
+        return { collected: 0, productsCollected: 0, productIds: [] };
+      }
+
+      const [user] = await tx.select().from(users).where(eq(users.id, userId)).for("update");
+      if (!user) throw new Error("Utilisateur introuvable");
+
+      const newTotalEarnings = Number.parseFloat(user.totalEarnings || "0") + totalCollected;
+      const newTodayEarnings = Number.parseFloat(user.todayEarnings || "0") + totalCollected;
+      await tx.update(users).set({
+        todayEarnings: newTodayEarnings.toFixed(2),
+        totalEarnings: newTotalEarnings.toFixed(2),
+      }).where(eq(users.id, userId));
+
+      for (const { userProduct, product } of collectable) {
+        const amount = Number.parseFloat(userProduct.pendingEarnings || "0");
+        await tx.update(userProducts)
+          .set({ pendingEarnings: "0" })
+          .where(eq(userProducts.id, userProduct.id));
+        await tx.insert(transactions).values({
+          userId,
+          type: "earning",
+          amount: amount.toFixed(2),
+          description: `Collecte gains ${product.name}`,
+        });
+      }
+
+      return {
+        collected: Number(totalCollected.toFixed(2)),
+        productsCollected: collectable.length,
+        productIds: collectable.map(({ userProduct }) => userProduct.id),
+      };
+    });
   }
 
   // Deposits

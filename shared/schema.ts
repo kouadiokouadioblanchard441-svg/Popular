@@ -92,7 +92,7 @@ export const products = pgTable("products", {
   seriesId: integer("series_id").references(() => productSeries.id),
   minInviteCount: integer("min_invite_count").notNull().default(0),   // 0 = aucune condition
   maxOwned: integer("max_owned").notNull().default(0),                // 0 = illimité
-  // Collect mode: false = daily collect, true = collect only at end of cycle
+  // Legacy field retained for existing data; all products now use 24-hour manual collection.
   collectAtEnd: boolean("collect_at_end").notNull().default(false),
   // Stock saturation 0-100 (admin-controlled). At 100 → product is sold out / FAKE
   stockPercentage: integer("stock_percentage").notNull().default(0),
@@ -109,6 +109,7 @@ export const userProducts = pgTable("user_products", {
   lastEarningDate: timestamp("last_earning_date"),
   daysRemaining: integer("days_remaining").notNull(),
   totalEarned: decimal("total_earned", { precision: 15, scale: 2 }).notNull().default("0"),
+  pendingEarnings: decimal("pending_earnings", { precision: 15, scale: 2 }).notNull().default("0"),
   isActive: boolean("is_active").notNull().default(true),
   assignedByAdmin: boolean("assigned_by_admin").notNull().default(false),
 });
