@@ -305,7 +305,7 @@ export async function seed() {
     { key: "popupLine4", value: "✅ Bonus d'inscription : 2 USDT" },
     { key: "popupLine5", value: "👥 Invitez vos amis et gagnez des commissions" },
     { key: "popupLine6", value: "🕘 Retraits et support disponibles de 09:00 à 17:00" },
-    { key: "popupLine7", value: "🔥 Les gains sont crédités chaque jour" },
+    { key: "popupLine7", value: "🔥 Le premier gain est disponible après l'achat. Collectez vos gains dans Revenu toutes les 24 heures" },
     { key: "popupLine8", value: "📖 Consultez les règles TGOOD avant toute opération" },
     { key: "floatingSupportTarget", value: "support1" },
     { key: "supportEnabled", value: "true" },
@@ -405,6 +405,42 @@ export async function seed() {
       console.log(`Setting preserved: ${settingData.key}`);
     }
   }
+
+  // Update only known legacy earnings copy. Custom admin content must remain
+  // untouched, but old automatic-credit wording should not remain on the site.
+  const earningsCopyUpdates = [
+    {
+      key: "popupLine7",
+      oldValue: "🔥 Les gains sont crédités chaque jour",
+      newValue: "🔥 Le premier gain est disponible après l'achat. Collectez vos gains dans Revenu toutes les 24 heures",
+    },
+    {
+      key: "content_orders_infoLine1",
+      oldValue: "Les revenus du produit sont crédités automatiquement selon le cycle défini sur sa fiche.",
+      newValue: "Le premier gain est disponible immédiatement après l'achat. Collectez vos gains dans la section Revenu, puis collectez un nouveau gain toutes les 24 heures.",
+    },
+    {
+      key: "content_rules_section3Body",
+      oldValue: "- Chaque produit affiche son prix, sa durée et ses revenus avant l'achat\n- Les revenus suivent le cycle défini sur la fiche du produit\n- Consultez les conditions du produit avant de confirmer",
+      newValue: "- Chaque produit affiche son prix, sa durée et ses revenus avant l'achat\n- Le premier gain est disponible immédiatement après l'achat\n- Collectez vos gains dans la section Revenu, puis collectez un nouveau gain toutes les 24 heures",
+    },
+    {
+      key: "content_rulespage_s1b2",
+      oldValue: "Les revenus sont générés quotidiennement et accrédités sur votre solde de compte toutes les 24 heures.",
+      newValue: "Le premier gain est disponible immédiatement après l'achat. Collectez vos gains dans la section Revenu, puis collectez un nouveau gain toutes les 24 heures.",
+    },
+  ];
+
+  for (const update of earningsCopyUpdates) {
+    const existing = existingSettings.find((setting) => setting.key === update.key);
+    if (existing?.value === update.oldValue) {
+      await db.update(platformSettings)
+        .set({ value: update.newValue })
+        .where(eq(platformSettings.key, update.key));
+      console.log(`Earnings copy updated: ${update.key}`);
+    }
+  }
+
   console.log("Settings check complete");
 
   // Seed staking products only if table is empty (first install only — never overwrite admin changes)

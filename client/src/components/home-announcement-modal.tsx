@@ -15,7 +15,7 @@ const DEFAULT_LINES = [
   "✅ Registration bonus: 2 USDT",
   "👥 Invite your friends and earn commissions",
   "🕘 Withdrawals and support: 09:00–17:00",
-  "🔥 Your earnings are credited to your account every day 📈 Buy multiple devices to increase your earnings",
+  "🔥 Your first earning is available after purchase. Collect it in Revenue, then collect new earnings every 24 hours 📈",
   "📖 Please review the TGOOD rules before operating.",
 ];
 

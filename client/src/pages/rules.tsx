@@ -21,7 +21,7 @@ export default function RulesPage() {
   const rPageTitle = getContent(settings, "content_rulespage_pageTitle", "Règles de la plateforme TGOOD");
   const rS1Title = getContent(settings, "content_rulespage_s1Title", "1. Utilisation des produits TGOOD");
   const rS1b1 = getContent(settings, "content_rulespage_s1b1", "Chaque produit affiche son prix, sa durée et ses conditions avant l'achat.");
-  const rS1b2 = getContent(settings, "content_rulespage_s1b2", "Les revenus suivent le cycle défini sur la fiche du produit.");
+  const rS1b2 = getContent(settings, "content_rulespage_s1b2", "Le premier gain est disponible immédiatement après l'achat. Collectez vos gains dans la section Revenu, puis collectez un nouveau gain toutes les 24 heures.");
   const rS1b3 = getContent(settings, "content_rulespage_s1b3", "Consultez les informations du produit avant de confirmer.");
   const rS2Title = getContent(settings, "content_rulespage_s2Title", "2. Dépôts et retraits");
   const rS3Title = getContent(settings, "content_rulespage_s3Title", "3. Programme de parrainage");

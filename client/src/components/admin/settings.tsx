@@ -304,7 +304,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
        popupLine4:             settings.popupLine4             || "✅ Bonus d'inscription : 2 USDT",
        popupLine5:             settings.popupLine5             || "👥 Invitez vos amis et gagnez des commissions",
        popupLine6:             settings.popupLine6             || "🕘 Retraits et support disponibles de 09:00 à 17:00",
-       popupLine7:             settings.popupLine7             || "🔥 Les gains sont crédités chaque jour",
+       popupLine7:             settings.popupLine7             || "🔥 Le premier gain est disponible après l'achat. Collectez vos gains dans Revenu toutes les 24 heures",
       westpayMerchantSlug:    settings.westpayMerchantSlug    ?? "",
       westpayWebhookSecret:   settings.westpayWebhookSecret   ?? "",
       westpayApiKey_CI:       settings.westpayApiKey_CI       ?? "",
@@ -960,7 +960,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
               { name: "popupLine4" as const, label: "Ligne 4 — Bonus d'inscription", placeholder: "✅ Registration bonus: 2 USDT" },
               { name: "popupLine5" as const, label: "Ligne 5 — Parrainage", placeholder: "👥 Invite your friends and earn commissions" },
               { name: "popupLine6" as const, label: "Ligne 6 — Horaires", placeholder: "🕘 Withdrawals and support: 09:00–17:00" },
-              { name: "popupLine7" as const, label: "Ligne 7 — Gains", placeholder: "🔥 Your earnings are credited to your account every day" },
+              { name: "popupLine7" as const, label: "Ligne 7 — Gains", placeholder: "🔥 Your first earning is available after purchase. Collect earnings in Revenue every 24 hours" },
             ]).map(({ name, label, placeholder }) => (
               <FormField key={name} control={form.control} name={name} render={({ field }) => (
                 <FormItem>
