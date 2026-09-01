@@ -9,6 +9,7 @@ import {
 import { db } from "./db";
 import { eq, and, asc, desc, sql, gte, lte, or, inArray, isNotNull } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { randomInt } from "node:crypto";
 
 // Compares phone numbers regardless of local vs international MSISDN format
 // (e.g. "0150839909" vs "+22990150839909") by matching on the last 8 digits.
@@ -19,6 +20,17 @@ function normalizePhoneSuffix(phone: string | null | undefined): string {
 function finiteAmount(value: unknown): number {
   const amount = Number(value);
   return Number.isFinite(amount) ? amount : 0;
+}
+
+const REFERRAL_LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+function generateReferralCode(): string {
+  const digit = () => randomInt(0, 10).toString();
+  const letter = () => REFERRAL_LETTERS[randomInt(0, REFERRAL_LETTERS.length)];
+
+  // Keep the shared link short and recognizable while ensuring new codes
+  // visibly contain uppercase letters (for example: 58DR36).
+  return `${digit()}${digit()}${letter()}${letter()}${digit()}${digit()}`;
 }
 
 type ShareReportUser = Pick<User, "id" | "fullName" | "phone" | "country">;
@@ -240,7 +252,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(data: Partial<User>): Promise<User> {
-    const referralCode = Math.floor(100000 + Math.random() * 900000).toString();
+    let referralCode = "";
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const candidate = generateReferralCode();
+      if (!(await this.getUserByReferralCode(candidate))) {
+        referralCode = candidate;
+        break;
+      }
+    }
+    if (!referralCode) {
+      throw new Error("Impossible de générer un code de parrainage unique");
+    }
+
     const hashedPassword = await bcrypt.hash(data.password!, 10);
 
     const [user] = await db.insert(users).values({

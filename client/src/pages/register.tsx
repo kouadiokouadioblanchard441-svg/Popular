@@ -42,7 +42,14 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const countryTriggerRef = useRef<HTMLButtonElement>(null);
-  const refCode = new URLSearchParams(searchString).get("invite_code") || new URLSearchParams(searchString).get("money") || new URLSearchParams(searchString).get("reg") || "";
+  const searchParams = new URLSearchParams(searchString);
+  const refCode = (
+    searchParams.get("ref")
+    || searchParams.get("invite_code")
+    || searchParams.get("money")
+    || searchParams.get("reg")
+    || ""
+  ).trim().toUpperCase();
   const registerSchema = z.object({
     phone: z.string().min(8, t.errInvalidPhone),
     country: z.string().min(2, t.selectCountry),
