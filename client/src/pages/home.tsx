@@ -429,7 +429,7 @@ export default function HomePage() {
               {[0, 1].map((groupIndex) => (
                 <div
                   key={`partner-group-${groupIndex}`}
-                  className="partner-marquee-group flex gap-3"
+                  className="partner-marquee-group grid grid-flow-col grid-rows-2 auto-cols-max gap-3"
                   aria-hidden={groupIndex === 1}
                 >
                   {PARTNERS.map((partner) => (
