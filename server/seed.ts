@@ -1,7 +1,81 @@
 import { db } from "./db";
-import { users, products, tasks, paymentChannels, paymentNumbers, platformSettings, countries, stakingProducts, depositChannels, productSeries } from "@shared/schema";
+import { users, referralCodeAliases, products, tasks, paymentChannels, paymentNumbers, platformSettings, countries, stakingProducts, depositChannels, productSeries } from "@shared/schema";
 import bcrypt from "bcryptjs";
-import { and, eq, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
+import { REFERRAL_CODE_PATTERN, generateReferralCode } from "./referral-codes";
+
+async function migrateReferralCodes(): Promise<number> {
+  return db.transaction(async (tx) => {
+    const existingUsers = await tx.select().from(users).orderBy(asc(users.id));
+    let migratedCount = 0;
+
+    for (const user of existingUsers) {
+      const originalCode = user.referralCode.trim();
+      const normalizedCode = originalCode.toUpperCase();
+      if (!normalizedCode) {
+        throw new Error(`Utilisateur ${user.id} sans code de parrainage`);
+      }
+
+      // New-format codes are already safe to expose. Normalize any legacy
+      // lowercase variant without creating an unnecessary alias.
+      if (REFERRAL_CODE_PATTERN.test(normalizedCode)) {
+        if (originalCode !== normalizedCode) {
+          await tx.update(users)
+            .set({ referralCode: normalizedCode })
+            .where(eq(users.id, user.id));
+          await tx.update(users)
+            .set({ referredBy: normalizedCode })
+            .where(sql`UPPER(${users.referredBy}) = ${normalizedCode}`);
+          migratedCount++;
+        }
+        continue;
+      }
+
+      let newCode = "";
+      for (let attempt = 0; attempt < 20; attempt++) {
+        const candidate = generateReferralCode();
+        const [currentCode] = await tx.select({ id: users.id })
+          .from(users)
+          .where(sql`UPPER(${users.referralCode}) = ${candidate}`);
+        const [aliasCode] = await tx.select({ id: referralCodeAliases.id })
+          .from(referralCodeAliases)
+          .where(sql`UPPER(${referralCodeAliases.aliasCode}) = ${candidate}`);
+        if (!currentCode && !aliasCode) {
+          newCode = candidate;
+          break;
+        }
+      }
+      if (!newCode) {
+        throw new Error(`Impossible de générer un nouveau code pour l'utilisateur ${user.id}`);
+      }
+
+      const [existingAlias] = await tx.select({ userId: referralCodeAliases.userId })
+        .from(referralCodeAliases)
+        .where(sql`UPPER(${referralCodeAliases.aliasCode}) = ${normalizedCode}`);
+      if (existingAlias && existingAlias.userId !== user.id) {
+        throw new Error(`Alias de parrainage en conflit: ${normalizedCode}`);
+      }
+
+      await tx.insert(referralCodeAliases)
+        .values({ aliasCode: normalizedCode, userId: user.id })
+        .onConflictDoNothing({ target: referralCodeAliases.aliasCode });
+
+      await tx.update(users)
+        .set({ referralCode: newCode })
+        .where(eq(users.id, user.id));
+
+      // Move all stored relationships to the new canonical code. Existing
+      // links still resolve through referral_code_aliases.
+      await tx.update(users)
+        .set({ referredBy: newCode })
+        .where(sql`UPPER(${users.referredBy}) = ${normalizedCode}`);
+
+      migratedCount++;
+    }
+
+    return migratedCount;
+  });
+}
 
 export async function seed() {
   console.log("Seeding database...");
@@ -88,6 +162,11 @@ export async function seed() {
     }
     await db.update(users).set(adminUpdate).where(eq(users.id, existingAdmin.id));
     console.log("Super admin updated");
+  }
+
+  const migratedReferralCodes = await migrateReferralCodes();
+  if (migratedReferralCodes > 0) {
+    console.log(`${migratedReferralCodes} referral code(s) migrated; legacy aliases preserved`);
   }
 
   // Seed/update the only supported country: RDC

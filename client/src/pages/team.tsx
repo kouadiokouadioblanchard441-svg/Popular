@@ -32,7 +32,7 @@ export default function TeamPage() {
 
   const country = getCountryByCode(user.country);
   const currency = "USDT";
-  const referralCode = user.referralCode || "";
+  const referralCode = (user.referralCode || "").toUpperCase();
   const referralLink = `${window.location.origin}/register?ref=${encodeURIComponent(referralCode)}`;
   const levelRates = [
     settings?.level1Commission || "10",

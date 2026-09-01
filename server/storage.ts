@@ -2,6 +2,7 @@ import {
   users, products, userProducts, deposits, shareReports, withdrawals, withdrawalWallets,
   paymentChannels, paymentNumbers, depositChannels, stakingProducts, userStakings, referralCommissions, tasks, userTasks, transactions, platformSettings, adminAuditLog,
   giftCodes, giftCodeClaims, countries,
+  referralCodeAliases,
   type User, type Product, type UserProduct, type Deposit, type ShareReport, type Withdrawal, type WithdrawalWallet,
   type PaymentChannel, type PaymentNumber, type DepositChannel, type StakingProduct, type UserStaking, type ReferralCommission, type Task, type UserTask, type Transaction, type PlatformSetting,
   type GiftCode, type GiftCodeClaim, type Country
@@ -9,7 +10,7 @@ import {
 import { db } from "./db";
 import { eq, and, asc, desc, sql, gte, lte, or, inArray, isNotNull } from "drizzle-orm";
 import bcrypt from "bcryptjs";
-import { randomInt } from "node:crypto";
+import { generateReferralCode } from "./referral-codes";
 
 // Compares phone numbers regardless of local vs international MSISDN format
 // (e.g. "0150839909" vs "+22990150839909") by matching on the last 8 digits.
@@ -20,17 +21,6 @@ function normalizePhoneSuffix(phone: string | null | undefined): string {
 function finiteAmount(value: unknown): number {
   const amount = Number(value);
   return Number.isFinite(amount) ? amount : 0;
-}
-
-const REFERRAL_LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-
-function generateReferralCode(): string {
-  const digit = () => randomInt(0, 10).toString();
-  const letter = () => REFERRAL_LETTERS[randomInt(0, REFERRAL_LETTERS.length)];
-
-  // Keep the shared link short and recognizable while ensuring new codes
-  // visibly contain uppercase letters (for example: 58DR36).
-  return `${digit()}${digit()}${letter()}${letter()}${digit()}${digit()}`;
 }
 
 type ShareReportUser = Pick<User, "id" | "fullName" | "phone" | "country">;
@@ -245,10 +235,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByReferralCode(code: string): Promise<User | undefined> {
+    const normalizedCode = code.trim().toUpperCase();
     const [user] = await db.select().from(users).where(
-      sql`UPPER(${users.referralCode}) = UPPER(${code})`
+      sql`UPPER(${users.referralCode}) = ${normalizedCode}`
     );
-    return user || undefined;
+    if (user) return user;
+
+    const [alias] = await db.select().from(referralCodeAliases).where(
+      sql`UPPER(${referralCodeAliases.aliasCode}) = ${normalizedCode}`
+    );
+    if (!alias) return undefined;
+
+    return this.getUser(alias.userId);
   }
 
   async createUser(data: Partial<User>): Promise<User> {

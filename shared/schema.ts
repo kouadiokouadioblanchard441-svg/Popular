@@ -52,6 +52,17 @@ export const users = pgTable("users", {
   uniqueIndex("users_phone_country_unique").on(table.phone, table.country),
 ]);
 
+// Legacy referral codes kept so links shared before the code-format migration
+// continue to resolve to the same account.
+export const referralCodeAliases = pgTable("referral_code_aliases", {
+  id: serial("id").primaryKey(),
+  aliasCode: text("alias_code").notNull().unique(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type ReferralCodeAlias = typeof referralCodeAliases.$inferSelect;
+
 // Withdrawal wallets
 export const withdrawalWallets = pgTable("withdrawal_wallets", {
   id: serial("id").primaryKey(),
