@@ -475,6 +475,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                 <FormItem>
                   <FormLabel>URL du lien</FormLabel>
                   <FormControl><Input {...field} disabled={!supportEnabled} placeholder="https://t.me/..." /></FormControl>
+                  <FormDescription>Pour un nom d’utilisateur Telegram, utilisez https://t.me/nom sans le caractère @ dans l’URL.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -583,6 +584,7 @@ export default function AdminSettings({ isSuperAdmin }: AdminSettingsProps) {
                 <FormItem>
                   <FormLabel>URL du lien</FormLabel>
                   <FormControl><Input {...field} disabled={!channelEnabled} placeholder="https://t.me/..." /></FormControl>
+                  <FormDescription>Nom public : https://t.me/nom. Un lien d’invitation peut garder le format https://t.me/+code.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )} />

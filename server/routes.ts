@@ -39,6 +39,23 @@ function resolveWestpay(settings: Record<string, string>) {
     } as Record<string, string>,
   };
 }
+
+// Telegram usernames are written with "@" in labels, but never in t.me URLs.
+// Keep invite links such as https://t.me/+AbCd123 unchanged.
+function normalizeTelegramLink(value: string | undefined): string {
+  return (value || "")
+    .trim()
+    .replace(/^(https?:\/\/(?:www\.)?(?:t\.me|telegram\.me)\/)@/i, "$1");
+}
+
+function normalizePublicSettings(settings: Record<string, string>): Record<string, string> {
+  const normalized = { ...settings };
+  for (const key of ["supportLink", "support2Link", "channelLink", "groupLink"]) {
+    normalized[key] = normalizeTelegramLink(normalized[key]);
+  }
+  return normalized;
+}
+
 import {
   assessNowPaymentsDeposit,
   createNowPaymentsDirectPayment,
@@ -1912,7 +1929,7 @@ export async function registerRoutes(
         westpayApiKey_TG, westpayApiKey_CM, westpayApiKey_ML,
         ...publicSettings
       } = settings;
-      res.json(publicSettings);
+       res.json(normalizePublicSettings(publicSettings));
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -1921,26 +1938,27 @@ export async function registerRoutes(
   app.get("/api/settings/links", async (req, res) => {
     try {
       const settings = await storage.getSettings();
+      const normalizedSettings = normalizePublicSettings(settings);
       res.json({
-        supportLink: settings.supportLink || "",
-        support2Link: settings.support2Link || "",
-        channelLink: settings.channelLink || "",
-        groupLink: settings.groupLink || "",
-        supportType: settings.supportType || "telegram",
-        support2Type: settings.support2Type || "telegram",
-        channelType: settings.channelType || "telegram",
-        groupType: settings.groupType || "telegram",
-        supportLabel: settings.supportLabel || "Support client",
-        support2Label: settings.support2Label || "Support client 2",
-        channelLabel: settings.channelLabel || "Chaîne officielle",
-        groupLabel: settings.groupLabel || "Groupe officiel",
-        supportEnabled: settings.supportEnabled ?? "true",
-        support2Enabled: settings.support2Enabled ?? "true",
-        channelEnabled: settings.channelEnabled ?? "true",
-        groupEnabled: settings.groupEnabled ?? "true",
-        withdrawalStartHour: settings.withdrawalStartHour || "9",
-        withdrawalEndHour: settings.withdrawalEndHour || "17",
-        floatingSupportTarget: settings.floatingSupportTarget || "support1",
+        supportLink: normalizedSettings.supportLink || "",
+        support2Link: normalizedSettings.support2Link || "",
+        channelLink: normalizedSettings.channelLink || "",
+        groupLink: normalizedSettings.groupLink || "",
+        supportType: normalizedSettings.supportType || "telegram",
+        support2Type: normalizedSettings.support2Type || "telegram",
+        channelType: normalizedSettings.channelType || "telegram",
+        groupType: normalizedSettings.groupType || "telegram",
+        supportLabel: normalizedSettings.supportLabel || "Support client",
+        support2Label: normalizedSettings.support2Label || "Support client 2",
+        channelLabel: normalizedSettings.channelLabel || "Chaîne officielle",
+        groupLabel: normalizedSettings.groupLabel || "Groupe officiel",
+        supportEnabled: normalizedSettings.supportEnabled ?? "true",
+        support2Enabled: normalizedSettings.support2Enabled ?? "true",
+        channelEnabled: normalizedSettings.channelEnabled ?? "true",
+        groupEnabled: normalizedSettings.groupEnabled ?? "true",
+        withdrawalStartHour: normalizedSettings.withdrawalStartHour || "9",
+        withdrawalEndHour: normalizedSettings.withdrawalEndHour || "17",
+        floatingSupportTarget: normalizedSettings.floatingSupportTarget || "support1",
       });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -2723,7 +2741,7 @@ export async function registerRoutes(
   app.get("/api/admin/settings", requireAdmin, async (req, res) => {
     try {
       const settings = await storage.getSettings();
-      res.json(settings);
+      res.json(normalizePublicSettings(settings));
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -2800,7 +2818,15 @@ export async function registerRoutes(
           }
           await storage.setSetting(key, mode, req.session.userId);
         } else {
-          await storage.setSetting(key, value as string, req.session.userId);
+          const normalizedValue = typeof value === "string" && [
+            "supportLink",
+            "support2Link",
+            "channelLink",
+            "groupLink",
+          ].includes(key)
+            ? normalizeTelegramLink(value)
+            : value;
+          await storage.setSetting(key, normalizedValue as string, req.session.userId);
         }
       }
       await storage.logAdminAction(req.session.userId!, "update_settings", null, `Paramètres modifiés`);
