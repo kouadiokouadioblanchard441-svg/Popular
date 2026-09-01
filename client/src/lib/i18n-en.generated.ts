@@ -252,7 +252,7 @@ export const ENGLISH_TRANSLATIONS = {
     myProductsTitle:    "My Products",
     myProductsDevice:   "My device",
     myProductsEarnings: "My earnings",
-     myProductsSettledEvery24h: "⏱️ Product earnings can be collected every 24 hours",
+     myProductsSettledEvery24h: "⏱️ Product earnings are settled every 24 hours",
     myProductsNone:     "No TGOOD products",
     myProductsNoneDesc: "Buy products to start earning",
     myProductsDailyRevenue: "Revenue/day",

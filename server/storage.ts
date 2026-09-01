@@ -599,7 +599,9 @@ export class DatabaseStorage implements IStorage {
             lastEarningDate: newLastEarningDate,
             daysRemaining: newDaysRemaining,
             totalEarned: (parseFloat(userProduct.totalEarned || "0") + totalEarningsForProduct).toFixed(2),
-            pendingEarnings: (parseFloat(userProduct.pendingEarnings || "0") + totalEarningsForProduct).toFixed(2),
+            pendingEarnings: product.collectAtEnd
+              ? parseFloat(userProduct.pendingEarnings || "0").toFixed(2)
+              : (parseFloat(userProduct.pendingEarnings || "0") + totalEarningsForProduct).toFixed(2),
           };
 
           if (newDaysRemaining <= 0) {

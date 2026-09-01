@@ -495,9 +495,8 @@ export async function registerRoutes(
     }
   });
 
-  // Public — series list (used by products page tabs)
-  // Legacy endpoint kept for older clients. Product gains are now collected
-  // through the same 24-hour collection flow as every other product.
+  // Product purchased page: preserve the existing final-collection flow for
+  // products explicitly configured to pay at the end of their cycle.
   app.post("/api/user/collect-final/:userProductId", requireAuth, async (req, res) => {
     try {
       const userId = req.session.userId!;
@@ -506,18 +505,47 @@ export async function registerRoutes(
         return res.status(400).json({ message: "Produit invalide" });
       }
 
-      const result = await storage.collectPendingEarnings(userId, userProductId);
-      if (result.collected <= 0) {
-        return res.status(400).json({ message: "Aucun gain disponible à collecter" });
+      const userProductsList = await storage.getAllUserProducts(userId);
+      const entry = userProductsList.find((item) => item.userProduct.id === userProductId);
+      if (!entry) return res.status(404).json({ message: "Produit introuvable" });
+
+      const { userProduct, product } = entry;
+      if (!product.collectAtEnd) {
+        return res.status(400).json({ message: "Ce produit se collecte dans la section Revenu toutes les 24 heures" });
+      }
+      if (userProduct.daysRemaining > 0) {
+        return res.status(400).json({ message: `Cycle non terminé — encore ${userProduct.daysRemaining} jour(s) restant(s)` });
       }
 
-      await storage.logAdminAction(
+      const amount = parseFloat(userProduct.totalEarned || "0");
+      if (amount <= 0) {
+        return res.status(400).json({ message: "Aucun gain à collecter" });
+      }
+
+      const freshUser = await storage.getUser(userId);
+      if (!freshUser) return res.status(401).json({ message: "Utilisateur introuvable" });
+
+      const newTotalEarnings = parseFloat(freshUser.totalEarnings || "0") + amount;
+      const newTodayEarnings = parseFloat(freshUser.todayEarnings || "0") + amount;
+      await storage.updateUser(userId, {
+        todayEarnings: newTodayEarnings.toFixed(2),
+        totalEarnings: newTotalEarnings.toFixed(2),
+      });
+
+      // Keep the purchased-products page behavior: a final collection
+      // consumes the accumulated amount so it cannot be collected twice.
+      await storage.updateUserProduct(userProductId, {
+        totalEarned: "0",
+        pendingEarnings: "0",
+      });
+      await storage.createTransaction({
         userId,
-        "collect_product_earnings",
-        null,
-        `Collecte des gains du produit ${userProductId} : ${result.collected} USDT`,
-      );
-      res.json({ success: true, ...result });
+        type: "earning",
+        amount: amount.toFixed(2),
+        description: `Collecte finale — ${product.name}`,
+      });
+
+      res.json({ success: true, collected: amount, newBalance: freshUser.balance || "0" });
     } catch (e: any) {
       res.status(500).json({ message: e.message });
     }

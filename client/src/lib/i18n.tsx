@@ -905,7 +905,7 @@ const fr: Translations = {
     myProductsTitle:    "Mes Produits",
     myProductsDevice:   "Mon appareil",
     myProductsEarnings: "Mes revenus",
-     myProductsSettledEvery24h: "⏱️ Les gains produits sont disponibles à collecter toutes les 24 heures",
+     myProductsSettledEvery24h: "⏱️ Les revenus des produits sont réglés toutes les 24 heures",
     myProductsNone:     "Aucun produit TGOOD",
     myProductsNoneDesc: "Achetez des produits pour commencer à gagner",
     myProductsDailyRevenue: "Revenu/jour",
