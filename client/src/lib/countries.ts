@@ -36,6 +36,27 @@ export type ApiCountry = {
   autoPaymentEnabled: boolean;
 };
 
+/**
+ * The login and registration pages must remain usable while a new domain's
+ * reverse proxy is being configured. A Plesk 404 page is HTML, not a country
+ * response; treat that response as an unavailable optional API instead of
+ * turning it into an unhandled query error.
+ */
+export async function fetchPublicCountries(): Promise<ApiCountry[]> {
+  try {
+    const response = await fetch("/api/countries", { credentials: "include" });
+    if (!response.ok) return [];
+
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.toLowerCase().includes("application/json")) return [];
+
+    const data: unknown = await response.json();
+    return Array.isArray(data) ? (data as ApiCountry[]) : [];
+  } catch {
+    return [];
+  }
+}
+
 export function parseOperators(operatorsJson: string): string[] {
   try {
     return JSON.parse(operatorsJson);

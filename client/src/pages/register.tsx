@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, Code2, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/lib/auth";
-import { FALLBACK_COUNTRIES, type ApiCountry } from "@/lib/countries";
+import { FALLBACK_COUNTRIES, fetchPublicCountries, type ApiCountry } from "@/lib/countries";
 import { CountrySelector } from "@/components/country-selector";
 import { DEFAULT_COUNTRY_CODE, WORLD_COUNTRIES } from "@/lib/world-countries";
 import { useI18n } from "@/lib/i18n";
@@ -62,7 +62,11 @@ export default function RegisterPage() {
     resolver: zodResolver(registerSchema),
     defaultValues: { phone: "", country: DEFAULT_COUNTRY_CODE, password: "", confirmPassword: "", invitationCode: refCode },
   });
-  const { data: apiCountries } = useQuery<ApiCountry[]>({ queryKey: ["/api/countries"] });
+  const { data: apiCountries = [] } = useQuery<ApiCountry[]>({
+    queryKey: ["/api/countries"],
+    queryFn: fetchPublicCountries,
+    retry: false,
+  });
   const selectedCountry = form.watch("country");
 
   useEffect(() => {

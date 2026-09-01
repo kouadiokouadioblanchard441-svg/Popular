@@ -8,7 +8,13 @@ async function throwIfResNotOk(res: Response) {
       const json = JSON.parse(text);
       message = json.message || json.error || res.statusText;
     } catch {
-      message = text || res.statusText;
+      // Reverse proxies and hosting panels often return a complete HTML
+      // error document for an API request. Never expose that document in a
+      // toast or runtime error overlay.
+      const contentType = res.headers.get("content-type") || "";
+      message = contentType.toLowerCase().includes("text/html")
+        ? `Le serveur a renvoyé une erreur (${res.status}). Vérifiez la connexion du domaine à l'API.`
+        : text || res.statusText;
     }
     throw new Error(message);
   }
