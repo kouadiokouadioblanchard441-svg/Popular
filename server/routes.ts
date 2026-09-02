@@ -217,7 +217,24 @@ export async function registerRoutes(
   app.get("/api/health", async (_req, res) => {
     try {
       const result = await pool.query("SELECT current_database() AS db, version() AS pg_version");
-      res.json({ status: "ok", db: result.rows[0].db, pg_version: result.rows[0].pg_version });
+      const callbackUrl = getNowPaymentsCallbackUrl();
+      res.json({
+        status: "ok",
+        db: result.rows[0].db,
+        pg_version: result.rows[0].pg_version,
+        runtime: {
+          nodeEnv: process.env.NODE_ENV || "development",
+          appUrlConfigured: Boolean(process.env.APP_URL?.trim()),
+          appUrlIsHttps: Boolean(callbackUrl),
+          nowPaymentsApiKeyConfigured: Boolean(process.env.NOWPAYMENTS_API_KEY),
+          nowPaymentsIpnSecretConfigured: Boolean(process.env.NOWPAYMENTS_IPN_SECRET),
+          nowPaymentsConfigured: Boolean(
+            process.env.NOWPAYMENTS_API_KEY &&
+              process.env.NOWPAYMENTS_IPN_SECRET &&
+              callbackUrl,
+          ),
+        },
+      });
     } catch (err: any) {
       res.status(503).json({ status: "error", message: err.message });
     }
