@@ -5,6 +5,7 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { seed } from "./seed";
 import { storage } from "./storage";
+import { getNowPaymentsCallbackUrl } from "./nowpayments";
 
 const app = express();
 const httpServer = createServer(app);
@@ -99,6 +100,13 @@ process.on("uncaughtException", (err) => {
 
 (async () => {
   try {
+  const callbackUrlConfigured = Boolean(getNowPaymentsCallbackUrl());
+  console.log(
+    `[config] APP_URL=${process.env.APP_URL?.trim() ? "configured" : "missing"}; ` +
+      `HTTPS callback=${callbackUrlConfigured ? "valid" : "invalid or missing"}; ` +
+      `NOWPayments API key=${process.env.NOWPAYMENTS_API_KEY ? "configured" : "missing"}; ` +
+      `IPN secret=${process.env.NOWPAYMENTS_IPN_SECRET ? "configured" : "missing"}`,
+  );
   // Seed database with initial data
   await seed().catch(console.error);
    const migratedTransactionPasswords = await storage.migrateLegacyTransactionPasswords();
