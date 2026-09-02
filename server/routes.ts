@@ -56,16 +56,6 @@ function normalizePublicSettings(settings: Record<string, string>): Record<strin
   return normalized;
 }
 
-function getRequestPublicAppUrl(req: Request): string | undefined {
-  const forwardedProto = req.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
-  const protocol = forwardedProto || req.protocol;
-  const forwardedHost = req.get("x-forwarded-host")?.split(",")[0]?.trim();
-  const host = forwardedHost || req.get("host")?.split(",")[0]?.trim();
-
-  if (protocol !== "https" || !host) return undefined;
-  return `https://${host}`;
-}
-
 import {
   assessNowPaymentsDeposit,
   createNowPaymentsDirectPayment,
@@ -947,8 +937,7 @@ export async function registerRoutes(
       if (!process.env.NOWPAYMENTS_API_KEY || !process.env.NOWPAYMENTS_IPN_SECRET) {
         return res.status(503).json({ message: "Le service de paiement crypto n'est pas encore configuré" });
       }
-      const publicAppUrl = getRequestPublicAppUrl(req);
-      if (!getNowPaymentsCallbackUrl(publicAppUrl)) {
+      if (!getNowPaymentsCallbackUrl()) {
         return res.status(503).json({
           message: "Les dépôts automatiques nécessitent APP_URL avec l'URL HTTPS publique de l'application",
         });
@@ -988,7 +977,6 @@ export async function registerRoutes(
         payCurrency: payCurrencyLower,
         orderId,
         description: `Dépôt TGOOD de ${amountValue} USDT`,
-        appUrl: publicAppUrl,
       });
 
       if (!payment.pay_address || !payment.payment_id) {

@@ -63,8 +63,8 @@ export function resetSDK(): void {
 // Helpers shared by deposit + payout routes
 // ---------------------------------------------------------------------------
 
-export function getNowPaymentsCallbackUrl(appUrlOverride?: string): string | undefined {
-  const appUrl = (appUrlOverride || process.env.APP_URL)?.trim();
+export function getNowPaymentsCallbackUrl(): string | undefined {
+  const appUrl = process.env.APP_URL?.trim();
   if (!appUrl) return undefined;
 
   try {
@@ -165,9 +165,8 @@ export async function createNowPaymentsDirectPayment(input: {
   payCurrency: string;
   orderId: string;
   description: string;
-  appUrl?: string;
 }): Promise<NowPaymentsPayment> {
-  const ipnCallbackUrl = getNowPaymentsCallbackUrl(input.appUrl);
+  const ipnCallbackUrl = getNowPaymentsCallbackUrl();
   if (!ipnCallbackUrl) {
     throw new Error(
       "APP_URL doit être configurée avec l'URL HTTPS publique de l'application pour les dépôts automatiques",
