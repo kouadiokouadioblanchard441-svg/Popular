@@ -49,6 +49,25 @@ test("uses PUBLIC_URL when APP_URL is not valid", () => {
   }
 });
 
+test("uses the verified public URL when Plesk provides no URL variables", () => {
+  const previousAppUrl = process.env.APP_URL;
+  const previousPublicUrl = process.env.PUBLIC_URL;
+  try {
+    delete process.env.APP_URL;
+    delete process.env.PUBLIC_URL;
+    assert.equal(getConfiguredAppUrlInfo()?.source, "DEFAULT");
+    assert.equal(
+      getNowPaymentsCallbackUrl(),
+      "https://zoksilll.online/api/nowpayments/ipn",
+    );
+  } finally {
+    if (previousAppUrl === undefined) delete process.env.APP_URL;
+    else process.env.APP_URL = previousAppUrl;
+    if (previousPublicUrl === undefined) delete process.env.PUBLIC_URL;
+    else process.env.PUBLIC_URL = previousPublicUrl;
+  }
+});
+
 test("credits only a finished NOWPayments deposit with the quoted asset and amount", () => {
   assert.equal(
     assessNowPaymentsDeposit({

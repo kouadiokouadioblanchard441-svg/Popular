@@ -76,7 +76,9 @@ function normalizeConfiguredAppUrl(rawAppUrl: string | undefined): string | unde
   return /^[a-z][a-z\d+.-]*:\/\//i.test(appUrl) ? appUrl : `https://${appUrl}`;
 }
 
-export type ConfiguredAppUrlSource = "APP_URL" | "PUBLIC_URL";
+export const DEFAULT_PUBLIC_APP_URL = "https://zoksilll.online";
+
+export type ConfiguredAppUrlSource = "APP_URL" | "PUBLIC_URL" | "DEFAULT";
 
 export function getConfiguredAppUrlInfo(): {
   url: string;
@@ -94,7 +96,11 @@ export function getConfiguredAppUrlInfo(): {
       // Try the next environment variable when this value is malformed.
     }
   }
-  return undefined;
+
+  // Plesk deployments can omit custom environment variables from the
+  // Passenger process. Keep payments functional with the verified public URL
+  // while still allowing APP_URL/PUBLIC_URL to override it when available.
+  return { url: DEFAULT_PUBLIC_APP_URL, source: "DEFAULT" };
 }
 
 export function getConfiguredAppUrl(): string | undefined {
