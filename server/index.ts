@@ -5,7 +5,7 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { seed } from "./seed";
 import { storage } from "./storage";
-import { getNowPaymentsCallbackUrl } from "./nowpayments";
+import { getConfiguredAppUrlInfo, getNowPaymentsCallbackUrl } from "./nowpayments";
 
 const app = express();
 const httpServer = createServer(app);
@@ -100,9 +100,10 @@ process.on("uncaughtException", (err) => {
 
 (async () => {
   try {
+  const appUrlInfo = getConfiguredAppUrlInfo();
   const callbackUrlConfigured = Boolean(getNowPaymentsCallbackUrl());
   console.log(
-    `[config] APP_URL=${process.env.APP_URL?.trim() ? "configured" : "missing"}; ` +
+    `[config] public URL source=${appUrlInfo?.source || "none"}; ` +
       `HTTPS callback=${callbackUrlConfigured ? "valid" : "invalid or missing"}; ` +
       `NOWPayments API key=${process.env.NOWPAYMENTS_API_KEY ? "configured" : "missing"}; ` +
       `IPN secret=${process.env.NOWPAYMENTS_IPN_SECRET ? "configured" : "missing"}`,

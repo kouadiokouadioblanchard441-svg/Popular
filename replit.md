@@ -23,7 +23,7 @@ npm run db:push   # push schema to database
 
 ## Environment Variables
 - `PORT` — defaults to 5000
-- `APP_URL` — public HTTPS URL (set in the Plesk environment for production)
+- `APP_URL` / `PUBLIC_URL` — public HTTPS URL variables (set in the Plesk environment for production; `APP_URL` has priority)
 
 ## Notes
 - The seed script runs on every startup and is idempotent (preserves existing data)

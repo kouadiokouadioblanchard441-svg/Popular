@@ -13,4 +13,4 @@
 - [TGOOD web presentation](tgood-web-presentation.md) — keep the site in its classic web presentation; do not add an app-like mobile shell or PWA behavior without approval.
 - [TGOOD earnings ledger](tgood-earnings-ledger.md) — all rewards and gains credit totalEarnings; balance remains the deposit balance.
 - [TGOOD product earnings collection](tgood-product-earnings-collection.md) — product gains accrue pending per product and credit totalEarnings only after manual 24-hour collection.
-- [Plesk runtime configuration](plesk-runtime-config.md) — public URLs and payment callbacks must come only from Plesk environment variables; never hardcode domains.
+- [Plesk runtime configuration](plesk-runtime-config.md) — public URLs and payment callbacks must come from Plesk environment variables; APP_URL has priority over PUBLIC_URL.

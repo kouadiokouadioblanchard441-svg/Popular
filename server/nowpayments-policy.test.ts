@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   assessNowPaymentsDeposit,
+  getConfiguredAppUrlInfo,
   getNowPaymentsCallbackUrl,
   isNowPaymentsVerificationCode,
   NowPaymentsPayoutError,
@@ -11,16 +12,40 @@ import {
 } from "./nowpayments";
 
 test("reads the public payment callback URL from APP_URL", () => {
-  const previous = process.env.APP_URL;
+  const previousAppUrl = process.env.APP_URL;
+  const previousPublicUrl = process.env.PUBLIC_URL;
   try {
     process.env.APP_URL = '"https://example.com"';
+    process.env.PUBLIC_URL = "https://fallback.example.com";
     assert.equal(
       getNowPaymentsCallbackUrl(),
       "https://example.com/api/nowpayments/ipn",
     );
+    assert.equal(getConfiguredAppUrlInfo()?.source, "APP_URL");
   } finally {
-    if (previous === undefined) delete process.env.APP_URL;
-    else process.env.APP_URL = previous;
+    if (previousAppUrl === undefined) delete process.env.APP_URL;
+    else process.env.APP_URL = previousAppUrl;
+    if (previousPublicUrl === undefined) delete process.env.PUBLIC_URL;
+    else process.env.PUBLIC_URL = previousPublicUrl;
+  }
+});
+
+test("uses PUBLIC_URL when APP_URL is not valid", () => {
+  const previousAppUrl = process.env.APP_URL;
+  const previousPublicUrl = process.env.PUBLIC_URL;
+  try {
+    process.env.APP_URL = "http://invalid.example.com";
+    process.env.PUBLIC_URL = "fallback.example.com";
+    assert.equal(getConfiguredAppUrlInfo()?.source, "PUBLIC_URL");
+    assert.equal(
+      getNowPaymentsCallbackUrl(),
+      "https://fallback.example.com/api/nowpayments/ipn",
+    );
+  } finally {
+    if (previousAppUrl === undefined) delete process.env.APP_URL;
+    else process.env.APP_URL = previousAppUrl;
+    if (previousPublicUrl === undefined) delete process.env.PUBLIC_URL;
+    else process.env.PUBLIC_URL = previousPublicUrl;
   }
 });
 

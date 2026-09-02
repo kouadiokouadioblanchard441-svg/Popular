@@ -63,10 +63,8 @@ export function resetSDK(): void {
 // Helpers shared by deposit + payout routes
 // ---------------------------------------------------------------------------
 
-export function getConfiguredAppUrl(): string | undefined {
-  const rawAppUrl = process.env.APP_URL?.trim();
-  if (!rawAppUrl) return undefined;
-
+function normalizeConfiguredAppUrl(rawAppUrl: string | undefined): string | undefined {
+  if (!rawAppUrl?.trim()) return undefined;
   // Plesk may preserve wrapping quotes when a value is pasted from a config
   // file. Strip only those wrappers; the value still comes exclusively from
   // the process environment and is validated below.
@@ -76,6 +74,31 @@ export function getConfiguredAppUrl(): string | undefined {
   // A bare host is normalized to HTTPS, while an explicitly supplied HTTP
   // URL remains invalid in getNowPaymentsCallbackUrl.
   return /^[a-z][a-z\d+.-]*:\/\//i.test(appUrl) ? appUrl : `https://${appUrl}`;
+}
+
+export type ConfiguredAppUrlSource = "APP_URL" | "PUBLIC_URL";
+
+export function getConfiguredAppUrlInfo(): {
+  url: string;
+  source: ConfiguredAppUrlSource;
+} | undefined {
+  for (const source of ["APP_URL", "PUBLIC_URL"] as const) {
+    const url = normalizeConfiguredAppUrl(process.env[source]);
+    if (!url) continue;
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol === "https:" && parsed.hostname) {
+        return { url, source };
+      }
+    } catch {
+      // Try the next environment variable when this value is malformed.
+    }
+  }
+  return undefined;
+}
+
+export function getConfiguredAppUrl(): string | undefined {
+  return getConfiguredAppUrlInfo()?.url;
 }
 
 export function getNowPaymentsCallbackUrl(): string | undefined {
@@ -184,7 +207,7 @@ export async function createNowPaymentsDirectPayment(input: {
   const ipnCallbackUrl = getNowPaymentsCallbackUrl();
   if (!ipnCallbackUrl) {
     throw new Error(
-      "APP_URL doit être configurée avec l'URL HTTPS publique de l'application pour les dépôts automatiques",
+      "APP_URL ou PUBLIC_URL doit être configurée avec l'URL HTTPS publique de l'application pour les dépôts automatiques",
     );
   }
 

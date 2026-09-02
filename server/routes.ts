@@ -61,6 +61,7 @@ import {
   createNowPaymentsDirectPayment,
   createPayout,
   getConfiguredAppUrl,
+  getConfiguredAppUrlInfo,
   getNowPaymentsCallbackUrl,
   getSDK,
   isNowPaymentsPayoutConfigured,
@@ -218,6 +219,7 @@ export async function registerRoutes(
   app.get("/api/health", async (_req, res) => {
     try {
       const result = await pool.query("SELECT current_database() AS db, version() AS pg_version");
+      const appUrlInfo = getConfiguredAppUrlInfo();
       const callbackUrl = getNowPaymentsCallbackUrl();
       res.json({
         status: "ok",
@@ -225,7 +227,8 @@ export async function registerRoutes(
         pg_version: result.rows[0].pg_version,
         runtime: {
           nodeEnv: process.env.NODE_ENV || "development",
-          appUrlConfigured: Boolean(process.env.APP_URL?.trim()),
+          appUrlConfigured: Boolean(appUrlInfo),
+          appUrlSource: appUrlInfo?.source || "none",
           appUrlIsHttps: Boolean(callbackUrl),
           nowPaymentsApiKeyConfigured: Boolean(process.env.NOWPAYMENTS_API_KEY),
           nowPaymentsIpnSecretConfigured: Boolean(process.env.NOWPAYMENTS_IPN_SECRET),
@@ -957,7 +960,7 @@ export async function registerRoutes(
       }
       if (!getNowPaymentsCallbackUrl()) {
         return res.status(503).json({
-          message: "Les dépôts automatiques nécessitent APP_URL avec l'URL HTTPS publique de l'application",
+          message: "Les dépôts automatiques nécessitent APP_URL ou PUBLIC_URL avec l'URL HTTPS publique de l'application",
         });
       }
       if (!Number.isFinite(amountValue) || !Number.isInteger(amountValue) || amountValue <= 0) {
