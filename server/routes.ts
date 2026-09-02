@@ -60,6 +60,7 @@ import {
   assessNowPaymentsDeposit,
   createNowPaymentsDirectPayment,
   createPayout,
+  getConfiguredAppUrl,
   getNowPaymentsCallbackUrl,
   getSDK,
   isNowPaymentsPayoutConfigured,
@@ -1358,12 +1359,14 @@ export async function registerRoutes(
       });
 
       // Build the WestPay hosted-payment URL
-      const forwardedProto = req.headers["x-forwarded-proto"] as string | undefined;
-      const forwardedHost  = req.headers["x-forwarded-host"]  as string | undefined;
-      const protocol = forwardedProto || (req.secure ? "https" : "http");
-      const host     = forwardedHost  || req.headers.host || "";
-      const appBase  = process.env.APP_URL || `${protocol}://${host}`;
-      const redirectUrl = `${appBase}/deposit?wp_deposit=${deposit.id}&wp_return=1`;
+      const appBase = getConfiguredAppUrl();
+      if (!appBase) {
+        throw new Error("APP_URL doit être configurée dans l'environnement Plesk");
+      }
+      const redirectUrl = new URL(
+        `/deposit?wp_deposit=${deposit.id}&wp_return=1`,
+        appBase.endsWith("/") ? appBase : `${appBase}/`,
+      ).toString();
 
       const payUrl = new URL("https://westpay.cfd/pay");
       payUrl.searchParams.set("merchant", wp.slug);

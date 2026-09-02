@@ -2,12 +2,27 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   assessNowPaymentsDeposit,
+  getNowPaymentsCallbackUrl,
   isNowPaymentsVerificationCode,
   NowPaymentsPayoutError,
   normalizeWithdrawalMode,
   nextWithdrawalStatusFromPayoutIpn,
   shouldReconcileNowPaymentsPayoutError,
 } from "./nowpayments";
+
+test("reads the public payment callback URL from APP_URL", () => {
+  const previous = process.env.APP_URL;
+  try {
+    process.env.APP_URL = '"https://example.com"';
+    assert.equal(
+      getNowPaymentsCallbackUrl(),
+      "https://example.com/api/nowpayments/ipn",
+    );
+  } finally {
+    if (previous === undefined) delete process.env.APP_URL;
+    else process.env.APP_URL = previous;
+  }
+});
 
 test("credits only a finished NOWPayments deposit with the quoted asset and amount", () => {
   assert.equal(

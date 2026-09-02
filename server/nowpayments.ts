@@ -63,8 +63,23 @@ export function resetSDK(): void {
 // Helpers shared by deposit + payout routes
 // ---------------------------------------------------------------------------
 
+export function getConfiguredAppUrl(): string | undefined {
+  const rawAppUrl = process.env.APP_URL?.trim();
+  if (!rawAppUrl) return undefined;
+
+  // Plesk may preserve wrapping quotes when a value is pasted from a config
+  // file. Strip only those wrappers; the value still comes exclusively from
+  // the process environment and is validated below.
+  const appUrl = rawAppUrl.replace(/^(['"])(.*)\1$/, "$2").trim();
+  if (!appUrl) return undefined;
+
+  // A bare host is normalized to HTTPS, while an explicitly supplied HTTP
+  // URL remains invalid in getNowPaymentsCallbackUrl.
+  return /^[a-z][a-z\d+.-]*:\/\//i.test(appUrl) ? appUrl : `https://${appUrl}`;
+}
+
 export function getNowPaymentsCallbackUrl(): string | undefined {
-  const appUrl = process.env.APP_URL?.trim();
+  const appUrl = getConfiguredAppUrl();
   if (!appUrl) return undefined;
 
   try {
